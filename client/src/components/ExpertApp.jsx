@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useLocation } from 'wouter';
 import { 
   Bell, 
   Settings, 
@@ -15,13 +16,14 @@ import {
 
 const ExpertApp = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [, setLocation] = useLocation();
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) return;
 
     try {
       // Send search query to n8n webhook
-      const response = await fetch(`${process.env.VITE_N8N_WEBHOOK_URL || 'https://n8n.mydomain.com'}/webhook/search`, {
+      const response = await fetch(`${import.meta.env.VITE_N8N_WEBHOOK_URL || 'https://n8n.mydomain.com'}/webhook/search`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query: searchQuery })
@@ -30,26 +32,37 @@ const ExpertApp = () => {
       const data = await response.json();
       console.log('Search response:', data);
       
-      // Clear search input after successful submission
-      setSearchQuery('');
+      // Navigate to chat page with the search query
+      setLocation(`/chat?q=${encodeURIComponent(searchQuery)}`);
+      
     } catch (error) {
       console.error('Search error:', error);
+      // Still navigate to chat page even if webhook fails
+      setLocation(`/chat?q=${encodeURIComponent(searchQuery)}`);
     }
   };
 
   const handleExpertClick = async (expertType) => {
+    const expertQuery = `I need help with ${expertType.toLowerCase()}`;
+    
     try {
       // Send expert type to n8n webhook
-      const response = await fetch(`${process.env.VITE_N8N_WEBHOOK_URL || 'https://n8n.mydomain.com'}/webhook/expert`, {
+      const response = await fetch(`${import.meta.env.VITE_N8N_WEBHOOK_URL || 'https://n8n.mydomain.com'}/webhook/expert`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ expertType })
+        body: JSON.stringify({ expertType, query: expertQuery })
       });
       
       const data = await response.json();
       console.log('Expert response:', data);
+      
+      // Navigate to chat page with expert context
+      setLocation(`/chat?q=${encodeURIComponent(expertQuery)}&expert=${encodeURIComponent(expertType)}`);
+      
     } catch (error) {
       console.error('Expert error:', error);
+      // Still navigate to chat page even if webhook fails
+      setLocation(`/chat?q=${encodeURIComponent(expertQuery)}&expert=${encodeURIComponent(expertType)}`);
     }
   };
 

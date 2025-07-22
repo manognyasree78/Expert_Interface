@@ -1,0 +1,91 @@
+Build a responsive Expert App homepage in React using ONLY `.jsx` files (no TypeScript), Tailwind CSS for styling. The layout should exactly match this:
+
+---
+
+🔵 HEADER:
+- Left side: Logo text "EXPERT" in bold pink and "APP" in bold purple (side by side).
+- Right side: Three icons - Bell (notifications), Settings (gear), and User Avatar (circle).
+- Fixed or sticky top layout with light shadow.
+
+---
+
+🟣 MAIN SECTION (centered vertically):
+1. Heading: "Welcome to Expert App." — bold, large, centered
+2. Subheading: "One stop, where you can meet all the solutions for your problems" — light gray, centered
+3. Search Bar:
+   - Rounded with shadow and gradient right-end button (pink to purple)
+   - Placeholder: "Hey, how can I help you today..."
+   - Left icon: Pencil/Edit icon
+   - Right icon: Paper plane or send icon (clickable)
+   - **OnClick of send button**, trigger a JavaScript `handleSearch()` function, which should send the search input to an **n8n webhook** via `fetch()`. Example:
+     ```js
+     fetch("https://n8n.mydomain.com/webhook/search", {
+       method: "POST",
+       headers: { "Content-Type": "application/json" },
+       body: JSON.stringify({ query: inputValue })
+     });
+     ```
+
+---
+
+🟩 EXPERT CARDS GRID (3x2 layout for desktop, 2x3 on tablet, 1 column on mobile):
+Each card should:
+- Be a large rounded rectangle with gradient background and slight hover effect
+- Contain:
+   - Icon (top left or centered)
+   - Title in bold
+   - Short description
+- OnClick of card, call a function like `handleExpertClick("Finance Expert")` which sends that expert type to an **n8n webhook** and receives expert data (simulate response now)
+- Here are the 6 cards:
+
+1. **Marketing Expert**
+   - Gradient: pink → purple
+   - Icon: megaphone
+   - Description: Strategy, campaigns, branding, and customer engagement solutions
+
+2. **Technology Expert**
+   - Gradient: sky blue → blue
+   - Icon: monitor
+   - Description: Software development, IT infrastructure, and digital transformation
+
+3. **Finance Expert**
+   - Gradient: green → emerald
+   - Icon: upward trending arrow
+   - Description: Financial planning, investment strategies, and budget management
+
+4. **HR Expert**
+   - Gradient: orange → amber
+   - Icon: user group
+   - Description: Talent acquisition, employee engagement, and HR tech
+
+5. **Legal Expert**
+   - Gradient: purple → violet
+   - Icon: scale
+   - Description: Contracts, compliance, IP protection, and legal advice
+
+6. **Sales Expert**
+   - Gradient: yellow → orange
+   - Icon: shopping cart or bar chart
+   - Description: Sales enablement, CRM strategy, and pipeline optimization
+
+---
+
+🧠 STATE:
+- Use `useState()` to manage input value and selected expert
+- Use `useEffect()` if needed for DB fetch
+- Data is saved/fetched via backend API — no DB logic on frontend
+- Assume all DB operations are done via **n8n flows connected to PostgreSQL (pgAdmin4)**
+
+---
+
+💡 OTHER INSTRUCTIONS:
+- Use only `.jsx` (not `.tsx`)
+- Use Tailwind CSS for styling (rounded-2xl, p-4, shadow-lg, hover:scale-105, etc.)
+- Keep file structure clean: One main `ExpertApp.jsx` component
+- Icons can use [Lucide](https://lucide.dev/) or Heroicons
+- Don’t include backend/db code — just mock fetch to `https://n8n.mydomain.com/webhook/{something}`
+
+---
+
+Goal: You are simulating a full Expert App dashboard with expert cards and smart n8n-triggered frontend.
+

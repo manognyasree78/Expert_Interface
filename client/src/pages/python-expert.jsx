@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Settings, Bell, User, Send, Home } from 'lucide-react';
 import { useLocation } from 'wouter';
+import { findRelevantKnowledge } from '../data/expertKnowledge';
 
 const PythonExpertPage = () => {
   const [location, setLocation] = useLocation();
   const [messages, setMessages] = useState([]);
   const [currentMessage, setCurrentMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [expertResponse, setExpertResponse] = useState(null);
 
 
   // Check for stored search query from homepage on component mount
@@ -17,14 +19,7 @@ const PythonExpertPage = () => {
       try {
         const searchData = JSON.parse(storedData);
         if (searchData.query) {
-          setMessages([
-            { text: searchData.query, isUser: true, timestamp: new Date() },
-            { 
-              text: "I'm here to help you with Python development! How can I assist you today?", 
-              isUser: false, 
-              timestamp: new Date() 
-            }
-          ]);
+          processUserQuery(searchData.query);
           sessionStorage.removeItem('searchQuery');
           return;
         }
@@ -37,12 +32,35 @@ const PythonExpertPage = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const query = urlParams.get('q');
     if (query && messages.length === 0) {
-      setMessages([
-        { text: query, isUser: true, timestamp: new Date() },
-        { text: "I'm here to help you with Python development! How can I assist you today?", isUser: false, timestamp: new Date() }
-      ]);
+      processUserQuery(query);
     }
   }, []);
+
+  // Process user query and generate expert response
+  const processUserQuery = (query) => {
+    const knowledge = findRelevantKnowledge(query, 'python');
+    
+    if (knowledge) {
+      setMessages([
+        { text: query, isUser: true, timestamp: new Date() },
+        { 
+          text: "I've analyzed your Python question and prepared a comprehensive response. Check the preview panel for detailed guidance!", 
+          isUser: false, 
+          timestamp: new Date() 
+        }
+      ]);
+      setExpertResponse(knowledge);
+    } else {
+      setMessages([
+        { text: query, isUser: true, timestamp: new Date() },
+        { 
+          text: "I'm here to help you with Python development! For the most detailed responses, try asking about topics like performance optimization, memory management, architecture patterns, or specific Python concepts.", 
+          isUser: false, 
+          timestamp: new Date() 
+        }
+      ]);
+    }
+  };
 
   // Simple message handler without n8n
   const handlePythonQuestion = (question) => {
@@ -56,14 +74,9 @@ const PythonExpertPage = () => {
   const handleSendMessage = () => {
     if (!currentMessage.trim()) return;
 
-    const newMessage = { text: currentMessage, isUser: true, timestamp: new Date() };
-    setMessages(prev => [...prev, newMessage, {
-      text: "I'm here to help you with Python development! What specific challenge are you working on?",
-      isUser: false,
-      timestamp: new Date()
-    }]);
-    
+    const query = currentMessage;
     setCurrentMessage('');
+    processUserQuery(query);
   };
 
   const handleKeyPress = (e) => {
@@ -199,29 +212,85 @@ const PythonExpertPage = () => {
           </div>
           
           <div className="flex-1 p-8 overflow-y-auto">
-            <div className="flex items-center justify-center h-full">
-              <div className="text-center max-w-2xl">
-                <h1 className="text-4xl font-bold text-gray-900 mb-4">
-                  Welcome to the Python Expert
-                </h1>
-                <p className="text-lg text-gray-600 mb-6">
-                  Your specialized Python development assistant for automation, data analysis, web frameworks, and AI/ML solutions
-                </p>
+            {expertResponse ? (
+              <div className="max-w-4xl mx-auto">
                 <div className="bg-white rounded-2xl p-8 shadow-sm">
-                  <p className="text-gray-500 mb-4">
-                    I can help you with:
-                  </p>
-                  <ul className="text-left text-gray-600 space-y-2 mb-6">
-                    <li>• Python scripting and automation</li>
-                    <li>• Web development with Django/Flask</li>
-                    <li>• Data analysis with pandas/numpy</li>
-                    <li>• Machine learning with scikit-learn/TensorFlow</li>
-                    <li>• API development and integration</li>
-                    <li>• Code optimization and debugging</li>
-                  </ul>
+                  <div className="space-y-6">
+                    <div className="border-b border-gray-200 pb-4">
+                      <h2 className="text-2xl font-bold text-gray-900 mb-2">Python Expert Analysis</h2>
+                      <p className="text-lg text-blue-600 font-medium">{expertResponse.question}</p>
+                    </div>
+                    
+                    <div className="space-y-6">
+                      <div className="bg-blue-50 p-6 rounded-lg">
+                        <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                          <span className="text-blue-600 mr-2">🔹</span>
+                          1. Problem Overview
+                        </h3>
+                        <p className="text-gray-700 leading-relaxed">{expertResponse.answer.problemOverview}</p>
+                      </div>
+
+                      <div className="bg-indigo-50 p-6 rounded-lg">
+                        <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                          <span className="text-indigo-600 mr-2">🔹</span>
+                          2. Core Concept Explanation
+                        </h3>
+                        <p className="text-gray-700 leading-relaxed">{expertResponse.answer.coreConceptExplanation}</p>
+                      </div>
+
+                      <div className="bg-green-50 p-6 rounded-lg">
+                        <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                          <span className="text-green-600 mr-2">🔹</span>
+                          3. Step-by-Step Solution or Best Practice
+                        </h3>
+                        <div className="text-gray-700 leading-relaxed prose max-w-none">
+                          <div dangerouslySetInnerHTML={{ __html: expertResponse.answer.stepByStepSolution.replace(/\n/g, '<br>').replace(/```python/g, '<pre class="bg-gray-800 text-white p-4 rounded mt-2 mb-2 overflow-x-auto"><code>').replace(/```/g, '</code></pre>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />
+                        </div>
+                      </div>
+
+                      <div className="bg-yellow-50 p-6 rounded-lg">
+                        <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                          <span className="text-yellow-600 mr-2">🔹</span>
+                          4. Gotchas or Common Pitfalls
+                        </h3>
+                        <p className="text-gray-700 leading-relaxed">{expertResponse.answer.gotchasAndPitfalls}</p>
+                      </div>
+
+                      <div className="bg-purple-50 p-6 rounded-lg">
+                        <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                          <span className="text-purple-600 mr-2">🔹</span>
+                          5. Summary or Recommendation
+                        </h3>
+                        <p className="text-gray-700 leading-relaxed">{expertResponse.answer.summaryRecommendation}</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
+            ) : (
+              <div className="flex items-center justify-center h-full">
+                <div className="text-center max-w-2xl">
+                  <h1 className="text-4xl font-bold text-gray-900 mb-4">
+                    Welcome to the Python Expert
+                  </h1>
+                  <p className="text-lg text-gray-600 mb-6">
+                    Your specialized Python development assistant for automation, data analysis, web frameworks, and AI/ML solutions
+                  </p>
+                  <div className="bg-white rounded-2xl p-8 shadow-sm">
+                    <p className="text-gray-500 mb-4">
+                      Try asking about:
+                    </p>
+                    <ul className="text-left text-gray-600 space-y-2 mb-6">
+                      <li>• "How can I improve recursive function performance?"</li>
+                      <li>• "What's the difference between deepcopy and copy?"</li>
+                      <li>• "How do I handle memory leaks in Python scripts?"</li>
+                      <li>• "Can you explain Python's GIL and multithreading?"</li>
+                      <li>• "How do I structure large-scale Python applications?"</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

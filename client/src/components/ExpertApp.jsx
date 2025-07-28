@@ -85,52 +85,60 @@ const ExpertApp = () => {
   const expertCards = [
     {
       title: 'Python Expert',
-      description: 'Python development, automation, data analysis, web frameworks, and AI/ML solutions',
+      description: 'AI-powered content suggestions, Professional templates, Keyword optimization',
       icon: Code,
-      gradient: 'from-blue-400 to-indigo-600',
-      textColor: 'text-blue-100'
+      iconBg: 'bg-secondary',
+      features: [
+        'AI-powered content suggestions',
+        'Professional templates', 
+        'Keyword optimization'
+      ]
     },
     {
       title: 'E-commerce Modernization Expert',
-      description: 'Online store setup, digital marketing, payment systems, and sales optimization',
+      description: 'Personalized job recommendations, Skill gap analysis, Company culture insights',
       icon: ShoppingBag,
-      gradient: 'from-green-400 to-teal-600',
-      textColor: 'text-green-100'
+      iconBg: 'bg-primary',
+      features: [
+        'Personalized job recommendations',
+        'Skill gap analysis',
+        'Company culture insights'
+      ]
     }
   ];
 
   return (
-    <div className="font-inter bg-gray-50 min-h-screen">
+    <div className="font-inter bg-background text-foreground min-h-screen">
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 bg-white shadow-sm z-50 px-4 py-4">
+      <header className="fixed top-0 left-0 right-0 bg-card shadow-sm z-50 px-4 py-4 border-b border-border">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           {/* Home Button and Logo */}
           <div className="flex items-center space-x-4">
             <button 
               onClick={() => setLocation('/')}
-              className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors"
+              className="p-2 rounded-lg bg-accent hover:bg-muted transition-colors"
             >
-              <Home className="w-5 h-5 text-gray-600" />
+              <Home className="w-5 h-5 text-foreground" />
             </button>
             <button 
               onClick={() => setLocation('/')}
-              className="flex items-center space-x-1 hover:opacity-80 transition-opacity cursor-pointer"
+              className="flex items-center space-x-2 hover:opacity-80 transition-opacity cursor-pointer"
             >
-              <span className="text-xl font-bold text-expert-pink">EXPERT</span>
-              <span className="text-xl font-bold text-expert-purple">APP</span>
+              <span className="text-xl font-bold text-primary">EXPERT</span>
+              <span className="text-xl font-bold text-secondary">APP</span>
             </button>
           </div>
           
           {/* Header Icons */}
           <div className="flex items-center space-x-4">
-            <button className="p-2 rounded-lg hover:bg-gray-100 transition-colors">
-              <Bell className="w-5 h-5 text-gray-600" />
+            <button className="p-2 rounded-lg hover:bg-accent transition-colors">
+              <Bell className="w-5 h-5 text-muted-foreground" />
             </button>
-            <button className="p-2 rounded-lg hover:bg-gray-100 transition-colors">
-              <Settings className="w-5 h-5 text-gray-600" />
+            <button className="p-2 rounded-lg hover:bg-accent transition-colors">
+              <Settings className="w-5 h-5 text-muted-foreground" />
             </button>
-            <button className="p-2 rounded-lg hover:bg-gray-100 transition-colors">
-              <User className="w-5 h-5 text-gray-600" />
+            <button className="p-2 rounded-lg hover:bg-accent transition-colors">
+              <User className="w-5 h-5 text-muted-foreground" />
             </button>
           </div>
         </div>
@@ -141,29 +149,29 @@ const ExpertApp = () => {
         <div className="max-w-7xl mx-auto">
           {/* Hero Section */}
           <div className="text-center mb-12 pt-8">
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              Welcome to Expert App.
+            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+              Welcome to Expert App
             </h1>
-            <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-              One stop, where you can meet all the solutions for your problems
+            <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
+              Everything at one place. AI Agents that mediate tasks, mentor careers, and manage workflows on a unified platform. Explore AI-powered solutions crafted to enhance your personal growth and professional performance.
             </p>
             
             {/* Search Bar */}
             <div className="max-w-2xl mx-auto relative">
-              <div className="flex items-center bg-white rounded-2xl shadow-lg overflow-hidden">
+              <div className="flex items-center bg-card rounded-2xl shadow-lg overflow-hidden border border-border">
                 <div className="pl-6 pr-3 py-4">
-                  <Edit3 className="w-5 h-5 text-gray-400" />
+                  <Edit3 className="w-5 h-5 text-muted-foreground" />
                 </div>
                 <input 
                   type="text" 
                   placeholder="Hey, how can I help you today..." 
-                  className="flex-1 py-4 px-2 text-gray-700 placeholder-gray-400 focus:outline-none"
+                  className="flex-1 py-4 px-2 text-foreground placeholder-muted-foreground bg-transparent focus:outline-none"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyPress={handleKeyPress}
                 />
                 <button 
-                  className="bg-gradient-to-r from-expert-pink to-expert-purple text-white px-6 py-4 hover:opacity-90 transition-opacity"
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-4 transition-colors"
                   onClick={handleSearch}
                 >
                   <Send className="w-5 h-5" />
@@ -172,28 +180,45 @@ const ExpertApp = () => {
             </div>
           </div>
 
-          {/* Expert Cards - 2 Big Centered Blocks */}
-          <div className="flex flex-col md:flex-row gap-8 justify-center max-w-4xl mx-auto">
-            {expertCards.map((card, index) => {
-              const IconComponent = card.icon;
-              return (
-                <div 
-                  key={index}
-                  className={`bg-gradient-to-br ${card.gradient} rounded-3xl p-8 text-white cursor-pointer transform hover:scale-105 transition-transform duration-200 shadow-xl flex-1 min-h-[280px] flex flex-col justify-center`}
-                  onClick={() => handleExpertClick(card.title)}
-                >
-                  <div className="mb-6 flex justify-center">
-                    <IconComponent className="w-16 h-16" />
+          {/* Expert Cards Section - Academy Services Style */}
+          <div className="mb-16">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold text-foreground mb-4">Academy Services</h2>
+              <p className="text-muted-foreground max-w-2xl mx-auto">
+                Explore our AI-powered services designed to enhance your career and business operations.
+              </p>
+            </div>
+            
+            <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+              {expertCards.map((card, index) => {
+                const IconComponent = card.icon;
+                return (
+                  <div 
+                    key={index}
+                    className="bg-card border border-border rounded-2xl p-8 hover:border-primary/50 transition-all duration-200 cursor-pointer group"
+                    onClick={() => handleExpertClick(card.title)}
+                  >
+                    <div className="mb-6">
+                      <div className={`w-12 h-12 ${card.iconBg} rounded-lg flex items-center justify-center mb-4`}>
+                        <IconComponent className="w-6 h-6 text-white" />
+                      </div>
+                      <h3 className="text-xl font-semibold text-card-foreground mb-3">
+                        {card.title}
+                      </h3>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      {card.features.map((feature, featureIndex) => (
+                        <div key={featureIndex} className="flex items-center text-muted-foreground">
+                          <div className="w-2 h-2 bg-primary rounded-full mr-3"></div>
+                          <span className="text-sm">{feature}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                  <h3 className="text-2xl font-bold mb-4 text-center">
-                    {card.title}
-                  </h3>
-                  <p className={`${card.textColor} text-base leading-relaxed text-center`}>
-                    {card.description}
-                  </p>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         </div>
       </main>

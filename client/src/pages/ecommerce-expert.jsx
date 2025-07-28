@@ -85,37 +85,37 @@ const EcommerceExpertPage = () => {
   };
 
   return (
-    <div className="font-inter bg-gray-50 min-h-screen flex flex-col">
+    <div className="font-inter bg-background text-foreground min-h-screen flex flex-col">
       {/* Header */}
-      <header className="bg-white shadow-sm z-50 px-4 py-4">
+      <header className="bg-card shadow-sm z-50 px-4 py-4 border-b border-border">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           {/* Home Button and Logo */}
           <div className="flex items-center space-x-4">
             <button 
               onClick={() => setLocation('/')}
-              className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors"
+              className="p-2 rounded-lg bg-accent hover:bg-muted transition-colors"
             >
-              <Home className="w-5 h-5 text-gray-600" />
+              <Home className="w-5 h-5 text-foreground" />
             </button>
             <button 
               onClick={() => setLocation('/')}
-              className="flex items-center space-x-1 hover:opacity-80 transition-opacity cursor-pointer"
+              className="flex items-center space-x-2 hover:opacity-80 transition-opacity cursor-pointer"
             >
-              <span className="text-xl font-bold text-expert-pink">EXPERT</span>
-              <span className="text-xl font-bold text-expert-purple">APP</span>
+              <span className="text-xl font-bold text-primary">EXPERT</span>
+              <span className="text-xl font-bold text-secondary">APP</span>
             </button>
           </div>
           
           {/* Header Icons */}
           <div className="flex items-center space-x-4">
-            <button className="p-2 rounded-lg hover:bg-gray-100 transition-colors">
-              <Settings className="w-5 h-5 text-gray-600" />
+            <button className="p-2 rounded-lg hover:bg-accent transition-colors">
+              <Settings className="w-5 h-5 text-muted-foreground" />
             </button>
-            <button className="p-2 rounded-lg hover:bg-gray-100 transition-colors">
-              <Bell className="w-5 h-5 text-gray-600" />
+            <button className="p-2 rounded-lg hover:bg-accent transition-colors">
+              <Bell className="w-5 h-5 text-muted-foreground" />
             </button>
-            <button className="p-2 rounded-lg hover:bg-gray-100 transition-colors">
-              <User className="w-5 h-5 text-gray-600" />
+            <button className="p-2 rounded-lg hover:bg-accent transition-colors">
+              <User className="w-5 h-5 text-muted-foreground" />
             </button>
           </div>
         </div>
@@ -124,11 +124,11 @@ const EcommerceExpertPage = () => {
       {/* Main Layout */}
       <div className="flex-1 flex">
         {/* Left Chat Panel - 30% */}
-        <div className="w-full md:w-[30%] bg-white border-r border-gray-200 flex flex-col">
+        <div className="w-full md:w-[30%] bg-card border-r border-border flex flex-col">
           {/* Expert Title */}
-          <div className="p-4 border-b border-gray-200 bg-gradient-to-r from-green-50 to-teal-50">
-            <h2 className="text-lg font-bold text-gray-800">E-commerce Modernization Expert</h2>
-            <p className="text-sm text-gray-600">Online business modernization & digital transformation specialist</p>
+          <div className="p-4 border-b border-border bg-accent">
+            <h2 className="text-lg font-bold text-card-foreground">E-commerce Modernization Expert</h2>
+            <p className="text-sm text-muted-foreground">Online business modernization & digital transformation specialist</p>
           </div>
 
           {/* Chat Messages */}
@@ -142,13 +142,13 @@ const EcommerceExpertPage = () => {
                   <div
                     className={`max-w-[85%] p-3 rounded-2xl ${
                       message.isUser
-                        ? 'bg-gradient-to-r from-green-400 to-teal-600 text-white ml-4'
-                        : 'bg-gray-100 text-gray-800 mr-4'
+                        ? 'bg-primary text-primary-foreground ml-4'
+                        : 'bg-accent text-accent-foreground mr-4'
                     }`}
                   >
                     <p className="text-sm">{message.text}</p>
                     <span className={`text-xs ${
-                      message.isUser ? 'text-green-100' : 'text-gray-500'
+                      message.isUser ? 'text-primary-foreground/70' : 'text-muted-foreground'
                     } block mt-1`}>
                       {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </span>
@@ -193,15 +193,15 @@ const EcommerceExpertPage = () => {
         </div>
 
         {/* Right Preview Panel - 70% */}
-        <div className="hidden md:flex md:w-[70%] bg-gray-50 flex-col">
+        <div className="hidden md:flex md:w-[70%] bg-background flex-col">
           {/* Preview Panel Header */}
-          <div className="p-6 bg-white border-b border-gray-200">
+          <div className="p-6 bg-card border-b border-border">
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-bold text-gray-900">E-commerce Modernization Expert</h2>
+              <h2 className="text-xl font-bold text-card-foreground">E-commerce Modernization Expert</h2>
               <div className="flex items-center space-x-2">
                 {isLoading && (
-                  <div className="flex items-center space-x-2 text-green-600">
-                    <div className="w-4 h-4 border-2 border-green-600 border-t-transparent rounded-full animate-spin"></div>
+                  <div className="flex items-center space-x-2 text-secondary">
+                    <div className="w-4 h-4 border-2 border-secondary border-t-transparent rounded-full animate-spin"></div>
                     <span className="text-sm">Processing...</span>
                   </div>
                 )}
@@ -213,11 +213,11 @@ const EcommerceExpertPage = () => {
             {expertResponses.length > 0 ? (
               <div className="max-w-4xl mx-auto space-y-8">
                 {expertResponses.map((expertResponse, index) => (
-                  <div key={expertResponse.id} className="bg-white rounded-2xl p-8 shadow-sm">
+                  <div key={expertResponse.id} className="bg-card rounded-2xl p-8 shadow-sm border border-border">
                     <div className="space-y-6">
-                      <div className="border-b border-gray-200 pb-4">
-                        <h2 className="text-2xl font-bold text-gray-900 mb-2">E-commerce Modernization Strategy #{index + 1}</h2>
-                        <p className="text-lg text-green-600 font-medium">{expertResponse.question}</p>
+                      <div className="border-b border-border pb-4">
+                        <h2 className="text-2xl font-bold text-card-foreground mb-2">E-commerce Modernization Strategy #{index + 1}</h2>
+                        <p className="text-lg text-primary font-medium">{expertResponse.question}</p>
                       </div>
                       
                       {expertResponse.answer.fallback ? (

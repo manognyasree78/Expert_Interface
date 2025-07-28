@@ -6,13 +6,13 @@ Expert App is a modern full-stack web application built as a solution platform c
 
 ## Recent Changes
 
-### July 28, 2025 - Performance and Error Handling Improvements
-- Fixed n8n webhook connection issues and eliminated console errors
-- Removed test connection buttons and "Response received" status indicators
-- Implemented silent error handling for webhook failures
-- Optimized navigation speed by making n8n calls non-blocking
-- Simplified preview panel headers for cleaner UI
-- Made chat interface more responsive with immediate feedback
+### July 28, 2025 - Complete Removal of n8n Integration
+- Completely removed all n8n webhook integration due to URL connection issues
+- Eliminated all unhandled promise rejection errors and console warnings
+- Simplified expert pages to show static expert information in preview panels
+- Optimized navigation speed with immediate page transitions
+- Clean chat interface with simple message responses without external dependencies
+- Homepage search still detects domain (Python/E-commerce) and navigates to appropriate expert page
 
 ## User Preferences
 

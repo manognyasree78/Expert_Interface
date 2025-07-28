@@ -7,30 +7,29 @@ const PythonExpertPage = () => {
   const [messages, setMessages] = useState([]);
   const [currentMessage, setCurrentMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [n8nResponse, setN8nResponse] = useState(null);
 
-  // Check for stored n8n response from homepage search on component mount
+
+  // Check for stored search query from homepage on component mount
   useEffect(() => {
-    // First check for stored response from homepage
-    const storedResponse = sessionStorage.getItem('n8nResponse');
-    if (storedResponse) {
+    // First check for stored search data from homepage
+    const storedData = sessionStorage.getItem('searchQuery');
+    if (storedData) {
       try {
-        const responseData = JSON.parse(storedResponse);
-        if (responseData.query) {
-          setN8nResponse(responseData);
+        const searchData = JSON.parse(storedData);
+        if (searchData.query) {
           setMessages([
-            { text: responseData.query, isUser: true, timestamp: new Date() },
+            { text: searchData.query, isUser: true, timestamp: new Date() },
             { 
-              text: responseData.message || responseData.response || responseData.output || "I've processed your Python question. Check the preview panel for the detailed response.", 
+              text: "I'm here to help you with Python development! How can I assist you today?", 
               isUser: false, 
               timestamp: new Date() 
             }
           ]);
-          sessionStorage.removeItem('n8nResponse');
+          sessionStorage.removeItem('searchQuery');
           return;
         }
       } catch (error) {
-        sessionStorage.removeItem('n8nResponse');
+        sessionStorage.removeItem('searchQuery');
       }
     }
     
@@ -38,104 +37,33 @@ const PythonExpertPage = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const query = urlParams.get('q');
     if (query && messages.length === 0) {
-      setMessages([{ text: query, isUser: true, timestamp: new Date() }]);
-      handleN8nResponse(query);
+      setMessages([
+        { text: query, isUser: true, timestamp: new Date() },
+        { text: "I'm here to help you with Python development! How can I assist you today?", isUser: false, timestamp: new Date() }
+      ]);
     }
   }, []);
 
-  const handleN8nResponse = async (query) => {
-    setIsLoading(true);
-    
-    // Add user message immediately for responsiveness
+  // Simple message handler without n8n
+  const handlePythonQuestion = (question) => {
     setMessages(prev => [...prev, { 
-      text: "I'm processing your Python question. Let me help you with that.", 
+      text: "I'm here to help you with Python development! What specific challenge are you working on?", 
       isUser: false, 
       timestamp: new Date() 
     }]);
-    
-    // Send to n8n webhook and display response
-    const callN8nWebhook = async () => {
-      try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 10000);
-        
-        try {
-          const response = await fetch('https://n8n.ottobon.in/webhook-test/session-start', {
-            method: "POST",
-            headers: { 
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ 
-              query, 
-              expertType: 'Python Expert',
-              timestamp: new Date().toISOString()
-            }),
-            signal: controller.signal
-          });
-          
-          clearTimeout(timeoutId);
-          
-          if (response.ok) {
-            const data = await response.json();
-            console.log('n8n response received:', data);
-            
-            // Display the n8n response in the preview panel
-            setN8nResponse({
-              ...data,
-              query: query
-            });
-            
-            // Update chat with response
-            const responseText = data.message || data.response || data.output || "I've processed your Python question. Check the preview panel for the detailed response.";
-            setMessages(prev => [...prev, { 
-              text: responseText, 
-              isUser: false, 
-              timestamp: new Date() 
-            }]);
-          } else {
-            throw new Error(`HTTP ${response.status}`);
-          }
-        } catch (fetchError) {
-          clearTimeout(timeoutId);
-          
-          // Show helpful message in preview panel
-          setN8nResponse({
-            query: query,
-            expert: 'Python Expert',
-            message: 'The n8n workflow is not currently active or listening. Please ensure your workflow is running at https://n8n.ottobon.in/webhook-test/session-start and try again.'
-          });
-          
-          setMessages(prev => [...prev, { 
-            text: "The n8n workflow appears to be inactive. Please check that your workflow is running and try asking your question again.", 
-            isUser: false, 
-            timestamp: new Date() 
-          }]);
-        }
-      } catch (error) {
-        // Ultimate fallback
-        setN8nResponse({
-          query: query,
-          expert: 'Python Expert',
-          message: 'Connection error occurred. Please check if the n8n workflow is active.'
-        });
-      }
-    };
-    
-    callN8nWebhook();
-    
-    setIsLoading(false);
   };
 
-  const handleSendMessage = async () => {
+  const handleSendMessage = () => {
     if (!currentMessage.trim()) return;
 
     const newMessage = { text: currentMessage, isUser: true, timestamp: new Date() };
-    setMessages(prev => [...prev, newMessage]);
+    setMessages(prev => [...prev, newMessage, {
+      text: "I'm here to help you with Python development! What specific challenge are you working on?",
+      isUser: false,
+      timestamp: new Date()
+    }]);
     
-    const messageToSend = currentMessage;
     setCurrentMessage('');
-    
-    await handleN8nResponse(messageToSend);
   };
 
   const handleKeyPress = (e) => {
@@ -271,80 +199,29 @@ const PythonExpertPage = () => {
           </div>
           
           <div className="flex-1 p-8 overflow-y-auto">
-            {n8nResponse ? (
-              <div className="max-w-4xl mx-auto">
-                <div className="bg-white rounded-2xl p-6 shadow-sm">
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-lg font-semibold text-gray-800">Python Expert Response</h3>
-                      <span className="text-xs text-gray-500">
-                        {new Date().toLocaleTimeString()}
-                      </span>
-                    </div>
-                    
-                    {/* Display n8n response */}
-                    <div className="bg-blue-50 p-6 rounded-lg">
-                      <div className="prose max-w-none">
-                        {typeof n8nResponse === 'object' ? (
-                          <div className="space-y-4">
-                            {n8nResponse.message && (
-                              <div>
-                                <h4 className="font-semibold text-gray-800 mb-2">Response:</h4>
-                                <p className="text-gray-700 whitespace-pre-wrap">{n8nResponse.message}</p>
-                              </div>
-                            )}
-                            {n8nResponse.response && (
-                              <div>
-                                <h4 className="font-semibold text-gray-800 mb-2">Analysis:</h4>
-                                <p className="text-gray-700 whitespace-pre-wrap">{n8nResponse.response}</p>
-                              </div>
-                            )}
-                            {n8nResponse.output && (
-                              <div>
-                                <h4 className="font-semibold text-gray-800 mb-2">Output:</h4>
-                                <p className="text-gray-700 whitespace-pre-wrap">{n8nResponse.output}</p>
-                              </div>
-                            )}
-                            {n8nResponse.query && (
-                              <div>
-                                <h4 className="font-semibold text-gray-800 mb-2">Your Question:</h4>
-                                <p className="text-gray-600 italic">{n8nResponse.query}</p>
-                              </div>
-                            )}
-                          </div>
-                        ) : (
-                          <p className="text-gray-700 whitespace-pre-wrap">{String(n8nResponse)}</p>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div className="flex items-center justify-center h-full">
-                <div className="text-center max-w-2xl">
-                  <h1 className="text-4xl font-bold text-gray-900 mb-4">
-                    Welcome to the Python Expert
-                  </h1>
-                  <p className="text-lg text-gray-600 mb-6">
-                    Your specialized Python development assistant for automation, data analysis, web frameworks, and AI/ML solutions
+            <div className="flex items-center justify-center h-full">
+              <div className="text-center max-w-2xl">
+                <h1 className="text-4xl font-bold text-gray-900 mb-4">
+                  Welcome to the Python Expert
+                </h1>
+                <p className="text-lg text-gray-600 mb-6">
+                  Your specialized Python development assistant for automation, data analysis, web frameworks, and AI/ML solutions
+                </p>
+                <div className="bg-white rounded-2xl p-8 shadow-sm">
+                  <p className="text-gray-500 mb-4">
+                    I can help you with:
                   </p>
-                  <div className="bg-white rounded-2xl p-8 shadow-sm">
-                    <p className="text-gray-500 mb-4">
-                      I can help you with:
-                    </p>
-                    <ul className="text-left text-gray-600 space-y-2 mb-6">
-                      <li>• Python scripting and automation</li>
-                      <li>• Web development with Django/Flask</li>
-                      <li>• Data analysis with pandas/numpy</li>
-                      <li>• Machine learning with scikit-learn/TensorFlow</li>
-                      <li>• API development and integration</li>
-                      <li>• Code optimization and debugging</li>
-                    </ul>
-                  </div>
+                  <ul className="text-left text-gray-600 space-y-2 mb-6">
+                    <li>• Python scripting and automation</li>
+                    <li>• Web development with Django/Flask</li>
+                    <li>• Data analysis with pandas/numpy</li>
+                    <li>• Machine learning with scikit-learn/TensorFlow</li>
+                    <li>• API development and integration</li>
+                    <li>• Code optimization and debugging</li>
+                  </ul>
                 </div>
               </div>
-            )}
+            </div>
           </div>
         </div>
       </div>

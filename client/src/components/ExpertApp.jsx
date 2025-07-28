@@ -47,32 +47,29 @@ const ExpertApp = () => {
       expertTypeName = 'E-commerce Modernization Expert';
     }
 
-    try {
-      // Send search query to n8n webhook with proper expert routing
-      const response = await fetch('https://n8n.ottobon.in/webhook-test/session-start', {
-        method: "POST",
-        headers: { 
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        },
-        body: JSON.stringify({ 
-          query: searchQuery,
-          expertType: expertTypeName,
-          action: 'search_query'
-        })
-      });
-      
+    // Send search query to n8n webhook asynchronously (don't wait for response)
+    fetch('https://n8n.ottobon.in/webhook-test/session-start', {
+      method: "POST",
+      headers: { 
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify({ 
+        query: searchQuery,
+        expertType: expertTypeName,
+        action: 'search_query',
+        timestamp: new Date().toISOString()
+      })
+    }).then(response => {
       if (response.ok) {
-        const data = await response.json();
-        console.log('Search response:', data);
-      } else {
-        console.warn('n8n webhook response not ok:', response.status);
+        return response.json();
       }
-      
-    } catch (error) {
-      console.error('Search error:', error);
-      // Continue with navigation regardless of webhook status
-    }
+      throw new Error(`HTTP ${response.status}`);
+    }).then(data => {
+      console.log('Search response:', data);
+    }).catch(error => {
+      console.warn('n8n webhook error:', error.message);
+    });
 
     // Navigate to appropriate expert page
     if (expertType === 'python') {
@@ -87,32 +84,29 @@ const ExpertApp = () => {
   const handleExpertClick = async (expertType) => {
     const expertQuery = `I need help with ${expertType.toLowerCase()}`;
     
-    try {
-      // Send expert selection to n8n webhook
-      const response = await fetch('https://n8n.ottobon.in/webhook-test/session-start', {
-        method: "POST",
-        headers: { 
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        },
-        body: JSON.stringify({ 
-          expertType, 
-          query: expertQuery,
-          action: 'expert_selection'
-        })
-      });
-      
+    // Send expert selection to n8n webhook asynchronously (don't wait for response)
+    fetch('https://n8n.ottobon.in/webhook-test/session-start', {
+      method: "POST",
+      headers: { 
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify({ 
+        expertType, 
+        query: expertQuery,
+        action: 'expert_selection',
+        timestamp: new Date().toISOString()
+      })
+    }).then(response => {
       if (response.ok) {
-        const data = await response.json();
-        console.log('Expert response:', data);
-      } else {
-        console.warn('n8n webhook response not ok:', response.status);
+        return response.json();
       }
-      
-    } catch (error) {
-      console.error('Expert error:', error);
-      // Continue with navigation regardless of webhook status
-    }
+      throw new Error(`HTTP ${response.status}`);
+    }).then(data => {
+      console.log('Expert response:', data);
+    }).catch(error => {
+      console.warn('n8n webhook error:', error.message);
+    });
 
     // Navigate directly to specific expert page
     if (expertType === 'Python Expert') {

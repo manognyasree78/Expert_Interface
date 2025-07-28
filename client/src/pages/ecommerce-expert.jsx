@@ -232,76 +232,29 @@ const EcommerceExpertPage = () => {
           </div>
           
           <div className="flex-1 p-8 overflow-y-auto">
-            {n8nResponse ? (
-              <div className="max-w-4xl mx-auto">
-                <div className="bg-white rounded-2xl p-6 shadow-sm">
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-lg font-semibold text-gray-800">n8n Workflow Response</h3>
-                      <span className="text-xs text-gray-500">
-                        {new Date().toLocaleTimeString()}
-                      </span>
-                    </div>
-                    
-                    {/* Display n8n response data */}
-                    {typeof n8nResponse === 'object' ? (
-                      <div className="space-y-4">
-                        {Object.entries(n8nResponse).map(([key, value]) => (
-                          <div key={key} className="border-b border-gray-100 pb-4 last:border-b-0">
-                            <h4 className="text-md font-semibold text-gray-800 mb-2 capitalize">
-                              {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
-                            </h4>
-                            <div className="text-gray-600">
-                              {typeof value === 'object' ? (
-                                <pre className="bg-gray-50 p-4 rounded-lg overflow-x-auto text-sm font-mono">
-                                  {JSON.stringify(value, null, 2)}
-                                </pre>
-                              ) : (
-                                <div className="bg-green-50 p-4 rounded-lg">
-                                  <p className="whitespace-pre-wrap text-gray-800">{String(value)}</p>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="text-gray-600">
-                        <pre className="bg-gray-50 p-4 rounded-lg overflow-x-auto font-mono text-sm">
-                          {JSON.stringify(n8nResponse, null, 2)}
-                        </pre>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div className="flex items-center justify-center h-full">
-                <div className="text-center max-w-2xl">
-                  <h1 className="text-4xl font-bold text-gray-900 mb-4">
-                    Welcome to the E-commerce Modernization Expert
-                  </h1>
-                  <p className="text-lg text-gray-600 mb-6">
-                    Your specialized consultant for modernizing e-commerce platforms and digital transformation
+            <div className="flex items-center justify-center h-full">
+              <div className="text-center max-w-2xl">
+                <h1 className="text-4xl font-bold text-gray-900 mb-4">
+                  Welcome to the E-commerce Modernization Expert
+                </h1>
+                <p className="text-lg text-gray-600 mb-6">
+                  Your specialized consultant for modernizing e-commerce platforms and digital transformation
+                </p>
+                <div className="bg-white rounded-2xl p-8 shadow-sm">
+                  <p className="text-gray-500 mb-4">
+                    I can help you with:
                   </p>
-                  <div className="bg-white rounded-2xl p-8 shadow-sm">
-                    <p className="text-gray-500 mb-4">
-                      I can help you with:
-                    </p>
-                    <ul className="text-left text-gray-600 space-y-2 mb-6">
-                      <li>• Online store setup and optimization</li>
-                      <li>• Digital marketing and SEO strategies</li>
-                      <li>• Payment gateway integration</li>
-                      <li>• Inventory and order management</li>
-                      <li>• Customer acquisition and retention</li>
-                      <li>• Conversion rate optimization</li>
-                    </ul>
-                    
-
-                  </div>
+                  <ul className="text-left text-gray-600 space-y-2 mb-6">
+                    <li>• Online store setup and optimization</li>
+                    <li>• Digital marketing and SEO strategies</li>
+                    <li>• Payment gateway integration</li>
+                    <li>• Inventory and order management</li>
+                    <li>• Customer acquisition and retention</li>
+                    <li>• Conversion rate optimization</li>
+                  </ul>
                 </div>
               </div>
-            )}
+            </div>
           </div>
         </div>
       </div>

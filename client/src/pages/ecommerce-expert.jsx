@@ -30,7 +30,7 @@ const EcommerceExpertPage = () => {
       timestamp: new Date() 
     }]);
     
-    // Send to n8n webhook silently in background
+    // Send to n8n webhook and display response
     try {
       fetch('https://n8n.ottobon.in/webhook-test/session-start', {
         method: "POST",
@@ -46,41 +46,43 @@ const EcommerceExpertPage = () => {
         if (response.ok) {
           return response.json();
         }
-        return null;
+        throw new Error(`HTTP ${response.status}`);
       }).then(data => {
-        if (data) {
-          console.log('n8n response received:', data);
-          setN8nResponse(data);
-          
-          // Update chat with actual response if available
-          const responseText = data.message || data.response || data.output || "E-commerce expert analysis complete.";
-          setMessages(prev => [...prev, { 
-            text: responseText, 
-            isUser: false, 
-            timestamp: new Date() 
-          }]);
-        } else {
-          // Set basic response when n8n is not available
-          setN8nResponse({
-            query: query,
-            expert: 'E-commerce Modernization Expert',
-            message: 'E-commerce expert ready to assist with your question'
-          });
-        }
-      }).catch(() => {
-        // Set basic response on any error
+        console.log('n8n response received:', data);
+        // Display the n8n response in the preview panel
+        setN8nResponse({
+          ...data,
+          query: query
+        });
+        
+        // Update chat with response
+        const responseText = data.message || data.response || data.output || "I've processed your E-commerce question. Check the preview panel for the detailed response.";
+        setMessages(prev => [...prev, { 
+          text: responseText, 
+          isUser: false, 
+          timestamp: new Date() 
+        }]);
+      }).catch(error => {
+        console.error('n8n webhook error:', error);
+        // Show error message but still display in preview
         setN8nResponse({
           query: query,
           expert: 'E-commerce Modernization Expert',
-          message: 'E-commerce expert ready to assist with your question'
+          message: 'Unable to connect to E-commerce expert workflow. Please check if the n8n workflow is active and listening.'
         });
+        
+        setMessages(prev => [...prev, { 
+          text: "I'm having trouble connecting to the E-commerce expert workflow. Please make sure the n8n workflow is running and try again.", 
+          isUser: false, 
+          timestamp: new Date() 
+        }]);
       });
     } catch (error) {
-      // Set basic response on any fetch error
+      console.error('Fetch error:', error);
       setN8nResponse({
         query: query,
         expert: 'E-commerce Modernization Expert',
-        message: 'E-commerce expert ready to assist with your question'
+        message: 'Connection error. Please check if the n8n workflow is active.'
       });
     }
     
@@ -232,29 +234,80 @@ const EcommerceExpertPage = () => {
           </div>
           
           <div className="flex-1 p-8 overflow-y-auto">
-            <div className="flex items-center justify-center h-full">
-              <div className="text-center max-w-2xl">
-                <h1 className="text-4xl font-bold text-gray-900 mb-4">
-                  Welcome to the E-commerce Modernization Expert
-                </h1>
-                <p className="text-lg text-gray-600 mb-6">
-                  Your specialized consultant for modernizing e-commerce platforms and digital transformation
-                </p>
-                <div className="bg-white rounded-2xl p-8 shadow-sm">
-                  <p className="text-gray-500 mb-4">
-                    I can help you with:
-                  </p>
-                  <ul className="text-left text-gray-600 space-y-2 mb-6">
-                    <li>• Online store setup and optimization</li>
-                    <li>• Digital marketing and SEO strategies</li>
-                    <li>• Payment gateway integration</li>
-                    <li>• Inventory and order management</li>
-                    <li>• Customer acquisition and retention</li>
-                    <li>• Conversion rate optimization</li>
-                  </ul>
+            {n8nResponse ? (
+              <div className="max-w-4xl mx-auto">
+                <div className="bg-white rounded-2xl p-6 shadow-sm">
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-lg font-semibold text-gray-800">E-commerce Expert Response</h3>
+                      <span className="text-xs text-gray-500">
+                        {new Date().toLocaleTimeString()}
+                      </span>
+                    </div>
+                    
+                    {/* Display n8n response */}
+                    <div className="bg-green-50 p-6 rounded-lg">
+                      <div className="prose max-w-none">
+                        {typeof n8nResponse === 'object' ? (
+                          <div className="space-y-4">
+                            {n8nResponse.message && (
+                              <div>
+                                <h4 className="font-semibold text-gray-800 mb-2">Response:</h4>
+                                <p className="text-gray-700 whitespace-pre-wrap">{n8nResponse.message}</p>
+                              </div>
+                            )}
+                            {n8nResponse.response && (
+                              <div>
+                                <h4 className="font-semibold text-gray-800 mb-2">Analysis:</h4>
+                                <p className="text-gray-700 whitespace-pre-wrap">{n8nResponse.response}</p>
+                              </div>
+                            )}
+                            {n8nResponse.output && (
+                              <div>
+                                <h4 className="font-semibold text-gray-800 mb-2">Output:</h4>
+                                <p className="text-gray-700 whitespace-pre-wrap">{n8nResponse.output}</p>
+                              </div>
+                            )}
+                            {n8nResponse.query && (
+                              <div>
+                                <h4 className="font-semibold text-gray-800 mb-2">Your Question:</h4>
+                                <p className="text-gray-600 italic">{n8nResponse.query}</p>
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          <p className="text-gray-700 whitespace-pre-wrap">{String(n8nResponse)}</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
+            ) : (
+              <div className="flex items-center justify-center h-full">
+                <div className="text-center max-w-2xl">
+                  <h1 className="text-4xl font-bold text-gray-900 mb-4">
+                    Welcome to the E-commerce Modernization Expert
+                  </h1>
+                  <p className="text-lg text-gray-600 mb-6">
+                    Your specialized consultant for modernizing e-commerce platforms and digital transformation
+                  </p>
+                  <div className="bg-white rounded-2xl p-8 shadow-sm">
+                    <p className="text-gray-500 mb-4">
+                      I can help you with:
+                    </p>
+                    <ul className="text-left text-gray-600 space-y-2 mb-6">
+                      <li>• Online store setup and optimization</li>
+                      <li>• Digital marketing and SEO strategies</li>
+                      <li>• Payment gateway integration</li>
+                      <li>• Inventory and order management</li>
+                      <li>• Customer acquisition and retention</li>
+                      <li>• Conversion rate optimization</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

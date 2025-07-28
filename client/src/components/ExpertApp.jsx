@@ -85,25 +85,15 @@ const ExpertApp = () => {
   const expertCards = [
     {
       title: 'Python Expert',
-      description: 'AI-powered content suggestions, Professional templates, Keyword optimization',
+      description: 'Python development, automation, data analysis, web frameworks, and AI/ML solutions',
       icon: Code,
-      iconBg: 'bg-secondary',
-      features: [
-        'AI-powered content suggestions',
-        'Professional templates', 
-        'Keyword optimization'
-      ]
+      iconBg: 'bg-secondary'
     },
     {
-      title: 'E-commerce Modernization Expert',
-      description: 'Personalized job recommendations, Skill gap analysis, Company culture insights',
+      title: 'E-commerce Modernization Expert', 
+      description: 'Online store setup, digital marketing, payment systems, and sales optimization',
       icon: ShoppingBag,
-      iconBg: 'bg-primary',
-      features: [
-        'Personalized job recommendations',
-        'Skill gap analysis',
-        'Company culture insights'
-      ]
+      iconBg: 'bg-primary'
     }
   ];
 
@@ -198,22 +188,16 @@ const ExpertApp = () => {
                     className="bg-card border border-border rounded-2xl p-8 hover:border-primary/50 transition-all duration-200 cursor-pointer group"
                     onClick={() => handleExpertClick(card.title)}
                   >
-                    <div className="mb-6">
-                      <div className={`w-12 h-12 ${card.iconBg} rounded-lg flex items-center justify-center mb-4`}>
-                        <IconComponent className="w-6 h-6 text-white" />
+                    <div className="text-center">
+                      <div className={`w-16 h-16 ${card.iconBg} rounded-2xl flex items-center justify-center mx-auto mb-6`}>
+                        <IconComponent className="w-8 h-8 text-white" />
                       </div>
-                      <h3 className="text-xl font-semibold text-card-foreground mb-3">
+                      <h3 className="text-xl font-semibold text-card-foreground mb-4">
                         {card.title}
                       </h3>
-                    </div>
-                    
-                    <div className="space-y-3">
-                      {card.features.map((feature, featureIndex) => (
-                        <div key={featureIndex} className="flex items-center text-muted-foreground">
-                          <div className="w-2 h-2 bg-primary rounded-full mr-3"></div>
-                          <span className="text-sm">{feature}</span>
-                        </div>
-                      ))}
+                      <p className="text-muted-foreground text-sm leading-relaxed">
+                        {card.description}
+                      </p>
                     </div>
                   </div>
                 );

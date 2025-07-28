@@ -90,7 +90,7 @@ const ExpertApp = () => {
       // Navigate directly to specific expert page
       if (expertType === 'Python Expert') {
         setLocation(`/python-expert?q=${encodeURIComponent(expertQuery)}`);
-      } else if (expertType === 'E-commerce Expert') {
+      } else if (expertType === 'E-commerce Modernization Expert') {
         setLocation(`/ecommerce-expert?q=${encodeURIComponent(expertQuery)}`);
       } else {
         setLocation(`/chat?q=${encodeURIComponent(expertQuery)}&expert=${encodeURIComponent(expertType)}`);
@@ -101,7 +101,7 @@ const ExpertApp = () => {
       // Still navigate to specific expert page even if webhook fails
       if (expertType === 'Python Expert') {
         setLocation(`/python-expert?q=${encodeURIComponent(expertQuery)}`);
-      } else if (expertType === 'E-commerce Expert') {
+      } else if (expertType === 'E-commerce Modernization Expert') {
         setLocation(`/ecommerce-expert?q=${encodeURIComponent(expertQuery)}`);
       } else {
         setLocation(`/chat?q=${encodeURIComponent(expertQuery)}&expert=${encodeURIComponent(expertType)}`);
@@ -124,7 +124,7 @@ const ExpertApp = () => {
       textColor: 'text-blue-100'
     },
     {
-      title: 'E-commerce Expert',
+      title: 'E-commerce Modernization Expert',
       description: 'Online store setup, digital marketing, payment systems, and sales optimization',
       icon: ShoppingBag,
       gradient: 'from-green-400 to-teal-600',

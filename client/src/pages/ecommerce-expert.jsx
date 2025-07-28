@@ -27,7 +27,7 @@ const EcommerceExpertPage = () => {
       const response = await fetch('https://n8n.ottobon.in/webhook-test/session-start', {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query, expertType: 'E-commerce Expert' })
+        body: JSON.stringify({ query, expertType: 'E-commerce Modernization Expert' })
       });
       
       const data = await response.json();
@@ -117,8 +117,8 @@ const EcommerceExpertPage = () => {
         <div className="w-full md:w-[30%] bg-white border-r border-gray-200 flex flex-col">
           {/* Expert Title */}
           <div className="p-4 border-b border-gray-200 bg-gradient-to-r from-green-50 to-teal-50">
-            <h2 className="text-lg font-bold text-gray-800">E-commerce Expert</h2>
-            <p className="text-sm text-gray-600">Online business & sales optimization specialist</p>
+            <h2 className="text-lg font-bold text-gray-800">E-commerce Modernization Expert</h2>
+            <p className="text-sm text-gray-600">Online business modernization & digital transformation specialist</p>
           </div>
 
           {/* Chat Messages */}
@@ -187,7 +187,7 @@ const EcommerceExpertPage = () => {
           <div className="flex-1 p-8 overflow-y-auto">
             {n8nResponse ? (
               <div className="max-w-4xl mx-auto">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">E-commerce Expert Results</h2>
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">E-commerce Modernization Expert Results</h2>
                 <div className="bg-white rounded-2xl p-6 shadow-sm">
                   <div className="space-y-4">
                     {/* Display n8n response data */}
@@ -224,10 +224,10 @@ const EcommerceExpertPage = () => {
               <div className="flex items-center justify-center h-full">
                 <div className="text-center max-w-2xl">
                   <h1 className="text-4xl font-bold text-gray-900 mb-4">
-                    Welcome to the E-commerce Expert
+                    Welcome to the E-commerce Modernization Expert
                   </h1>
                   <p className="text-lg text-gray-600 mb-6">
-                    Your specialized e-commerce consultant for online store success and sales optimization
+                    Your specialized consultant for modernizing e-commerce platforms and digital transformation
                   </p>
                   <div className="bg-white rounded-2xl p-8 shadow-sm">
                     <p className="text-gray-500 mb-4">

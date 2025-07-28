@@ -47,78 +47,131 @@ const ExpertApp = () => {
       expertTypeName = 'E-commerce Modernization Expert';
     }
 
-    // Send search query to n8n webhook silently in background
-    try {
-      fetch('https://n8n.ottobon.in/webhook-test/session-start', {
-        method: "POST",
-        headers: { 
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        },
-        body: JSON.stringify({ 
+    // Send search query to n8n webhook and navigate to expert page
+    const callN8nWebhook = async () => {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 8000);
+        
+        try {
+          const response = await fetch('https://n8n.ottobon.in/webhook-test/session-start', {
+            method: "POST",
+            headers: { 
+              "Content-Type": "application/json",
+              "Accept": "application/json"
+            },
+            body: JSON.stringify({ 
+              query: searchQuery,
+              expertType: expertTypeName,
+              action: 'search_query',
+              timestamp: new Date().toISOString()
+            }),
+            signal: controller.signal
+          });
+          
+          clearTimeout(timeoutId);
+          
+          if (response.ok) {
+            const data = await response.json();
+            console.log('Search response:', data);
+            // Store the response data for the expert page
+            sessionStorage.setItem('n8nResponse', JSON.stringify({
+              ...data,
+              query: searchQuery,
+              expertType: expertTypeName
+            }));
+          }
+        } catch (fetchError) {
+          clearTimeout(timeoutId);
+          // Store minimal data even if webhook fails
+          sessionStorage.setItem('n8nResponse', JSON.stringify({
+            query: searchQuery,
+            expertType: expertTypeName,
+            message: 'n8n workflow connection failed - please ensure workflow is active'
+          }));
+        }
+      } catch (error) {
+        // Ultimate fallback
+        sessionStorage.setItem('n8nResponse', JSON.stringify({
           query: searchQuery,
           expertType: expertTypeName,
-          action: 'search_query',
-          timestamp: new Date().toISOString()
-        })
-      }).then(response => {
-        if (response.ok) {
-          return response.json();
-        }
-        return null;
-      }).then(data => {
-        if (data) {
-          console.log('Search response:', data);
-        }
-      }).catch(() => {
-        // Silently handle n8n webhook errors
-      });
-    } catch (error) {
-      // Silently handle any fetch errors
-    }
+          message: 'Unable to connect to workflow'
+        }));
+      }
+    };
+    
+    // Call webhook and then navigate
+    callN8nWebhook();
 
-    // Navigate to appropriate expert page
+    // Navigate to appropriate expert page based on detected type
     if (expertType === 'python') {
-      setLocation(`/python-expert?q=${encodeURIComponent(searchQuery)}`);
+      setLocation('/python-expert');
     } else if (expertType === 'ecommerce') {
-      setLocation(`/ecommerce-expert?q=${encodeURIComponent(searchQuery)}`);
+      setLocation('/ecommerce-expert');
     } else {
-      setLocation(`/chat?q=${encodeURIComponent(searchQuery)}`);
+      // For general queries, navigate to Python expert as default
+      setLocation('/python-expert');
     }
   };
 
   const handleExpertClick = async (expertType) => {
     const expertQuery = `I need help with ${expertType.toLowerCase()}`;
     
-    // Send expert selection to n8n webhook silently in background
-    try {
-      fetch('https://n8n.ottobon.in/webhook-test/session-start', {
-        method: "POST",
-        headers: { 
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        },
-        body: JSON.stringify({ 
-          expertType, 
+    // Send expert selection to n8n webhook and navigate
+    const callExpertWebhook = async () => {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 8000);
+        
+        try {
+          const response = await fetch('https://n8n.ottobon.in/webhook-test/session-start', {
+            method: "POST",
+            headers: { 
+              "Content-Type": "application/json",
+              "Accept": "application/json"
+            },
+            body: JSON.stringify({ 
+              expertType, 
+              query: expertQuery,
+              action: 'expert_selection',
+              timestamp: new Date().toISOString()
+            }),
+            signal: controller.signal
+          });
+          
+          clearTimeout(timeoutId);
+          
+          if (response.ok) {
+            const data = await response.json();
+            console.log('Expert response:', data);
+            // Store the response data for the expert page
+            sessionStorage.setItem('n8nResponse', JSON.stringify({
+              ...data,
+              query: expertQuery,
+              expertType: expertType
+            }));
+          }
+        } catch (fetchError) {
+          clearTimeout(timeoutId);
+          // Store minimal data even if webhook fails
+          sessionStorage.setItem('n8nResponse', JSON.stringify({
+            query: expertQuery,
+            expertType: expertType,
+            message: 'n8n workflow connection failed - please ensure workflow is active'
+          }));
+        }
+      } catch (error) {
+        // Ultimate fallback
+        sessionStorage.setItem('n8nResponse', JSON.stringify({
           query: expertQuery,
-          action: 'expert_selection',
-          timestamp: new Date().toISOString()
-        })
-      }).then(response => {
-        if (response.ok) {
-          return response.json();
-        }
-        return null;
-      }).then(data => {
-        if (data) {
-          console.log('Expert response:', data);
-        }
-      }).catch(() => {
-        // Silently handle n8n webhook errors
-      });
-    } catch (error) {
-      // Silently handle any fetch errors
-    }
+          expertType: expertType,
+          message: 'Unable to connect to workflow'
+        }));
+      }
+    };
+    
+    // Call webhook and then navigate
+    callExpertWebhook();
 
     // Navigate directly to specific expert page
     if (expertType === 'Python Expert') {

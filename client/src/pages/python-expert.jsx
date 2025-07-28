@@ -9,13 +9,36 @@ const PythonExpertPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [n8nResponse, setN8nResponse] = useState(null);
 
-  // Get initial query from URL params
+  // Check for stored n8n response from homepage search on component mount
   useEffect(() => {
+    // First check for stored response from homepage
+    const storedResponse = sessionStorage.getItem('n8nResponse');
+    if (storedResponse) {
+      try {
+        const responseData = JSON.parse(storedResponse);
+        if (responseData.query) {
+          setN8nResponse(responseData);
+          setMessages([
+            { text: responseData.query, isUser: true, timestamp: new Date() },
+            { 
+              text: responseData.message || responseData.response || responseData.output || "I've processed your Python question. Check the preview panel for the detailed response.", 
+              isUser: false, 
+              timestamp: new Date() 
+            }
+          ]);
+          sessionStorage.removeItem('n8nResponse');
+          return;
+        }
+      } catch (error) {
+        sessionStorage.removeItem('n8nResponse');
+      }
+    }
+    
+    // Then check URL params as fallback
     const urlParams = new URLSearchParams(window.location.search);
     const query = urlParams.get('q');
     if (query && messages.length === 0) {
       setMessages([{ text: query, isUser: true, timestamp: new Date() }]);
-      // Simulate API call to n8n
       handleN8nResponse(query);
     }
   }, []);

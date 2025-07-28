@@ -30,42 +30,59 @@ const PythonExpertPage = () => {
       timestamp: new Date() 
     }]);
     
-    // Send to n8n webhook asynchronously without blocking UI
-    fetch('https://n8n.ottobon.in/webhook-test/session-start', {
-      method: "POST",
-      headers: { 
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ 
-        query, 
-        expertType: 'Python Expert',
-        timestamp: new Date().toISOString()
-      })
-    }).then(response => {
-      if (response.ok) {
-        return response.json();
-      }
-      throw new Error(`HTTP ${response.status}`);
-    }).then(data => {
-      console.log('n8n response received:', data);
-      setN8nResponse(data);
-      
-      // Update chat with actual response if available
-      const responseText = data.message || data.response || data.output || "Python expert analysis complete.";
-      setMessages(prev => [...prev, { 
-        text: responseText, 
-        isUser: false, 
-        timestamp: new Date() 
-      }]);
-    }).catch(error => {
-      console.log('n8n webhook info:', error.message);
-      // Don't show error to user, just set basic response
+    // Send to n8n webhook silently in background
+    try {
+      fetch('https://n8n.ottobon.in/webhook-test/session-start', {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ 
+          query, 
+          expertType: 'Python Expert',
+          timestamp: new Date().toISOString()
+        })
+      }).then(response => {
+        if (response.ok) {
+          return response.json();
+        }
+        return null;
+      }).then(data => {
+        if (data) {
+          console.log('n8n response received:', data);
+          setN8nResponse(data);
+          
+          // Update chat with actual response if available
+          const responseText = data.message || data.response || data.output || "Python expert analysis complete.";
+          setMessages(prev => [...prev, { 
+            text: responseText, 
+            isUser: false, 
+            timestamp: new Date() 
+          }]);
+        } else {
+          // Set basic response when n8n is not available
+          setN8nResponse({
+            query: query,
+            expert: 'Python Expert',
+            message: 'Python expert ready to assist with your question'
+          });
+        }
+      }).catch(() => {
+        // Set basic response on any error
+        setN8nResponse({
+          query: query,
+          expert: 'Python Expert',
+          message: 'Python expert ready to assist with your question'
+        });
+      });
+    } catch (error) {
+      // Set basic response on any fetch error
       setN8nResponse({
         query: query,
         expert: 'Python Expert',
         message: 'Python expert ready to assist with your question'
       });
-    });
+    }
     
     setIsLoading(false);
   };

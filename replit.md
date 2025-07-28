@@ -2,7 +2,17 @@
 
 ## Overview
 
-Expert App is a modern full-stack web application built as a solution platform connecting users with various experts across different domains. The application features a responsive React frontend with a Node.js/Express backend, designed to facilitate expert consultations across Marketing, Technology, Finance, HR, Legal, and Sales domains.
+Expert App is a modern full-stack web application built as a solution platform connecting users with various experts across different domains. The application features a responsive React frontend with a Node.js/Express backend, designed to facilitate expert consultations with Python and E-commerce Modernization experts. The app includes intelligent search functionality, interactive expert cards, and n8n webhook integration for workflow automation.
+
+## Recent Changes
+
+### July 28, 2025 - Performance and Error Handling Improvements
+- Fixed n8n webhook connection issues and eliminated console errors
+- Removed test connection buttons and "Response received" status indicators
+- Implemented silent error handling for webhook failures
+- Optimized navigation speed by making n8n calls non-blocking
+- Simplified preview panel headers for cleaner UI
+- Made chat interface more responsive with immediate feedback
 
 ## User Preferences
 

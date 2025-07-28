@@ -38,7 +38,7 @@ const ExpertApp = () => {
 
     try {
       // Send search query to n8n webhook
-      const response = await fetch(`${import.meta.env.VITE_N8N_WEBHOOK_URL || 'https://n8n.mydomain.com'}/webhook/search`, {
+      const response = await fetch('https://n8n.ottobon.in/webhook-test/session-start', {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query: searchQuery })
@@ -78,7 +78,7 @@ const ExpertApp = () => {
     
     try {
       // Send expert type to n8n webhook
-      const response = await fetch(`${import.meta.env.VITE_N8N_WEBHOOK_URL || 'https://n8n.mydomain.com'}/webhook/expert`, {
+      const response = await fetch('https://n8n.ottobon.in/webhook-test/session-start', {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ expertType, query: expertQuery })

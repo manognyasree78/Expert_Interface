@@ -22,8 +22,8 @@ const ChatPage = () => {
   const handleN8nResponse = async (query) => {
     setIsLoading(true);
     try {
-      // Simulate n8n webhook response
-      const response = await fetch(`${import.meta.env.VITE_N8N_WEBHOOK_URL || 'https://n8n.mydomain.com'}/webhook/chat`, {
+      // Send to n8n webhook
+      const response = await fetch('https://n8n.ottobon.in/webhook-test/session-start', {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query })

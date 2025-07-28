@@ -7,6 +7,7 @@ const PythonExpertPage = () => {
   const [messages, setMessages] = useState([]);
   const [currentMessage, setCurrentMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [n8nResponse, setN8nResponse] = useState(null);
 
   // Get initial query from URL params
   useEffect(() => {
@@ -22,28 +23,31 @@ const PythonExpertPage = () => {
   const handleN8nResponse = async (query) => {
     setIsLoading(true);
     try {
-      // Simulate n8n webhook response for Python expert
-      const response = await fetch(`${import.meta.env.VITE_N8N_WEBHOOK_URL || 'https://n8n.mydomain.com'}/webhook/python-expert`, {
+      // Send to n8n webhook
+      const response = await fetch('https://n8n.ottobon.in/webhook-test/session-start', {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query, expertType: 'Python Expert' })
       });
       
-      // For now, simulate a response since n8n workflow may not be ready
-      setTimeout(() => {
-        const simulatedResponse = "Hello! I'm your Python expert. I can help you with Python development, automation, data analysis, web frameworks like Django/Flask, AI/ML libraries, and more. What specific Python challenge can I assist you with today?";
-        setMessages(prev => [...prev, { 
-          text: simulatedResponse, 
-          isUser: false, 
-          timestamp: new Date() 
-        }]);
-        setIsLoading(false);
-      }, 1500);
+      const data = await response.json();
+      
+      // Store the n8n response for the preview panel
+      setN8nResponse(data);
+      
+      // Add response message to chat
+      const responseText = data.message || data.response || "I've processed your Python question. Check the preview panel for detailed results.";
+      setMessages(prev => [...prev, { 
+        text: responseText, 
+        isUser: false, 
+        timestamp: new Date() 
+      }]);
+      setIsLoading(false);
       
     } catch (error) {
       console.error('Python expert error:', error);
       setMessages(prev => [...prev, { 
-        text: "I'm having trouble connecting right now. Please try again later.", 
+        text: "I'm having trouble connecting to the Python expert workflow. Please try again later.", 
         isUser: false, 
         timestamp: new Date() 
       }]);
@@ -180,28 +184,67 @@ const PythonExpertPage = () => {
 
         {/* Right Preview Panel - 70% */}
         <div className="hidden md:flex md:w-[70%] bg-gray-50 flex-col">
-          <div className="flex-1 flex items-center justify-center p-8">
-            <div className="text-center max-w-2xl">
-              <h1 className="text-4xl font-bold text-gray-900 mb-4">
-                Welcome to the Python Expert
-              </h1>
-              <p className="text-lg text-gray-600 mb-6">
-                Your specialized Python development assistant for automation, data analysis, web frameworks, and AI/ML solutions
-              </p>
-              <div className="bg-white rounded-2xl p-8 shadow-sm">
-                <p className="text-gray-500 mb-4">
-                  I can help you with:
-                </p>
-                <ul className="text-left text-gray-600 space-y-2">
-                  <li>• Python scripting and automation</li>
-                  <li>• Web development with Django/Flask</li>
-                  <li>• Data analysis with pandas/numpy</li>
-                  <li>• Machine learning with scikit-learn/TensorFlow</li>
-                  <li>• API development and integration</li>
-                  <li>• Code optimization and debugging</li>
-                </ul>
+          <div className="flex-1 p-8 overflow-y-auto">
+            {n8nResponse ? (
+              <div className="max-w-4xl mx-auto">
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">Python Expert Results</h2>
+                <div className="bg-white rounded-2xl p-6 shadow-sm">
+                  <div className="space-y-4">
+                    {/* Display n8n response data */}
+                    {typeof n8nResponse === 'object' ? (
+                      <div className="space-y-4">
+                        {Object.entries(n8nResponse).map(([key, value]) => (
+                          <div key={key} className="border-b border-gray-100 pb-4 last:border-b-0">
+                            <h3 className="text-lg font-semibold text-gray-800 mb-2 capitalize">
+                              {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
+                            </h3>
+                            <div className="text-gray-600">
+                              {typeof value === 'object' ? (
+                                <pre className="bg-gray-50 p-4 rounded-lg overflow-x-auto text-sm">
+                                  {JSON.stringify(value, null, 2)}
+                                </pre>
+                              ) : (
+                                <p className="whitespace-pre-wrap">{String(value)}</p>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-gray-600">
+                        <pre className="bg-gray-50 p-4 rounded-lg overflow-x-auto">
+                          {JSON.stringify(n8nResponse, null, 2)}
+                        </pre>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="flex items-center justify-center h-full">
+                <div className="text-center max-w-2xl">
+                  <h1 className="text-4xl font-bold text-gray-900 mb-4">
+                    Welcome to the Python Expert
+                  </h1>
+                  <p className="text-lg text-gray-600 mb-6">
+                    Your specialized Python development assistant for automation, data analysis, web frameworks, and AI/ML solutions
+                  </p>
+                  <div className="bg-white rounded-2xl p-8 shadow-sm">
+                    <p className="text-gray-500 mb-4">
+                      I can help you with:
+                    </p>
+                    <ul className="text-left text-gray-600 space-y-2">
+                      <li>• Python scripting and automation</li>
+                      <li>• Web development with Django/Flask</li>
+                      <li>• Data analysis with pandas/numpy</li>
+                      <li>• Machine learning with scikit-learn/TensorFlow</li>
+                      <li>• API development and integration</li>
+                      <li>• Code optimization and debugging</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -571,9 +571,29 @@ export function findRelevantKnowledge(query, domain) {
   const knowledge = domain === 'python' ? pythonExpertKnowledge : ecommerceExpertKnowledge;
   const lowerQuery = query.toLowerCase();
   
-  // Find the best matching knowledge entry
+  // Define comprehensive keywords for each knowledge area
+  const keywordMapping = {
+    python: {
+      "recursive function performance": ["recursive", "recursion", "performance", "improve", "optimize", "function", "slow", "speed"],
+      "deepcopy vs copy": ["deepcopy", "copy", "shallow", "deep", "difference", "clone", "duplicate"],
+      "memory leaks python": ["memory", "leak", "leaks", "long-running", "memory usage", "garbage", "collection"],
+      "python gil multithreading": ["gil", "global interpreter lock", "multithreading", "threading", "parallel", "concurrency"],
+      "python clean architecture": ["architecture", "structure", "large-scale", "clean", "organize", "project structure", "design pattern"]
+    },
+    ecommerce: {
+      "headless ecommerce migration": ["headless", "migrate", "migration", "legacy", "decouple", "api-first"],
+      "personalized recommendations": ["recommendation", "personalization", "personalized", "suggest", "machine learning", "ai"],
+      "ai driven search filtering": ["search", "filter", "ai", "intelligent", "nlp", "semantic", "visual search"],
+      "microservices migration": ["microservices", "monolith", "monolithic", "service", "architecture", "decompose"],
+      "ecommerce site speed ux": ["speed", "performance", "ux", "user experience", "optimization", "fast", "slow", "loading"]
+    }
+  };
+  
+  const domainKeywords = keywordMapping[domain] || {};
+  
+  // Check for keyword matches
   for (const [key, data] of Object.entries(knowledge)) {
-    const keywords = key.split(' ');
+    const keywords = domainKeywords[key] || [];
     if (keywords.some(keyword => lowerQuery.includes(keyword))) {
       return data;
     }

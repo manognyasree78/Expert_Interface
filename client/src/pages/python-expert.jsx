@@ -31,68 +31,74 @@ const PythonExpertPage = () => {
     }]);
     
     // Send to n8n webhook and display response
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000);
-      
-      const fetchPromise = fetch('https://n8n.ottobon.in/webhook-test/session-start', {
-        method: "POST",
-        headers: { 
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ 
-          query, 
-          expertType: 'Python Expert',
-          timestamp: new Date().toISOString()
-        }),
-        signal: controller.signal
-      });
-      
-      fetchPromise.then(response => {
-        clearTimeout(timeoutId);
-        if (response.ok) {
-          return response.json();
+    const callN8nWebhook = async () => {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000);
+        
+        try {
+          const response = await fetch('https://n8n.ottobon.in/webhook-test/session-start', {
+            method: "POST",
+            headers: { 
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ 
+              query, 
+              expertType: 'Python Expert',
+              timestamp: new Date().toISOString()
+            }),
+            signal: controller.signal
+          });
+          
+          clearTimeout(timeoutId);
+          
+          if (response.ok) {
+            const data = await response.json();
+            console.log('n8n response received:', data);
+            
+            // Display the n8n response in the preview panel
+            setN8nResponse({
+              ...data,
+              query: query
+            });
+            
+            // Update chat with response
+            const responseText = data.message || data.response || data.output || "I've processed your Python question. Check the preview panel for the detailed response.";
+            setMessages(prev => [...prev, { 
+              text: responseText, 
+              isUser: false, 
+              timestamp: new Date() 
+            }]);
+          } else {
+            throw new Error(`HTTP ${response.status}`);
+          }
+        } catch (fetchError) {
+          clearTimeout(timeoutId);
+          
+          // Show helpful message in preview panel
+          setN8nResponse({
+            query: query,
+            expert: 'Python Expert',
+            message: 'The n8n workflow is not currently active or listening. Please ensure your workflow is running at https://n8n.ottobon.in/webhook-test/session-start and try again.'
+          });
+          
+          setMessages(prev => [...prev, { 
+            text: "The n8n workflow appears to be inactive. Please check that your workflow is running and try asking your question again.", 
+            isUser: false, 
+            timestamp: new Date() 
+          }]);
         }
-        throw new Error(`HTTP ${response.status}`);
-      }).then(data => {
-        console.log('n8n response received:', data);
-        // Display the n8n response in the preview panel
-        setN8nResponse({
-          ...data,
-          query: query
-        });
-        
-        // Update chat with response
-        const responseText = data.message || data.response || data.output || "I've processed your Python question. Check the preview panel for the detailed response.";
-        setMessages(prev => [...prev, { 
-          text: responseText, 
-          isUser: false, 
-          timestamp: new Date() 
-        }]);
-      }).catch(error => {
-        clearTimeout(timeoutId);
-        
-        // Show helpful message in preview panel
+      } catch (error) {
+        // Ultimate fallback
         setN8nResponse({
           query: query,
           expert: 'Python Expert',
-          message: 'The n8n workflow is not currently active or listening. Please ensure your workflow is running at https://n8n.ottobon.in/webhook-test/session-start and try again.'
+          message: 'Connection error occurred. Please check if the n8n workflow is active.'
         });
-        
-        setMessages(prev => [...prev, { 
-          text: "The n8n workflow appears to be inactive. Please check that your workflow is running and try asking your question again.", 
-          isUser: false, 
-          timestamp: new Date() 
-        }]);
-      });
-    } catch (error) {
-      // Fallback error handling
-      setN8nResponse({
-        query: query,
-        expert: 'Python Expert',
-        message: 'Connection error occurred. Please check if the n8n workflow is active.'
-      });
-    }
+      }
+    };
+    
+    callN8nWebhook();
     
     setIsLoading(false);
   };

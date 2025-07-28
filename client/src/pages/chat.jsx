@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Settings, Bell, User, Send } from 'lucide-react';
+import { Settings, Bell, User, Send, Home } from 'lucide-react';
 import { useLocation } from 'wouter';
 
 const ChatPage = () => {
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
   const [messages, setMessages] = useState([]);
   const [currentMessage, setCurrentMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -75,10 +75,22 @@ const ChatPage = () => {
       {/* Header */}
       <header className="bg-white shadow-sm z-50 px-4 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          {/* Logo */}
-          <div className="flex items-center space-x-1">
-            <span className="text-xl font-bold text-expert-pink">Expert</span>
-            <span className="text-xl font-bold text-expert-purple">App</span>
+          {/* Logo and Home Button */}
+          <div className="flex items-center space-x-4">
+            <button 
+              onClick={() => setLocation('/')}
+              className="flex items-center space-x-1 hover:opacity-80 transition-opacity cursor-pointer"
+            >
+              <span className="text-xl font-bold text-expert-pink">Expert</span>
+              <span className="text-xl font-bold text-expert-purple">App</span>
+            </button>
+            <button 
+              onClick={() => setLocation('/')}
+              className="flex items-center space-x-1 px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors"
+            >
+              <Home className="w-4 h-4 text-gray-600" />
+              <span className="text-sm font-medium text-gray-600">Home</span>
+            </button>
           </div>
           
           {/* Header Icons */}

@@ -6,12 +6,9 @@ import {
   User, 
   Edit3, 
   Send, 
-  Megaphone, 
-  Monitor, 
-  TrendingUp, 
-  Users, 
-  Scale, 
-  ShoppingCart 
+  Home,
+  Code,
+  ShoppingBag
 } from 'lucide-react';
 
 const ExpertApp = () => {
@@ -74,46 +71,18 @@ const ExpertApp = () => {
 
   const expertCards = [
     {
-      title: 'Marketing Expert',
-      description: 'Strategy, campaigns, branding, and customer engagement solutions',
-      icon: Megaphone,
-      gradient: 'from-pink-400 to-purple-600',
-      textColor: 'text-pink-100'
+      title: 'Python Expert',
+      description: 'Python development, automation, data analysis, web frameworks, and AI/ML solutions',
+      icon: Code,
+      gradient: 'from-blue-400 to-indigo-600',
+      textColor: 'text-blue-100'
     },
     {
-      title: 'Technology Expert',
-      description: 'Software development, IT infrastructure, and digital transformation',
-      icon: Monitor,
-      gradient: 'from-sky-400 to-blue-600',
-      textColor: 'text-sky-100'
-    },
-    {
-      title: 'Finance Expert',
-      description: 'Financial planning, investment strategies, and budget management',
-      icon: TrendingUp,
-      gradient: 'from-green-400 to-emerald-600',
+      title: 'E-commerce Expert',
+      description: 'Online store setup, digital marketing, payment systems, and sales optimization',
+      icon: ShoppingBag,
+      gradient: 'from-green-400 to-teal-600',
       textColor: 'text-green-100'
-    },
-    {
-      title: 'HR Expert',
-      description: 'Talent acquisition, employee engagement, and HR tech',
-      icon: Users,
-      gradient: 'from-orange-400 to-amber-600',
-      textColor: 'text-orange-100'
-    },
-    {
-      title: 'Legal Expert',
-      description: 'Contracts, compliance, IP protection, and legal advice',
-      icon: Scale,
-      gradient: 'from-purple-400 to-violet-600',
-      textColor: 'text-purple-100'
-    },
-    {
-      title: 'Sales Expert',
-      description: 'Sales enablement, CRM strategy, and pipeline optimization',
-      icon: ShoppingCart,
-      gradient: 'from-yellow-400 to-orange-600',
-      textColor: 'text-yellow-100'
     }
   ];
 
@@ -122,10 +91,22 @@ const ExpertApp = () => {
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 bg-white shadow-sm z-50 px-4 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          {/* Logo */}
-          <div className="flex items-center space-x-1">
-            <span className="text-xl font-bold text-expert-pink">EXPERT</span>
-            <span className="text-xl font-bold text-expert-purple">APP</span>
+          {/* Logo and Home Button */}
+          <div className="flex items-center space-x-4">
+            <button 
+              onClick={() => setLocation('/')}
+              className="flex items-center space-x-1 hover:opacity-80 transition-opacity cursor-pointer"
+            >
+              <span className="text-xl font-bold text-expert-pink">EXPERT</span>
+              <span className="text-xl font-bold text-expert-purple">APP</span>
+            </button>
+            <button 
+              onClick={() => setLocation('/')}
+              className="flex items-center space-x-1 px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors"
+            >
+              <Home className="w-4 h-4 text-gray-600" />
+              <span className="text-sm font-medium text-gray-600">Home</span>
+            </button>
           </div>
           
           {/* Header Icons */}
@@ -179,23 +160,23 @@ const ExpertApp = () => {
             </div>
           </div>
 
-          {/* Expert Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* Expert Cards - 2 Big Centered Blocks */}
+          <div className="flex flex-col md:flex-row gap-8 justify-center max-w-4xl mx-auto">
             {expertCards.map((card, index) => {
               const IconComponent = card.icon;
               return (
                 <div 
                   key={index}
-                  className={`bg-gradient-to-br ${card.gradient} rounded-2xl p-6 text-white cursor-pointer transform hover:scale-105 transition-transform duration-200 shadow-lg`}
+                  className={`bg-gradient-to-br ${card.gradient} rounded-3xl p-8 text-white cursor-pointer transform hover:scale-105 transition-transform duration-200 shadow-xl flex-1 min-h-[280px] flex flex-col justify-center`}
                   onClick={() => handleExpertClick(card.title)}
                 >
-                  <div className="mb-4">
-                    <IconComponent className="w-8 h-8" />
+                  <div className="mb-6 flex justify-center">
+                    <IconComponent className="w-16 h-16" />
                   </div>
-                  <h3 className="text-xl font-bold mb-2">
+                  <h3 className="text-2xl font-bold mb-4 text-center">
                     {card.title}
                   </h3>
-                  <p className={`${card.textColor} text-sm`}>
+                  <p className={`${card.textColor} text-base leading-relaxed text-center`}>
                     {card.description}
                   </p>
                 </div>

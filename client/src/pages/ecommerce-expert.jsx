@@ -8,7 +8,7 @@ const EcommerceExpertPage = () => {
   const [messages, setMessages] = useState([]);
   const [currentMessage, setCurrentMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [expertResponse, setExpertResponse] = useState(null);
+  const [expertResponses, setExpertResponses] = useState([]);
 
 
   // Check for stored search query from homepage on component mount
@@ -41,18 +41,22 @@ const EcommerceExpertPage = () => {
           timestamp: new Date() 
         }
       ]);
-      setExpertResponse(knowledge);
+      setExpertResponses(prev => [...prev, {
+        ...knowledge,
+        id: Date.now()
+      }]);
     } else {
       setMessages(prev => [...prev,
         { text: query, isUser: true, timestamp: new Date() }
       ]);
-      setExpertResponse({
+      setExpertResponses(prev => [...prev, {
         question: query,
         answer: {
           fallback: true,
           message: "Sorry, that's out of my expertise. Let me connect to my human expert and get back to you."
-        }
-      });
+        },
+        id: Date.now()
+      }]);
     }
   };
 
@@ -206,80 +210,81 @@ const EcommerceExpertPage = () => {
           </div>
           
           <div className="flex-1 p-8 overflow-y-auto">
-            {expertResponse ? (
-              <div className="max-w-4xl mx-auto">
-                <div className="bg-white rounded-2xl p-8 shadow-sm">
-                  <div className="space-y-6">
-                    <div className="border-b border-gray-200 pb-4">
-                      <h2 className="text-2xl font-bold text-gray-900 mb-2">E-commerce Modernization Strategy</h2>
-                      <p className="text-lg text-green-600 font-medium">{expertResponse.question}</p>
-                    </div>
-                    
-                    {expertResponse.answer.fallback ? (
-                      <div className="bg-red-50 p-8 rounded-lg text-center">
-                        <div className="mb-4">
-                          <div className="text-6xl mb-4">🤖</div>
-                          <h3 className="text-xl font-semibold text-gray-800 mb-2">Out of My Expertise</h3>
-                        </div>
-                        <p className="text-gray-700 text-lg leading-relaxed">
-                          {expertResponse.answer.message}
-                        </p>
-                        <div className="mt-6 p-4 bg-white rounded-lg">
-                          <p className="text-sm text-gray-600">
-                            Our human E-commerce experts will review your question and provide a detailed response shortly.
-                          </p>
-                        </div>
-                      </div>
-                    ) : (
-                    
+            {expertResponses.length > 0 ? (
+              <div className="max-w-4xl mx-auto space-y-8">
+                {expertResponses.map((expertResponse, index) => (
+                  <div key={expertResponse.id} className="bg-white rounded-2xl p-8 shadow-sm">
                     <div className="space-y-6">
-                      <div className="bg-blue-50 p-6 rounded-lg">
-                        <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
-                          <span className="text-blue-600 mr-2">🔹</span>
-                          1. Business Context
-                        </h3>
-                        <p className="text-gray-700 leading-relaxed">{expertResponse.answer.businessContext}</p>
+                      <div className="border-b border-gray-200 pb-4">
+                        <h2 className="text-2xl font-bold text-gray-900 mb-2">E-commerce Modernization Strategy #{index + 1}</h2>
+                        <p className="text-lg text-green-600 font-medium">{expertResponse.question}</p>
                       </div>
-
-                      <div className="bg-indigo-50 p-6 rounded-lg">
-                        <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
-                          <span className="text-indigo-600 mr-2">🔹</span>
-                          2. Modern Tech/Trends Overview
-                        </h3>
-                        <p className="text-gray-700 leading-relaxed">{expertResponse.answer.modernTechTrendsOverview}</p>
-                      </div>
-
-                      <div className="bg-green-50 p-6 rounded-lg">
-                        <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
-                          <span className="text-green-600 mr-2">🔹</span>
-                          3. Solution Approach
-                        </h3>
-                        <div className="text-gray-700 leading-relaxed prose max-w-none">
-                          <div dangerouslySetInnerHTML={{ __html: expertResponse.answer.solutionApproach.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\* /g, '• ') }} />
+                      
+                      {expertResponse.answer.fallback ? (
+                        <div className="bg-red-50 p-8 rounded-lg text-center">
+                          <div className="mb-4">
+                            <div className="text-6xl mb-4">🤖</div>
+                            <h3 className="text-xl font-semibold text-gray-800 mb-2">Out of My Expertise</h3>
+                          </div>
+                          <p className="text-gray-700 text-lg leading-relaxed">
+                            {expertResponse.answer.message}
+                          </p>
+                          <div className="mt-6 p-4 bg-white rounded-lg">
+                            <p className="text-sm text-gray-600">
+                              Our human E-commerce experts will review your question and provide a detailed response shortly.
+                            </p>
+                          </div>
                         </div>
-                      </div>
+                      ) : (
+                        <div className="space-y-6">
+                          <div className="bg-blue-50 p-6 rounded-lg">
+                            <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                              <span className="text-blue-600 mr-2">🔹</span>
+                              1. Business Context
+                            </h3>
+                            <p className="text-gray-700 leading-relaxed">{expertResponse.answer.businessContext}</p>
+                          </div>
 
-                      <div className="bg-yellow-50 p-6 rounded-lg">
-                        <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
-                          <span className="text-yellow-600 mr-2">🔹</span>
-                          4. Real-world Tools or Examples
-                        </h3>
-                        <div className="text-gray-700 leading-relaxed prose max-w-none">
-                          <div dangerouslySetInnerHTML={{ __html: expertResponse.answer.realWorldToolsExamples.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\* /g, '• ') }} />
+                          <div className="bg-indigo-50 p-6 rounded-lg">
+                            <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                              <span className="text-indigo-600 mr-2">🔹</span>
+                              2. Modern Tech/Trends Overview
+                            </h3>
+                            <p className="text-gray-700 leading-relaxed">{expertResponse.answer.modernTechTrendsOverview}</p>
+                          </div>
+
+                          <div className="bg-green-50 p-6 rounded-lg">
+                            <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                              <span className="text-green-600 mr-2">🔹</span>
+                              3. Solution Approach
+                            </h3>
+                            <div className="text-gray-700 leading-relaxed prose max-w-none">
+                              <div dangerouslySetInnerHTML={{ __html: expertResponse.answer.solutionApproach.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\* /g, '• ') }} />
+                            </div>
+                          </div>
+
+                          <div className="bg-yellow-50 p-6 rounded-lg">
+                            <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                              <span className="text-yellow-600 mr-2">🔹</span>
+                              4. Real-world Tools or Examples
+                            </h3>
+                            <div className="text-gray-700 leading-relaxed prose max-w-none">
+                              <div dangerouslySetInnerHTML={{ __html: expertResponse.answer.realWorldToolsExamples.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\* /g, '• ') }} />
+                            </div>
+                          </div>
+
+                          <div className="bg-purple-50 p-6 rounded-lg">
+                            <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                              <span className="text-purple-600 mr-2">🔹</span>
+                              5. Implementation Tips or Pitfalls
+                            </h3>
+                            <p className="text-gray-700 leading-relaxed">{expertResponse.answer.implementationTipsAndPitfalls}</p>
+                          </div>
                         </div>
-                      </div>
-
-                      <div className="bg-purple-50 p-6 rounded-lg">
-                        <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
-                          <span className="text-purple-600 mr-2">🔹</span>
-                          5. Implementation Tips or Pitfalls
-                        </h3>
-                        <p className="text-gray-700 leading-relaxed">{expertResponse.answer.implementationTipsAndPitfalls}</p>
-                      </div>
+                      )}
                     </div>
-                    )}
                   </div>
-                </div>
+                ))}
               </div>
             ) : (
               <div className="flex items-center justify-center h-full">

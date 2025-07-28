@@ -44,12 +44,7 @@ const PythonExpertPage = () => {
       setExpertResponse(knowledge);
     } else {
       setMessages(prev => [...prev,
-        { text: query, isUser: true, timestamp: new Date() },
-        { 
-          text: "Sorry, that's out of my expertise. Let me connect to my human expert and get back to you.", 
-          isUser: false, 
-          timestamp: new Date() 
-        }
+        { text: query, isUser: true, timestamp: new Date() }
       ]);
       setExpertResponse({
         question: query,

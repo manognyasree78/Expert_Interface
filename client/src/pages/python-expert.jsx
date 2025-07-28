@@ -32,7 +32,10 @@ const PythonExpertPage = () => {
     
     // Send to n8n webhook and display response
     try {
-      fetch('https://n8n.ottobon.in/webhook-test/session-start', {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+      
+      const fetchPromise = fetch('https://n8n.ottobon.in/webhook-test/session-start', {
         method: "POST",
         headers: { 
           "Content-Type": "application/json"
@@ -41,8 +44,12 @@ const PythonExpertPage = () => {
           query, 
           expertType: 'Python Expert',
           timestamp: new Date().toISOString()
-        })
-      }).then(response => {
+        }),
+        signal: controller.signal
+      });
+      
+      fetchPromise.then(response => {
+        clearTimeout(timeoutId);
         if (response.ok) {
           return response.json();
         }
@@ -63,26 +70,27 @@ const PythonExpertPage = () => {
           timestamp: new Date() 
         }]);
       }).catch(error => {
-        console.error('n8n webhook error:', error);
-        // Show error message but still display in preview
+        clearTimeout(timeoutId);
+        
+        // Show helpful message in preview panel
         setN8nResponse({
           query: query,
           expert: 'Python Expert',
-          message: 'Unable to connect to Python expert workflow. Please check if the n8n workflow is active and listening.'
+          message: 'The n8n workflow is not currently active or listening. Please ensure your workflow is running at https://n8n.ottobon.in/webhook-test/session-start and try again.'
         });
         
         setMessages(prev => [...prev, { 
-          text: "I'm having trouble connecting to the Python expert workflow. Please make sure the n8n workflow is running and try again.", 
+          text: "The n8n workflow appears to be inactive. Please check that your workflow is running and try asking your question again.", 
           isUser: false, 
           timestamp: new Date() 
         }]);
       });
     } catch (error) {
-      console.error('Fetch error:', error);
+      // Fallback error handling
       setN8nResponse({
         query: query,
         expert: 'Python Expert',
-        message: 'Connection error. Please check if the n8n workflow is active.'
+        message: 'Connection error occurred. Please check if the n8n workflow is active.'
       });
     }
     

@@ -46,11 +46,18 @@ const EcommerceExpertPage = () => {
       setMessages(prev => [...prev,
         { text: query, isUser: true, timestamp: new Date() },
         { 
-          text: "I'm here to help you with E-commerce modernization! For the most detailed responses, try asking about topics like headless architecture, personalization, microservices, or performance optimization.", 
+          text: "Sorry, that's out of my expertise. Let me connect to my human expert and get back to you.", 
           isUser: false, 
           timestamp: new Date() 
         }
       ]);
+      setExpertResponse({
+        question: query,
+        answer: {
+          fallback: true,
+          message: "Sorry, that's out of my expertise. Let me connect to my human expert and get back to you."
+        }
+      });
     }
   };
 
@@ -213,6 +220,23 @@ const EcommerceExpertPage = () => {
                       <p className="text-lg text-green-600 font-medium">{expertResponse.question}</p>
                     </div>
                     
+                    {expertResponse.answer.fallback ? (
+                      <div className="bg-red-50 p-8 rounded-lg text-center">
+                        <div className="mb-4">
+                          <div className="text-6xl mb-4">🤖</div>
+                          <h3 className="text-xl font-semibold text-gray-800 mb-2">Out of My Expertise</h3>
+                        </div>
+                        <p className="text-gray-700 text-lg leading-relaxed">
+                          {expertResponse.answer.message}
+                        </p>
+                        <div className="mt-6 p-4 bg-white rounded-lg">
+                          <p className="text-sm text-gray-600">
+                            Our human E-commerce experts will review your question and provide a detailed response shortly.
+                          </p>
+                        </div>
+                      </div>
+                    ) : (
+                    
                     <div className="space-y-6">
                       <div className="bg-blue-50 p-6 rounded-lg">
                         <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
@@ -258,6 +282,7 @@ const EcommerceExpertPage = () => {
                         <p className="text-gray-700 leading-relaxed">{expertResponse.answer.implementationTipsAndPitfalls}</p>
                       </div>
                     </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -271,16 +296,9 @@ const EcommerceExpertPage = () => {
                     Your specialized consultant for modernizing e-commerce platforms and digital transformation
                   </p>
                   <div className="bg-white rounded-2xl p-8 shadow-sm">
-                    <p className="text-gray-500 mb-4">
-                      Try asking about:
+                    <p className="text-gray-500">
+                      Ask me any E-commerce modernization question and I'll provide strategic guidance and implementation tips.
                     </p>
-                    <ul className="text-left text-gray-600 space-y-2 mb-6">
-                      <li>• "How can I migrate to headless architecture?"</li>
-                      <li>• "What are best practices for personalized recommendations?"</li>
-                      <li>• "How do I integrate AI-driven search and filtering?"</li>
-                      <li>• "Can you guide me on microservices migration?"</li>
-                      <li>• "What tools improve site speed and UX?"</li>
-                    </ul>
                   </div>
                 </div>
               </div>

@@ -46,11 +46,18 @@ const PythonExpertPage = () => {
       setMessages(prev => [...prev,
         { text: query, isUser: true, timestamp: new Date() },
         { 
-          text: "I'm here to help you with Python development! For the most detailed responses, try asking about topics like performance optimization, memory management, architecture patterns, or specific Python concepts.", 
+          text: "Sorry, that's out of my expertise. Let me connect to my human expert and get back to you.", 
           isUser: false, 
           timestamp: new Date() 
         }
       ]);
+      setExpertResponse({
+        question: query,
+        answer: {
+          fallback: true,
+          message: "Sorry, that's out of my expertise. Let me connect to my human expert and get back to you."
+        }
+      });
     }
   };
 
@@ -213,6 +220,23 @@ const PythonExpertPage = () => {
                       <p className="text-lg text-blue-600 font-medium">{expertResponse.question}</p>
                     </div>
                     
+                    {expertResponse.answer.fallback ? (
+                      <div className="bg-red-50 p-8 rounded-lg text-center">
+                        <div className="mb-4">
+                          <div className="text-6xl mb-4">🤖</div>
+                          <h3 className="text-xl font-semibold text-gray-800 mb-2">Out of My Expertise</h3>
+                        </div>
+                        <p className="text-gray-700 text-lg leading-relaxed">
+                          {expertResponse.answer.message}
+                        </p>
+                        <div className="mt-6 p-4 bg-white rounded-lg">
+                          <p className="text-sm text-gray-600">
+                            Our human Python experts will review your question and provide a detailed response shortly.
+                          </p>
+                        </div>
+                      </div>
+                    ) : (
+                    
                     <div className="space-y-6">
                       <div className="bg-blue-50 p-6 rounded-lg">
                         <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
@@ -256,6 +280,7 @@ const PythonExpertPage = () => {
                         <p className="text-gray-700 leading-relaxed">{expertResponse.answer.summaryRecommendation}</p>
                       </div>
                     </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -269,16 +294,9 @@ const PythonExpertPage = () => {
                     Your specialized Python development assistant for automation, data analysis, web frameworks, and AI/ML solutions
                   </p>
                   <div className="bg-white rounded-2xl p-8 shadow-sm">
-                    <p className="text-gray-500 mb-4">
-                      Try asking about:
+                    <p className="text-gray-500">
+                      Ask me any Python-related question and I'll provide detailed guidance and best practices.
                     </p>
-                    <ul className="text-left text-gray-600 space-y-2 mb-6">
-                      <li>• "How can I improve recursive function performance?"</li>
-                      <li>• "What's the difference between deepcopy and copy?"</li>
-                      <li>• "How do I handle memory leaks in Python scripts?"</li>
-                      <li>• "Can you explain Python's GIL and multithreading?"</li>
-                      <li>• "How do I structure large-scale Python applications?"</li>
-                    </ul>
                   </div>
                 </div>
               </div>

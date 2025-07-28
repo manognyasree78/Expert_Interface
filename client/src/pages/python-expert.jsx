@@ -13,26 +13,18 @@ const PythonExpertPage = () => {
 
   // Check for stored search query from homepage on component mount
   useEffect(() => {
-    // First check for stored search data from homepage
+    // Only process search queries that come from homepage search, not direct navigation
     const storedData = sessionStorage.getItem('searchQuery');
     if (storedData) {
       try {
         const searchData = JSON.parse(storedData);
-        if (searchData.query) {
+        if (searchData.query && searchData.fromSearch) {
           processUserQuery(searchData.query);
           sessionStorage.removeItem('searchQuery');
-          return;
         }
       } catch (error) {
         sessionStorage.removeItem('searchQuery');
       }
-    }
-    
-    // Then check URL params as fallback
-    const urlParams = new URLSearchParams(window.location.search);
-    const query = urlParams.get('q');
-    if (query && messages.length === 0) {
-      processUserQuery(query);
     }
   }, []);
 
@@ -41,7 +33,7 @@ const PythonExpertPage = () => {
     const knowledge = findRelevantKnowledge(query, 'python');
     
     if (knowledge) {
-      setMessages([
+      setMessages(prev => [...prev, 
         { text: query, isUser: true, timestamp: new Date() },
         { 
           text: "I've analyzed your Python question and prepared a comprehensive response. Check the preview panel for detailed guidance!", 
@@ -51,7 +43,7 @@ const PythonExpertPage = () => {
       ]);
       setExpertResponse(knowledge);
     } else {
-      setMessages([
+      setMessages(prev => [...prev,
         { text: query, isUser: true, timestamp: new Date() },
         { 
           text: "I'm here to help you with Python development! For the most detailed responses, try asking about topics like performance optimization, memory management, architecture patterns, or specific Python concepts.", 

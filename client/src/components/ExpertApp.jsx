@@ -50,7 +50,8 @@ const ExpertApp = () => {
     // Store query data for the expert page
     sessionStorage.setItem('searchQuery', JSON.stringify({
       query: searchQuery,
-      expertType: expertTypeName
+      expertType: expertTypeName,
+      fromSearch: true
     }));
 
     // Navigate to appropriate expert page based on detected type
@@ -65,21 +66,13 @@ const ExpertApp = () => {
   };
 
   const handleExpertClick = async (expertType) => {
-    const expertQuery = `I need help with ${expertType.toLowerCase()}`;
-    
-    // Store query data for the expert page
-    sessionStorage.setItem('searchQuery', JSON.stringify({
-      query: expertQuery,
-      expertType: expertType
-    }));
-
-    // Navigate directly to specific expert page
+    // Navigate directly to specific expert page without pre-populating questions
     if (expertType === 'Python Expert') {
-      setLocation(`/python-expert?q=${encodeURIComponent(expertQuery)}`);
+      setLocation('/python-expert');
     } else if (expertType === 'E-commerce Modernization Expert') {
-      setLocation(`/ecommerce-expert?q=${encodeURIComponent(expertQuery)}`);
+      setLocation('/ecommerce-expert');
     } else {
-      setLocation(`/chat?q=${encodeURIComponent(expertQuery)}&expert=${encodeURIComponent(expertType)}`);
+      setLocation('/chat');
     }
   };
 

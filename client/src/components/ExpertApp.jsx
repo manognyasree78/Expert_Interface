@@ -15,6 +15,24 @@ const ExpertApp = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [, setLocation] = useLocation();
 
+  const detectExpertType = (query) => {
+    const lowerQuery = query.toLowerCase();
+    
+    // Python-related keywords
+    const pythonKeywords = ['python', 'django', 'flask', 'pandas', 'numpy', 'matplotlib', 'scikit', 'tensorflow', 'pytorch', 'jupyter', 'pip', 'conda', 'automation', 'script', 'data analysis', 'machine learning', 'ai', 'ml'];
+    
+    // E-commerce-related keywords
+    const ecommerceKeywords = ['ecommerce', 'e-commerce', 'online store', 'shopify', 'woocommerce', 'magento', 'payment', 'checkout', 'cart', 'inventory', 'product', 'order', 'shipping', 'customer', 'sales', 'marketing', 'seo', 'conversion'];
+    
+    if (pythonKeywords.some(keyword => lowerQuery.includes(keyword))) {
+      return 'python';
+    } else if (ecommerceKeywords.some(keyword => lowerQuery.includes(keyword))) {
+      return 'ecommerce';
+    }
+    
+    return 'general';
+  };
+
   const handleSearch = async () => {
     if (!searchQuery.trim()) return;
 
@@ -29,13 +47,29 @@ const ExpertApp = () => {
       const data = await response.json();
       console.log('Search response:', data);
       
-      // Navigate to chat page with the search query
-      setLocation(`/chat?q=${encodeURIComponent(searchQuery)}`);
+      // Detect expert type and navigate accordingly
+      const expertType = detectExpertType(searchQuery);
+      
+      if (expertType === 'python') {
+        setLocation(`/python-expert?q=${encodeURIComponent(searchQuery)}`);
+      } else if (expertType === 'ecommerce') {
+        setLocation(`/ecommerce-expert?q=${encodeURIComponent(searchQuery)}`);
+      } else {
+        setLocation(`/chat?q=${encodeURIComponent(searchQuery)}`);
+      }
       
     } catch (error) {
       console.error('Search error:', error);
-      // Still navigate to chat page even if webhook fails
-      setLocation(`/chat?q=${encodeURIComponent(searchQuery)}`);
+      // Still navigate based on detected expert type even if webhook fails
+      const expertType = detectExpertType(searchQuery);
+      
+      if (expertType === 'python') {
+        setLocation(`/python-expert?q=${encodeURIComponent(searchQuery)}`);
+      } else if (expertType === 'ecommerce') {
+        setLocation(`/ecommerce-expert?q=${encodeURIComponent(searchQuery)}`);
+      } else {
+        setLocation(`/chat?q=${encodeURIComponent(searchQuery)}`);
+      }
     }
   };
 
@@ -53,13 +87,25 @@ const ExpertApp = () => {
       const data = await response.json();
       console.log('Expert response:', data);
       
-      // Navigate to chat page with expert context
-      setLocation(`/chat?q=${encodeURIComponent(expertQuery)}&expert=${encodeURIComponent(expertType)}`);
+      // Navigate directly to specific expert page
+      if (expertType === 'Python Expert') {
+        setLocation(`/python-expert?q=${encodeURIComponent(expertQuery)}`);
+      } else if (expertType === 'E-commerce Expert') {
+        setLocation(`/ecommerce-expert?q=${encodeURIComponent(expertQuery)}`);
+      } else {
+        setLocation(`/chat?q=${encodeURIComponent(expertQuery)}&expert=${encodeURIComponent(expertType)}`);
+      }
       
     } catch (error) {
       console.error('Expert error:', error);
-      // Still navigate to chat page even if webhook fails
-      setLocation(`/chat?q=${encodeURIComponent(expertQuery)}&expert=${encodeURIComponent(expertType)}`);
+      // Still navigate to specific expert page even if webhook fails
+      if (expertType === 'Python Expert') {
+        setLocation(`/python-expert?q=${encodeURIComponent(expertQuery)}`);
+      } else if (expertType === 'E-commerce Expert') {
+        setLocation(`/ecommerce-expert?q=${encodeURIComponent(expertQuery)}`);
+      } else {
+        setLocation(`/chat?q=${encodeURIComponent(expertQuery)}&expert=${encodeURIComponent(expertType)}`);
+      }
     }
   };
 
@@ -91,21 +137,20 @@ const ExpertApp = () => {
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 bg-white shadow-sm z-50 px-4 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          {/* Logo and Home Button */}
+          {/* Home Button and Logo */}
           <div className="flex items-center space-x-4">
+            <button 
+              onClick={() => setLocation('/')}
+              className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors"
+            >
+              <Home className="w-5 h-5 text-gray-600" />
+            </button>
             <button 
               onClick={() => setLocation('/')}
               className="flex items-center space-x-1 hover:opacity-80 transition-opacity cursor-pointer"
             >
               <span className="text-xl font-bold text-expert-pink">EXPERT</span>
               <span className="text-xl font-bold text-expert-purple">APP</span>
-            </button>
-            <button 
-              onClick={() => setLocation('/')}
-              className="flex items-center space-x-1 px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors"
-            >
-              <Home className="w-4 h-4 text-gray-600" />
-              <span className="text-sm font-medium text-gray-600">Home</span>
             </button>
           </div>
           

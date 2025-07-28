@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Settings, Bell, User, Send, Home } from 'lucide-react';
 import { useLocation } from 'wouter';
 
-const ChatPage = () => {
+const EcommerceExpertPage = () => {
   const [location, setLocation] = useLocation();
   const [messages, setMessages] = useState([]);
   const [currentMessage, setCurrentMessage] = useState('');
@@ -22,16 +22,16 @@ const ChatPage = () => {
   const handleN8nResponse = async (query) => {
     setIsLoading(true);
     try {
-      // Simulate n8n webhook response
-      const response = await fetch(`${import.meta.env.VITE_N8N_WEBHOOK_URL || 'https://n8n.mydomain.com'}/webhook/chat`, {
+      // Simulate n8n webhook response for E-commerce expert
+      const response = await fetch(`${import.meta.env.VITE_N8N_WEBHOOK_URL || 'https://n8n.mydomain.com'}/webhook/ecommerce-expert`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query })
+        body: JSON.stringify({ query, expertType: 'E-commerce Expert' })
       });
       
       // For now, simulate a response since n8n workflow may not be ready
       setTimeout(() => {
-        const simulatedResponse = "Thank you for your question. I'm processing your request and will provide a comprehensive answer shortly. This response will be replaced when the n8n workflow is ready.";
+        const simulatedResponse = "Hello! I'm your E-commerce expert. I can help you with online store setup, digital marketing strategies, payment systems, inventory management, customer acquisition, and sales optimization. What e-commerce challenge can I help you solve today?";
         setMessages(prev => [...prev, { 
           text: simulatedResponse, 
           isUser: false, 
@@ -41,7 +41,7 @@ const ChatPage = () => {
       }, 1500);
       
     } catch (error) {
-      console.error('Chat error:', error);
+      console.error('E-commerce expert error:', error);
       setMessages(prev => [...prev, { 
         text: "I'm having trouble connecting right now. Please try again later.", 
         isUser: false, 
@@ -111,6 +111,12 @@ const ChatPage = () => {
       <div className="flex-1 flex">
         {/* Left Chat Panel - 30% */}
         <div className="w-full md:w-[30%] bg-white border-r border-gray-200 flex flex-col">
+          {/* Expert Title */}
+          <div className="p-4 border-b border-gray-200 bg-gradient-to-r from-green-50 to-teal-50">
+            <h2 className="text-lg font-bold text-gray-800">E-commerce Expert</h2>
+            <p className="text-sm text-gray-600">Online business & sales optimization specialist</p>
+          </div>
+
           {/* Chat Messages */}
           <div className="flex-1 p-4 overflow-y-auto">
             <div className="space-y-4">
@@ -122,13 +128,13 @@ const ChatPage = () => {
                   <div
                     className={`max-w-[85%] p-3 rounded-2xl ${
                       message.isUser
-                        ? 'bg-gradient-to-r from-expert-pink to-expert-purple text-white ml-4'
+                        ? 'bg-gradient-to-r from-green-400 to-teal-600 text-white ml-4'
                         : 'bg-gray-100 text-gray-800 mr-4'
                     }`}
                   >
                     <p className="text-sm">{message.text}</p>
                     <span className={`text-xs ${
-                      message.isUser ? 'text-pink-100' : 'text-gray-500'
+                      message.isUser ? 'text-green-100' : 'text-gray-500'
                     } block mt-1`}>
                       {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </span>
@@ -157,14 +163,14 @@ const ChatPage = () => {
                 value={currentMessage}
                 onChange={(e) => setCurrentMessage(e.target.value)}
                 onKeyPress={handleKeyPress}
-                placeholder="Hey, how can I help you today..."
+                placeholder="Ask me about e-commerce strategies..."
                 className="flex-1 p-3 bg-transparent text-gray-700 placeholder-gray-400 focus:outline-none resize-none max-h-32"
                 rows="1"
               />
               <button
                 onClick={handleSendMessage}
                 disabled={!currentMessage.trim() || isLoading}
-                className="p-3 text-gray-400 hover:text-expert-purple transition-colors disabled:opacity-50"
+                className="p-3 text-gray-400 hover:text-green-600 transition-colors disabled:opacity-50"
               >
                 <Send className="w-5 h-5" />
               </button>
@@ -177,16 +183,23 @@ const ChatPage = () => {
           <div className="flex-1 flex items-center justify-center p-8">
             <div className="text-center max-w-2xl">
               <h1 className="text-4xl font-bold text-gray-900 mb-4">
-                Welcome to the Expert App
+                Welcome to the E-commerce Expert
               </h1>
               <p className="text-lg text-gray-600 mb-6">
-                Welcome to the Expert App Previous Content, Welcome to the Expert App
+                Your specialized e-commerce consultant for online store success and sales optimization
               </p>
               <div className="bg-white rounded-2xl p-8 shadow-sm">
-                <p className="text-gray-500">
-                  This preview area will show relevant content, documents, or results based on your conversation. 
-                  When the n8n workflow is ready, dynamic content will appear here.
+                <p className="text-gray-500 mb-4">
+                  I can help you with:
                 </p>
+                <ul className="text-left text-gray-600 space-y-2">
+                  <li>• Online store setup and optimization</li>
+                  <li>• Digital marketing and SEO strategies</li>
+                  <li>• Payment gateway integration</li>
+                  <li>• Inventory and order management</li>
+                  <li>• Customer acquisition and retention</li>
+                  <li>• Conversion rate optimization</li>
+                </ul>
               </div>
             </div>
           </div>
@@ -196,4 +209,4 @@ const ChatPage = () => {
   );
 };
 
-export default ChatPage;
+export default EcommerceExpertPage;

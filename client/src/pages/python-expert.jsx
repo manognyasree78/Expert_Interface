@@ -22,82 +22,52 @@ const PythonExpertPage = () => {
 
   const handleN8nResponse = async (query) => {
     setIsLoading(true);
-    try {
-      // Send to n8n webhook with faster timeout
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
-      
-      const response = await fetch('https://n8n.ottobon.in/webhook-test/session-start', {
-        method: "POST",
-        headers: { 
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        },
-        body: JSON.stringify({ 
-          query, 
-          expertType: 'Python Expert',
-          timestamp: new Date().toISOString()
-        }),
-        signal: controller.signal
-      });
-      
-      clearTimeout(timeoutId);
-      
+    
+    // Add user message immediately for responsiveness
+    setMessages(prev => [...prev, { 
+      text: "I'm processing your Python question. Let me help you with that.", 
+      isUser: false, 
+      timestamp: new Date() 
+    }]);
+    
+    // Send to n8n webhook asynchronously without blocking UI
+    fetch('https://n8n.ottobon.in/webhook-test/session-start', {
+      method: "POST",
+      headers: { 
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ 
+        query, 
+        expertType: 'Python Expert',
+        timestamp: new Date().toISOString()
+      })
+    }).then(response => {
       if (response.ok) {
-        const data = await response.json();
-        console.log('n8n response received:', data);
-        
-        // Store the n8n response for the preview panel
-        setN8nResponse(data);
-        
-        // Add response message to chat
-        const responseText = data.message || data.response || data.output || "I've processed your Python question. Check the preview panel for detailed results.";
-        setMessages(prev => [...prev, { 
-          text: responseText, 
-          isUser: false, 
-          timestamp: new Date() 
-        }]);
-      } else {
-        console.warn('n8n webhook response not ok:', response.status);
-        // Still show a helpful message
-        setMessages(prev => [...prev, { 
-          text: "I'm ready to help with your Python question. Feel free to ask more questions in the chat.", 
-          isUser: false, 
-          timestamp: new Date() 
-        }]);
-        
-        // Set a basic response so the preview shows something
-        setN8nResponse({
-          status: 'received',
-          query: query,
-          expert: 'Python Expert',
-          message: 'Query received and processing in background'
-        });
+        return response.json();
       }
+      throw new Error(`HTTP ${response.status}`);
+    }).then(data => {
+      console.log('n8n response received:', data);
+      setN8nResponse(data);
       
-      setIsLoading(false);
-      
-    } catch (error) {
-      console.error('Python expert error:', error);
-      
-      // Show a helpful message and set basic response
+      // Update chat with actual response if available
+      const responseText = data.message || data.response || data.output || "Python expert analysis complete.";
       setMessages(prev => [...prev, { 
-        text: "I'm here to help with your Python question. The expert system is processing your request.", 
+        text: responseText, 
         isUser: false, 
         timestamp: new Date() 
       }]);
-      
-      // Set a basic response for the preview panel
+    }).catch(error => {
+      console.log('n8n webhook info:', error.message);
+      // Don't show error to user, just set basic response
       setN8nResponse({
-        status: 'processing',
         query: query,
         expert: 'Python Expert',
-        message: 'Your question has been received and is being processed',
-        timestamp: new Date().toISOString()
+        message: 'Python expert ready to assist with your question'
       });
-      
-      setIsLoading(false);
-    }
+    });
+    
+    setIsLoading(false);
   };
 
   const handleSendMessage = async () => {
@@ -232,7 +202,7 @@ const PythonExpertPage = () => {
           {/* Preview Panel Header */}
           <div className="p-6 bg-white border-b border-gray-200">
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-bold text-gray-900">Python Expert Preview</h2>
+              <h2 className="text-xl font-bold text-gray-900">Python Expert</h2>
               <div className="flex items-center space-x-2">
                 {isLoading && (
                   <div className="flex items-center space-x-2 text-blue-600">
@@ -240,10 +210,6 @@ const PythonExpertPage = () => {
                     <span className="text-sm">Processing...</span>
                   </div>
                 )}
-                <div className={`w-3 h-3 rounded-full ${n8nResponse ? 'bg-green-500' : 'bg-blue-500'}`}></div>
-                <span className="text-sm text-gray-600">
-                  {n8nResponse ? 'Response received' : 'Ready'}
-                </span>
               </div>
             </div>
           </div>

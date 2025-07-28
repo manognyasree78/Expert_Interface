@@ -143,7 +143,7 @@ const ExpertApp = () => {
               Welcome to Expert App
             </h1>
             <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Everything at one place. AI Agents that mediate tasks, mentor careers, and manage workflows on a unified platform. Explore AI-powered solutions crafted to enhance your personal growth and professional performance.
+              One stop, where you can meet all the solutions for your problems
             </p>
             
             {/* Search Bar */}
@@ -172,12 +172,6 @@ const ExpertApp = () => {
 
           {/* Expert Cards Section */}
           <div className="mb-16">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-foreground mb-4">Connect with Experts</h2>
-              <p className="text-muted-foreground max-w-2xl mx-auto">
-                Get personalized guidance from our specialized experts in Python development and E-commerce modernization.
-              </p>
-            </div>
             
             <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
               {expertCards.map((card, index) => {

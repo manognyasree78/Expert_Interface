@@ -171,20 +171,20 @@ const EcommerceExpertPage = () => {
           </div>
 
           {/* Message Input */}
-          <div className="p-4 border-t border-gray-200">
-            <div className="flex items-center bg-gray-50 rounded-2xl overflow-hidden">
+          <div className="p-4 border-t border-border">
+            <div className="flex items-center bg-input rounded-2xl overflow-hidden border border-border">
               <textarea
                 value={currentMessage}
                 onChange={(e) => setCurrentMessage(e.target.value)}
                 onKeyPress={handleKeyPress}
-                placeholder="Ask me about e-commerce strategies..."
-                className="flex-1 p-3 bg-transparent text-gray-700 placeholder-gray-400 focus:outline-none resize-none max-h-32"
+                placeholder="Ask me about E-commerce modernization..."
+                className="flex-1 p-3 bg-transparent text-foreground placeholder-muted-foreground focus:outline-none resize-none max-h-32"
                 rows="1"
               />
               <button
                 onClick={handleSendMessage}
                 disabled={!currentMessage.trim() || isLoading}
-                className="p-3 text-gray-400 hover:text-green-600 transition-colors disabled:opacity-50"
+                className="p-3 text-muted-foreground hover:text-primary transition-colors disabled:opacity-50"
               >
                 <Send className="w-5 h-5" />
               </button>

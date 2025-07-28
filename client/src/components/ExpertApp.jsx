@@ -36,40 +36,51 @@ const ExpertApp = () => {
   const handleSearch = async () => {
     if (!searchQuery.trim()) return;
 
+    // Detect expert type and navigate accordingly
+    const expertType = detectExpertType(searchQuery);
+    
+    // Determine expert type name for n8n
+    let expertTypeName = 'General Expert';
+    if (expertType === 'python') {
+      expertTypeName = 'Python Expert';
+    } else if (expertType === 'ecommerce') {
+      expertTypeName = 'E-commerce Modernization Expert';
+    }
+
     try {
-      // Send search query to n8n webhook
+      // Send search query to n8n webhook with proper expert routing
       const response = await fetch('https://n8n.ottobon.in/webhook-test/session-start', {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query: searchQuery })
+        headers: { 
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({ 
+          query: searchQuery,
+          expertType: expertTypeName,
+          action: 'search_query'
+        })
       });
       
-      const data = await response.json();
-      console.log('Search response:', data);
-      
-      // Detect expert type and navigate accordingly
-      const expertType = detectExpertType(searchQuery);
-      
-      if (expertType === 'python') {
-        setLocation(`/python-expert?q=${encodeURIComponent(searchQuery)}`);
-      } else if (expertType === 'ecommerce') {
-        setLocation(`/ecommerce-expert?q=${encodeURIComponent(searchQuery)}`);
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Search response:', data);
       } else {
-        setLocation(`/chat?q=${encodeURIComponent(searchQuery)}`);
+        console.warn('n8n webhook response not ok:', response.status);
       }
       
     } catch (error) {
       console.error('Search error:', error);
-      // Still navigate based on detected expert type even if webhook fails
-      const expertType = detectExpertType(searchQuery);
-      
-      if (expertType === 'python') {
-        setLocation(`/python-expert?q=${encodeURIComponent(searchQuery)}`);
-      } else if (expertType === 'ecommerce') {
-        setLocation(`/ecommerce-expert?q=${encodeURIComponent(searchQuery)}`);
-      } else {
-        setLocation(`/chat?q=${encodeURIComponent(searchQuery)}`);
-      }
+      // Continue with navigation regardless of webhook status
+    }
+
+    // Navigate to appropriate expert page
+    if (expertType === 'python') {
+      setLocation(`/python-expert?q=${encodeURIComponent(searchQuery)}`);
+    } else if (expertType === 'ecommerce') {
+      setLocation(`/ecommerce-expert?q=${encodeURIComponent(searchQuery)}`);
+    } else {
+      setLocation(`/chat?q=${encodeURIComponent(searchQuery)}`);
     }
   };
 
@@ -77,35 +88,39 @@ const ExpertApp = () => {
     const expertQuery = `I need help with ${expertType.toLowerCase()}`;
     
     try {
-      // Send expert type to n8n webhook
+      // Send expert selection to n8n webhook
       const response = await fetch('https://n8n.ottobon.in/webhook-test/session-start', {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ expertType, query: expertQuery })
+        headers: { 
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({ 
+          expertType, 
+          query: expertQuery,
+          action: 'expert_selection'
+        })
       });
       
-      const data = await response.json();
-      console.log('Expert response:', data);
-      
-      // Navigate directly to specific expert page
-      if (expertType === 'Python Expert') {
-        setLocation(`/python-expert?q=${encodeURIComponent(expertQuery)}`);
-      } else if (expertType === 'E-commerce Modernization Expert') {
-        setLocation(`/ecommerce-expert?q=${encodeURIComponent(expertQuery)}`);
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Expert response:', data);
       } else {
-        setLocation(`/chat?q=${encodeURIComponent(expertQuery)}&expert=${encodeURIComponent(expertType)}`);
+        console.warn('n8n webhook response not ok:', response.status);
       }
       
     } catch (error) {
       console.error('Expert error:', error);
-      // Still navigate to specific expert page even if webhook fails
-      if (expertType === 'Python Expert') {
-        setLocation(`/python-expert?q=${encodeURIComponent(expertQuery)}`);
-      } else if (expertType === 'E-commerce Modernization Expert') {
-        setLocation(`/ecommerce-expert?q=${encodeURIComponent(expertQuery)}`);
-      } else {
-        setLocation(`/chat?q=${encodeURIComponent(expertQuery)}&expert=${encodeURIComponent(expertType)}`);
-      }
+      // Continue with navigation regardless of webhook status
+    }
+
+    // Navigate directly to specific expert page
+    if (expertType === 'Python Expert') {
+      setLocation(`/python-expert?q=${encodeURIComponent(expertQuery)}`);
+    } else if (expertType === 'E-commerce Modernization Expert') {
+      setLocation(`/ecommerce-expert?q=${encodeURIComponent(expertQuery)}`);
+    } else {
+      setLocation(`/chat?q=${encodeURIComponent(expertQuery)}&expert=${encodeURIComponent(expertType)}`);
     }
   };
 

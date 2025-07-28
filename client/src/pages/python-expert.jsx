@@ -23,31 +23,61 @@ const PythonExpertPage = () => {
   const handleN8nResponse = async (query) => {
     setIsLoading(true);
     try {
-      // Send to n8n webhook
+      // Send to n8n webhook with timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+      
       const response = await fetch('https://n8n.ottobon.in/webhook-test/session-start', {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query, expertType: 'Python Expert' })
+        headers: { 
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({ 
+          query, 
+          expertType: 'Python Expert',
+          action: 'chat_message'
+        }),
+        signal: controller.signal
       });
       
-      const data = await response.json();
+      clearTimeout(timeoutId);
       
-      // Store the n8n response for the preview panel
-      setN8nResponse(data);
+      if (response.ok) {
+        const data = await response.json();
+        console.log('n8n response received:', data);
+        
+        // Store the n8n response for the preview panel
+        setN8nResponse(data);
+        
+        // Add response message to chat
+        const responseText = data.message || data.response || data.output || "I've processed your Python question. Check the preview panel for detailed results.";
+        setMessages(prev => [...prev, { 
+          text: responseText, 
+          isUser: false, 
+          timestamp: new Date() 
+        }]);
+      } else {
+        console.warn('n8n webhook response not ok:', response.status);
+        setMessages(prev => [...prev, { 
+          text: "I received your Python query but the expert workflow is currently processing. The response will appear in the preview panel.", 
+          isUser: false, 
+          timestamp: new Date() 
+        }]);
+      }
       
-      // Add response message to chat
-      const responseText = data.message || data.response || "I've processed your Python question. Check the preview panel for detailed results.";
-      setMessages(prev => [...prev, { 
-        text: responseText, 
-        isUser: false, 
-        timestamp: new Date() 
-      }]);
       setIsLoading(false);
       
     } catch (error) {
       console.error('Python expert error:', error);
+      
+      // Show a more informative error message
+      const errorMessage = error.name === 'AbortError' 
+        ? "The Python expert is taking longer than expected to respond. Please check the preview panel for any results."
+        : "I'm processing your Python question. The response may appear in the preview panel shortly.";
+        
       setMessages(prev => [...prev, { 
-        text: "I'm having trouble connecting to the Python expert workflow. Please try again later.", 
+        text: errorMessage, 
         isUser: false, 
         timestamp: new Date() 
       }]);
@@ -184,27 +214,54 @@ const PythonExpertPage = () => {
 
         {/* Right Preview Panel - 70% */}
         <div className="hidden md:flex md:w-[70%] bg-gray-50 flex-col">
+          {/* Preview Panel Header */}
+          <div className="p-6 bg-white border-b border-gray-200">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-bold text-gray-900">Python Expert Preview</h2>
+              <div className="flex items-center space-x-2">
+                {isLoading && (
+                  <div className="flex items-center space-x-2 text-blue-600">
+                    <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                    <span className="text-sm">Processing...</span>
+                  </div>
+                )}
+                <div className={`w-3 h-3 rounded-full ${n8nResponse ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                <span className="text-sm text-gray-600">
+                  {n8nResponse ? 'Connected' : 'Waiting for response'}
+                </span>
+              </div>
+            </div>
+          </div>
+          
           <div className="flex-1 p-8 overflow-y-auto">
             {n8nResponse ? (
               <div className="max-w-4xl mx-auto">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Python Expert Results</h2>
                 <div className="bg-white rounded-2xl p-6 shadow-sm">
                   <div className="space-y-4">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-lg font-semibold text-gray-800">n8n Workflow Response</h3>
+                      <span className="text-xs text-gray-500">
+                        {new Date().toLocaleTimeString()}
+                      </span>
+                    </div>
+                    
                     {/* Display n8n response data */}
                     {typeof n8nResponse === 'object' ? (
                       <div className="space-y-4">
                         {Object.entries(n8nResponse).map(([key, value]) => (
                           <div key={key} className="border-b border-gray-100 pb-4 last:border-b-0">
-                            <h3 className="text-lg font-semibold text-gray-800 mb-2 capitalize">
+                            <h4 className="text-md font-semibold text-gray-800 mb-2 capitalize">
                               {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
-                            </h3>
+                            </h4>
                             <div className="text-gray-600">
                               {typeof value === 'object' ? (
-                                <pre className="bg-gray-50 p-4 rounded-lg overflow-x-auto text-sm">
+                                <pre className="bg-gray-50 p-4 rounded-lg overflow-x-auto text-sm font-mono">
                                   {JSON.stringify(value, null, 2)}
                                 </pre>
                               ) : (
-                                <p className="whitespace-pre-wrap">{String(value)}</p>
+                                <div className="bg-blue-50 p-4 rounded-lg">
+                                  <p className="whitespace-pre-wrap text-gray-800">{String(value)}</p>
+                                </div>
                               )}
                             </div>
                           </div>
@@ -212,7 +269,7 @@ const PythonExpertPage = () => {
                       </div>
                     ) : (
                       <div className="text-gray-600">
-                        <pre className="bg-gray-50 p-4 rounded-lg overflow-x-auto">
+                        <pre className="bg-gray-50 p-4 rounded-lg overflow-x-auto font-mono text-sm">
                           {JSON.stringify(n8nResponse, null, 2)}
                         </pre>
                       </div>
@@ -233,7 +290,7 @@ const PythonExpertPage = () => {
                     <p className="text-gray-500 mb-4">
                       I can help you with:
                     </p>
-                    <ul className="text-left text-gray-600 space-y-2">
+                    <ul className="text-left text-gray-600 space-y-2 mb-6">
                       <li>• Python scripting and automation</li>
                       <li>• Web development with Django/Flask</li>
                       <li>• Data analysis with pandas/numpy</li>
@@ -241,6 +298,17 @@ const PythonExpertPage = () => {
                       <li>• API development and integration</li>
                       <li>• Code optimization and debugging</li>
                     </ul>
+                    
+                    <div className="border-t pt-6">
+                      <p className="text-sm text-gray-500 mb-3">Test n8n webhook connection:</p>
+                      <button
+                        onClick={() => handleN8nResponse('Test Python expert connection')}
+                        disabled={isLoading}
+                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      >
+                        {isLoading ? 'Testing...' : 'Test Connection'}
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>

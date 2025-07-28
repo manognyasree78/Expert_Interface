@@ -120,7 +120,6 @@ const EcommerceExpertPage = () => {
           </div>
         </div>
       </header>
-
       {/* Main Layout */}
       <div className="flex-1 flex">
         {/* Left Chat Panel - 30% */}
@@ -289,7 +288,7 @@ const EcommerceExpertPage = () => {
             ) : (
               <div className="flex items-center justify-center h-full">
                 <div className="text-center max-w-2xl">
-                  <h1 className="text-4xl font-bold text-gray-900 mb-4">
+                  <h1 className="text-4xl font-bold mb-4 text-[#ff5000]">
                     Welcome to the E-commerce Modernization Expert
                   </h1>
                   <p className="text-lg text-gray-600 mb-6">

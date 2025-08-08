@@ -4,6 +4,8 @@ import { ArrowLeft, Bell, Send } from 'lucide-react';
 import { findAnswer } from '../data/questionsAnswers';
 import AttachButton from './AttachButton';
 import BellInbox from './BellInbox';
+import NewChatCard from './NewChatCard';
+import SearchHistoryCard from './SearchHistoryCard';
 
 const ExpertPython = () => {
   const [, setLocation] = useLocation();
@@ -13,6 +15,8 @@ const ExpertPython = () => {
   const [attachedFiles, setAttachedFiles] = useState([]);
   const [showInbox, setShowInbox] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  const [chatThreads, setChatThreads] = useState([]);
+  const [currentThreadId, setCurrentThreadId] = useState(null);
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('currentUser'));
@@ -22,17 +26,25 @@ const ExpertPython = () => {
     }
     setCurrentUser(user);
 
-    // Load chat history for this user and domain
-    const chatKey = `chat_${user.email}_python`;
-    const answersKey = `answers_${user.email}_python`;
-    const savedMessages = JSON.parse(localStorage.getItem(chatKey) || '[]');
-    const savedAnswers = JSON.parse(localStorage.getItem(answersKey) || '[]');
+    // Load chat threads for this user and domain
+    const threadsKey = `threads_${user.email}_python`;
+    const savedThreads = JSON.parse(localStorage.getItem(threadsKey) || '[]');
+    setChatThreads(savedThreads);
     
-    setMessages(savedMessages.map(msg => ({
-      ...msg,
-      timestamp: new Date(msg.timestamp)
-    })));
-    setAnswers(savedAnswers);
+    // Load current thread or create new one
+    if (savedThreads.length > 0) {
+      const latestThread = savedThreads[savedThreads.length - 1];
+      setCurrentThreadId(latestThread.id);
+      setMessages(latestThread.messages.map(msg => ({
+        ...msg,
+        timestamp: new Date(msg.timestamp)
+      })));
+      setAnswers(latestThread.answers);
+    } else {
+      // Create first thread
+      const newThreadId = Date.now();
+      setCurrentThreadId(newThreadId);
+    }
 
     // Check for pending question from dashboard
     const pendingQuestion = sessionStorage.getItem('pendingQuestion');
@@ -43,12 +55,49 @@ const ExpertPython = () => {
   }, []);
 
   const saveChatHistory = (newMessages, newAnswers) => {
-    if (currentUser) {
-      const chatKey = `chat_${currentUser.email}_python`;
-      const answersKey = `answers_${currentUser.email}_python`;
-      localStorage.setItem(chatKey, JSON.stringify(newMessages));
-      localStorage.setItem(answersKey, JSON.stringify(newAnswers));
+    if (currentUser && currentThreadId) {
+      const threadsKey = `threads_${currentUser.email}_python`;
+      const currentThread = {
+        id: currentThreadId,
+        messages: newMessages,
+        answers: newAnswers,
+        lastUpdated: new Date()
+      };
+      
+      const updatedThreads = chatThreads.filter(t => t.id !== currentThreadId);
+      updatedThreads.push(currentThread);
+      
+      setChatThreads(updatedThreads);
+      localStorage.setItem(threadsKey, JSON.stringify(updatedThreads));
     }
+  };
+
+  const startNewChat = () => {
+    const newThreadId = Date.now();
+    setCurrentThreadId(newThreadId);
+    setMessages([]);
+    setAnswers([]);
+  };
+
+  const selectThread = (thread) => {
+    setCurrentThreadId(thread.id);
+    setMessages(thread.messages.map(msg => ({
+      ...msg,
+      timestamp: new Date(msg.timestamp)
+    })));
+    setAnswers(thread.answers);
+  };
+
+  const getRefinedQuestion = (question) => {
+    // Simple static refinements - you can expand this
+    const refinements = {
+      "static method": "You meant... 'What's the difference between @staticmethod and @classmethod decorators?'",
+      "slicing": "You meant... 'How does Python list slicing work with start:stop:step syntax?'",
+      "function": "You meant... 'How do I create and use functions in Python with parameters and return values?'"
+    };
+    
+    const key = Object.keys(refinements).find(k => question.toLowerCase().includes(k));
+    return key ? refinements[key] : null;
   };
 
   const handleQuestionSubmit = (question) => {
@@ -63,13 +112,34 @@ const ExpertPython = () => {
     setMessages(newMessages);
     setAttachedFiles([]);
 
-    // Get answer
-    const answer = findAnswer(question, 'python');
-    const newAnswers = [...answers, answer];
-    setAnswers(newAnswers);
+    // Add refined question suggestion
+    const refinedQuestion = getRefinedQuestion(question);
+    if (refinedQuestion) {
+      setTimeout(() => {
+        const botMessage = {
+          text: refinedQuestion,
+          isUser: false,
+          timestamp: new Date(),
+          isRefinement: true
+        };
+        const messagesWithBot = [...newMessages, botMessage];
+        setMessages(messagesWithBot);
+        
+        // Get answer
+        const answer = findAnswer(question, 'python');
+        const newAnswers = [...answers, answer];
+        setAnswers(newAnswers);
 
-    // Save to localStorage
-    saveChatHistory(newMessages, newAnswers);
+        // Save to localStorage
+        saveChatHistory(messagesWithBot, newAnswers);
+      }, 500);
+    } else {
+      // Get answer immediately if no refinement
+      const answer = findAnswer(question, 'python');
+      const newAnswers = [...answers, answer];
+      setAnswers(newAnswers);
+      saveChatHistory(newMessages, newAnswers);
+    }
   };
 
   const handleSendMessage = () => {
@@ -116,6 +186,18 @@ const ExpertPython = () => {
       <div className="flex-1 flex overflow-hidden">
         {/* Left Chat Panel */}
         <div className="w-[30%] bg-card border-r border-border flex flex-col">
+          {/* Chat Controls */}
+          <div className="p-4 border-b border-border">
+            <NewChatCard onClick={startNewChat} />
+            <SearchHistoryCard 
+              chatThreads={chatThreads} 
+              onSelectThread={selectThread} 
+            />
+            <div className="text-sm text-muted-foreground mb-2">
+              💬 Ask me about Python concepts like functions, slicing, or methods. I'll provide detailed explanations with examples and analogies.
+            </div>
+          </div>
+          
           {/* Messages */}
           <div className="flex-1 p-4 overflow-y-auto">
             <div className="space-y-4">
@@ -124,6 +206,8 @@ const ExpertPython = () => {
                   <div className={`max-w-[85%] p-3 rounded-2xl ${
                     message.isUser 
                       ? 'bg-primary text-primary-foreground ml-4' 
+                      : message.isRefinement
+                      ? 'bg-secondary/20 text-secondary border border-secondary/30 mr-4'
                       : 'bg-accent text-accent-foreground mr-4'
                   }`}>
                     <p className="text-sm">{message.text}</p>
@@ -143,21 +227,19 @@ const ExpertPython = () => {
 
           {/* Input Area */}
           <div className="p-4 border-t border-border">
-            <div className="flex items-end space-x-2">
+            <div className="bg-input border border-border rounded-lg flex items-center">
               <AttachButton onFileSelect={handleFileSelect} />
-              <div className="flex-1">
-                <textarea
-                  value={currentMessage}
-                  onChange={(e) => setCurrentMessage(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  placeholder="Ask about Python..."
-                  className="w-full resize-none bg-input border border-border rounded-lg px-3 py-2 text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-                  rows={1}
-                />
-              </div>
+              <textarea
+                value={currentMessage}
+                onChange={(e) => setCurrentMessage(e.target.value)}
+                onKeyPress={handleKeyPress}
+                placeholder="Ask about Python..."
+                className="flex-1 resize-none bg-transparent px-3 py-3 text-foreground placeholder-muted-foreground focus:outline-none"
+                rows={1}
+              />
               <button
                 onClick={handleSendMessage}
-                className="p-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+                className="p-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors mr-2"
               >
                 <Send className="w-5 h-5" />
               </button>
@@ -167,6 +249,13 @@ const ExpertPython = () => {
 
         {/* Right Preview Panel */}
         <div className="flex-1 bg-background overflow-y-auto p-6">
+          <div className="mb-6 bg-card rounded-lg p-4 border border-border">
+            <h2 className="text-lg font-semibold text-card-foreground mb-2">🐍 Python Expert Assistance</h2>
+            <p className="text-sm text-muted-foreground">
+              I provide comprehensive Python guidance with practical examples, code snippets, and real-world analogies. 
+              Each answer includes problem overview, core concepts, step-by-step solutions, common pitfalls, and actionable recommendations.
+            </p>
+          </div>
           <div className="max-w-4xl mx-auto space-y-8">
             {answers.map((answer, index) => (
               <div key={index} className="bg-card rounded-2xl p-8 border border-border">
@@ -180,13 +269,22 @@ const ExpertPython = () => {
                 </div>
 
                 {answer.isOutOfExpertise ? (
-                  <div className="bg-red-50 dark:bg-red-900/20 p-8 rounded-lg text-center">
+                  <div className="bg-pink-50 dark:bg-pink-900/20 border border-pink-200 dark:border-pink-800 p-8 rounded-lg text-center">
                     <div className="text-6xl mb-4">🤖</div>
-                    <h3 className="text-xl font-semibold text-card-foreground mb-2">Out of My Expertise</h3>
-                    <p className="text-muted-foreground text-lg">{answer.message}</p>
+                    <h3 className="text-xl font-semibold text-pink-800 dark:text-pink-200 mb-2">This question requires a deeper expertise</h3>
+                    <p className="text-pink-700 dark:text-pink-300 text-lg">{answer.message}</p>
                   </div>
                 ) : (
                   <div className="space-y-6">
+                    {answer.title && (
+                      <div className="text-center mb-4">
+                        <h3 className="text-xl font-bold text-card-foreground">{answer.title}</h3>
+                        {answer.visual && (
+                          <div className="text-2xl mt-2">{answer.visual}</div>
+                        )}
+                      </div>
+                    )}
+                    
                     <div className="bg-accent p-6 rounded-lg">
                       <h3 className="text-lg font-semibold text-card-foreground mb-3 flex items-center">
                         <span className="text-secondary mr-2">🔹</span>
@@ -208,7 +306,11 @@ const ExpertPython = () => {
                         <span className="text-secondary mr-2">🔹</span>
                         3. Step-by-Step Solution
                       </h3>
-                      <p className="text-card-foreground leading-relaxed whitespace-pre-line">{answer.stepByStepSolution}</p>
+                      <div className="text-card-foreground leading-relaxed">
+                        <pre className="bg-card p-4 rounded text-sm overflow-x-auto whitespace-pre-wrap font-mono">
+                          <code>{answer.stepByStepSolution}</code>
+                        </pre>
+                      </div>
                     </div>
 
                     <div className="bg-accent p-6 rounded-lg">

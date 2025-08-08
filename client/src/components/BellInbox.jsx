@@ -7,13 +7,13 @@ const BellInbox = ({ isOpen, onClose, messages = [], answers = [] }) => {
     question: message.text,
     answer: answers[index] || null,
     timestamp: message.timestamp
-  })).filter(item => !item.question.includes('ask me') && item.answer);
+  })).filter(item => !item.question.includes('ask me') && item.answer && item.answer.isOutOfExpertise);
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div className="bg-card rounded-2xl w-full max-w-4xl mx-4 max-h-[80vh] border border-border">
         <div className="flex justify-between items-center p-6 border-b border-border">
-          <h2 className="text-2xl font-bold text-card-foreground">Conversation History</h2>
+          <h2 className="text-2xl font-bold text-card-foreground">Escalation Log</h2>
           <button onClick={onClose} className="text-muted-foreground hover:text-foreground">
             <X className="w-6 h-6" />
           </button>
@@ -22,7 +22,7 @@ const BellInbox = ({ isOpen, onClose, messages = [], answers = [] }) => {
         <div className="p-6 overflow-y-auto max-h-96">
           {conversationHistory.length === 0 ? (
             <div className="text-center text-muted-foreground py-8">
-              No conversation history yet. Start asking questions to see them here!
+              No out-of-domain questions yet. Questions outside my expertise will appear here for human expert review.
             </div>
           ) : (
             <div className="space-y-6">

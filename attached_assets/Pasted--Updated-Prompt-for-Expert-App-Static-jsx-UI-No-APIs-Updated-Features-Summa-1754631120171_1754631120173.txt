@@ -1,0 +1,151 @@
+---
+
+## 🔧 Updated Prompt for Expert App (Static .jsx UI, No APIs)
+
+### ✅ Updated Features Summary (Includes All Fixes)
+
+---
+
+### ✅ **1. Chat Panel Enhancements: New Chat + Search History**
+
+**Left Panel (Chat Area)** now includes two new cards at the top:
+
+* 🆕 **New Chat**:
+
+  * Starts a fresh thread
+  * Previous thread is saved automatically
+  * New thread starts empty
+
+* 🔍 **Search History**:
+
+  * Lists all past chat threads
+  * Clicking any entry opens the thread and its answer(s)
+  * All chats and answers are stored per user in localStorage
+
+---
+
+### ✅ **2. Refined Query Assistance (You Meant...)**
+
+* After user submits a question in the left chat panel:
+  → Show a secondary bubble below from AI bot:
+
+  `"You meant... [refined version of question]"`
+
+  * Purely static for now; show one suggested clarification per question
+
+---
+
+### ✅ **3. Bell Icon Functionality**
+
+* 🛎️ Bell icon (top left in expert page)
+
+  * Opens a scrollable modal showing:
+
+    * **Only Out-of-Domain Questions**
+    * Corresponding fallback answers
+
+> ❌ Does *not* show valid domain answers or full history here
+> ✅ Used as “Escalation Log” for AI limitations
+
+---
+
+### ✅ **4. Updated Fallback Answer Message**
+
+When the user asks a question **not in the expert’s predefined set**, the right preview panel shows:
+
+> 🤖 *This question requires a deeper expertise. Let me tap in and get back to you.*
+
+(Styled softly in light pink card with icon and refined message)
+
+---
+
+### ✅ **5. Updated Domain Question Sets**
+
+You now have **only 3 static questions** for each expert.
+
+#### 🐍 Python Expert Questions
+
+1. **Static Method vs. Class Method (Cooking Analogy)**
+   → Visuals: kitchen diagram
+   → Use of code, concept map, and analogy
+
+2. **Python Slicing (Chef Analogy)**
+   → Visual: sliced ingredient timeline
+   → Examples with start\:stop\:step
+
+3. **What is a Function in Python (Cooking Example)**
+   → Visual: recipe flow
+   → Table of inputs/outputs
+
+---
+
+#### 🛍 E-commerce Expert Questions
+
+1. **Scalable Architecture for High-Traffic Site**
+   → Cricket analogy + flow diagram
+   → Microservices + CDN + caching
+
+2. **Strategies to Prevent Online Payment Fraud**
+   → Visual of payment pipeline
+   → Cricket metaphors + security layers
+
+3. **How Personalization Enhances Experience**
+   → Data flow: tracking → recommendations
+   → Cricket-coach analogy + hands-on tips
+
+> ❌ All other questions → fallback message
+
+---
+
+### ✅ **6. User-Specific Chat and History**
+
+* On **Logout**, all chat and answers are cleared.
+* On **Login**, user sees:
+
+  * Only their past threads (chat + preview)
+  * All new chats added under their ID
+* Use `localStorage[username] = JSON.stringify({ chats })`
+
+---
+
+### ✅ Visual Display Guidelines
+
+* If answers include:
+
+  * 📊 Graphs → Render as SVG/PNG (static assets)
+  * 🧮 Tables → Use `<table>` JSX blocks
+  * 📷 Images/Diagrams → `<img src />` pointing to static path or placeholder
+
+> 💡 Ensure answer formatting is visual and easy to read. Use code blocks, borders, icons, highlights for clarity.
+
+---
+
+### 🗂 Revised File Structure (Updated)
+
+```
+/src
+├── App.jsx
+├── routes/
+│   ├── Welcome.jsx
+│   ├── LoginModal.jsx
+│   ├── ProfileModal.jsx
+│   ├── Dashboard.jsx
+│   ├── ExpertPython.jsx
+│   ├── ExpertEcommerce.jsx
+├── components/
+│   ├── Navbar.jsx
+│   ├── ChatPanel.jsx
+│   ├── PreviewPanel.jsx
+│   ├── BellInbox.jsx         ← (Only Out-of-Scope View)
+│   ├── AttachButton.jsx
+│   ├── AnswerBlock.jsx
+│   ├── ExpertCard.jsx
+│   ├── NewChatCard.jsx       ← 🆕
+│   ├── SearchHistoryCard.jsx ← 🆕
+├── data/
+│   └── curatedQuestions.json  ← 3 Q&A per expert (static)
+└── assets/
+    ├── visuals/               ← diagrams, sample images
+```
+
+---

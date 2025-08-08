@@ -44,20 +44,22 @@ const Welcome = () => {
 
       {/* Main Content */}
       <main className="flex-1 flex items-center justify-center px-4">
-        <div className="text-center max-w-4xl">
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 text-foreground">
-            Welcome to Expert App
-          </h1>
-          <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-2xl mx-auto">
-            One stop, where you can meet all the solutions for your problems
-          </p>
-          
-          <button
-            onClick={() => setShowLogin(true)}
-            className="bg-primary text-primary-foreground px-12 py-4 rounded-2xl text-xl font-semibold hover:bg-primary/90 transition-colors shadow-lg"
-          >
-            Get Started
-          </button>
+        <div className="text-center max-w-4xl w-full">
+          <div className="flex flex-col items-center justify-center">
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 text-foreground text-center">
+              Welcome to Expert App
+            </h1>
+            <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-2xl text-center">
+              One stop, where you can meet all the solutions for your problems
+            </p>
+            
+            <button
+              onClick={() => setShowLogin(true)}
+              className="bg-primary text-primary-foreground px-12 py-4 rounded-2xl text-xl font-semibold hover:bg-primary/90 transition-colors shadow-lg"
+            >
+              Get Started
+            </button>
+          </div>
         </div>
       </main>
 

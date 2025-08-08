@@ -13,7 +13,7 @@ const BellInbox = ({ isOpen, onClose, messages = [], answers = [] }) => {
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div className="bg-card rounded-2xl w-full max-w-4xl mx-4 max-h-[80vh] border border-border">
         <div className="flex justify-between items-center p-6 border-b border-border">
-          <h2 className="text-2xl font-bold text-card-foreground">Escalation Log</h2>
+          <h2 className="text-2xl font-bold text-card-foreground">Expert Notifications</h2>
           <button onClick={onClose} className="text-muted-foreground hover:text-foreground">
             <X className="w-6 h-6" />
           </button>

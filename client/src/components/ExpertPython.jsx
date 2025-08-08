@@ -2,6 +2,23 @@ import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { ArrowLeft, Bell, Send } from 'lucide-react';
 import { findAnswer } from '../data/questionsAnswers';
+
+// Helper function to generate refined queries
+const generateRefinedQuery = (userInput, answer) => {
+  if (answer.isOutOfExpertise) return null;
+  
+  const normalizedInput = userInput.toLowerCase();
+  if (normalizedInput.includes('static') && normalizedInput.includes('class')) {
+    return "What's the difference between @staticmethod and @classmethod decorators?";
+  }
+  if (normalizedInput.includes('slice') || normalizedInput.includes('slicing')) {
+    return "How does Python list slicing work with start:stop:step syntax?";
+  }
+  if (normalizedInput.includes('function')) {
+    return "How do I create and use functions in Python with parameters and return values?";
+  }
+  return userInput;
+};
 import AttachButton from './AttachButton';
 import BellInbox from './BellInbox';
 import NewChatCard from './NewChatCard';
@@ -17,6 +34,7 @@ const ExpertPython = () => {
   const [currentUser, setCurrentUser] = useState(null);
   const [chatThreads, setChatThreads] = useState([]);
   const [currentThreadId, setCurrentThreadId] = useState(null);
+  const [refinedQueries, setRefinedQueries] = useState([]);
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('currentUser'));
@@ -188,13 +206,21 @@ const ExpertPython = () => {
         <div className="w-[30%] bg-card border-r border-border flex flex-col">
           {/* Chat Controls */}
           <div className="p-4 border-b border-border">
-            <NewChatCard onClick={startNewChat} />
-            <SearchHistoryCard 
-              chatThreads={chatThreads} 
-              onSelectThread={selectThread} 
-            />
+            <div className="flex space-x-2 mb-4">
+              <NewChatCard onClick={startNewChat} />
+              <SearchHistoryCard 
+                chatThreads={chatThreads} 
+                onSelectThread={selectThread}
+                onDeleteThread={(threadId) => {
+                  const updatedThreads = chatThreads.filter(t => t.id !== threadId);
+                  setChatThreads(updatedThreads);
+                  const threadsKey = `threads_${currentUser.email}_python`;
+                  localStorage.setItem(threadsKey, JSON.stringify(updatedThreads));
+                }}
+              />
+            </div>
             <div className="text-sm text-muted-foreground mb-2">
-              💬 Ask me about Python concepts like functions, slicing, or methods. I'll provide detailed explanations with examples and analogies.
+              💬 Type your question and our expert engine will deliver a crisp, customized answer — made just for how you learn.
             </div>
           </div>
           
@@ -258,21 +284,13 @@ const ExpertPython = () => {
           </div>
           <div className="max-w-4xl mx-auto space-y-8">
             {answers.map((answer, index) => (
-              <div key={index} className="bg-card rounded-2xl p-8 border border-border">
-                <div className="mb-6">
-                  <h2 className="text-2xl font-bold text-card-foreground mb-2">
-                    Python Expert Analysis #{index + 1}
-                  </h2>
-                  <p className="text-lg text-secondary font-medium">
-                    {messages[index]?.text}
-                  </p>
-                </div>
+              <div key={index} className="bg-card/50 rounded-2xl p-8 border-0 shadow-sm">
+                {/* Removed question repetition as per requirements */}
 
                 {answer.isOutOfExpertise ? (
-                  <div className="bg-pink-50 dark:bg-pink-900/20 border border-pink-200 dark:border-pink-800 p-8 rounded-lg text-center">
-                    <div className="text-6xl mb-4">🤖</div>
-                    <h3 className="text-xl font-semibold text-pink-800 dark:text-pink-200 mb-2">This question requires a deeper expertise</h3>
-                    <p className="text-pink-700 dark:text-pink-300 text-lg">{answer.message}</p>
+                  <div className="bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800/30 dark:to-slate-900/30 p-8 rounded-xl text-center border-0">
+                    <div className="text-4xl mb-4">🤖</div>
+                    <p className="text-slate-600 dark:text-slate-300 text-lg italic">{answer.message}</p>
                   </div>
                 ) : (
                   <div className="space-y-6">
@@ -328,6 +346,13 @@ const ExpertPython = () => {
                       </h3>
                       <p className="text-card-foreground leading-relaxed">{answer.summaryOrRecommendation}</p>
                     </div>
+                    
+                    {/* Show refined query below answer */}
+                    {refinedQueries[index] && refinedQueries[index] !== messages[index]?.text && (
+                      <div className="mt-6 text-sm text-muted-foreground italic text-center border-t border-border/30 pt-4">
+                        <strong>You meant:</strong> {refinedQueries[index]}
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

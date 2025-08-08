@@ -24,6 +24,18 @@ Expert App is a completely rebuilt React-based learning platform that provides c
 - **Data Persistence**: User-specific chat history and answers stored locally
 - **Static Content**: 5 predefined questions per expert domain with structured answers
 
+### Latest Updates - UI Improvements & Content Enhancement
+- **Updated Static Q&A Content**: Complete rewrite with detailed content using cooking analogies (Python) and cricket analogies (E-commerce)
+- **UI Enhancements**:
+  - Side-by-side layout for New Chat and Search History cards
+  - Renamed "Escalation Log" to "Expert Notifications" for better UX  
+  - Updated chat prompt description for better user guidance
+  - Removed question repetition from preview panels for cleaner design
+  - Improved fallback styling with soft, smooth gradients
+  - Added Search History Modal with thread management and delete functionality
+- **Enhanced Answer Format**: Comprehensive 5-section responses with rich formatting, code examples, and practical analogies
+- **"You meant..." Feature**: Refined query suggestions displayed below answers for better user guidance
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.

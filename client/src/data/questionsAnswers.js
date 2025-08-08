@@ -2,173 +2,185 @@
 
 export const pythonQuestions = {
   "static method vs class method": {
-    title: "Static Method vs. Class Method (Cooking Analogy)",
-    problemOverview: "Think of a kitchen where different cooking methods serve different purposes. Static methods are like using a standalone tool that doesn't need to know about your specific kitchen setup, while class methods are like recipes that need to know what kind of kitchen they're working in.",
-    coreConceptExplanation: "Static methods (@staticmethod) are independent utility functions that belong to a class but don't need access to the class or instance. Class methods (@classmethod) receive the class itself as the first parameter and can access class-level data.",
-    stepByStepSolution: `# Kitchen analogy example
-class Kitchen:
-    kitchen_type = "Modern"
-    
-    @staticmethod
-    def chop_vegetables(veggies):
-        # This works the same in any kitchen
-        return f"Chopped {veggies}"
-    
-    @classmethod
-    def prepare_meal(cls, ingredients):
-        # This knows what type of kitchen it's in
-        return f"Preparing meal in {cls.kitchen_type} kitchen with {ingredients}"
+    title: "Static Method vs. Class Method in Python (With Cooking Analogy)",
+    problemOverview: "When you write functions inside a Python class, you get three types: instance methods, static methods, and class methods. Let's ignore instance methods for now and focus on static vs. class methods. A static method is just a helper function inside the class—it has no access to the class or any of its data. A class method knows about the class itself (not about an individual object), so it can read/change things like the recipe's category for all recipes.",
+    coreConceptExplanation: "Static method: Like a kitchen timer. No matter what you're cooking, you can use it the same way—it doesn't care if you're baking bread or making soup. Class method: Like a chef's hat that shows your kitchen's \"theme\" (Italian, Indian, etc.). The hat is special because it knows the cuisine type of all your recipes and can update the kitchen's category if you change it.",
+    stepByStepSolution: `class Recipe:
+    cuisine = "Italian"   # class-level attribute
 
-# Usage:
-Kitchen.chop_vegetables("carrots")  # Works independently
-Kitchen.prepare_meal("pasta")       # Uses class information`,
-    gotchasOrPitfalls: "Static methods can't access 'self' or 'cls' - they're completely independent. Class methods can't access instance variables, only class variables.",
-    summaryOrRecommendation: "Use @staticmethod for utility functions that logically belong to the class but work independently. Use @classmethod when you need access to the class itself, often for alternative constructors.",
-    visual: "🍳 Kitchen → 🔪 Static Tool (chop anywhere) vs 📋 Recipe (needs kitchen context)"
+    @staticmethod
+    def kitchen_timer(minutes):
+        return f"Set the timer for {minutes} minutes."
+
+    @classmethod
+    def show_cuisine(cls):
+        return f"This kitchen is for {cls.cuisine} cooking!"
+
+# Use the timer for any dish:
+Recipe.kitchen_timer(10)     # "Set the timer for 10 minutes."
+
+# Show the current cuisine:
+Recipe.show_cuisine()        # "This kitchen is for Italian cooking!"
+
+# Diagram (Kitchen Edition)
+      Recipe Class
+      /         \\
+ [Static]     [Class]
+   |             |
+ Timer     Shows/changes cuisine
+(Any dish)   (All recipes)`,
+    gotchasOrPitfalls: "Use static methods for general tools. Use class methods when you want to access or change class-wide info.",
+    summaryOrRecommendation: "Static methods are utility functions that don't need class data. Class methods can access and modify class-level attributes. Choose based on whether you need class context.",
+    visual: "🍳👨‍🍳"
   },
   "python slicing": {
-    title: "Python Slicing (Chef Analogy)",
-    problemOverview: "Imagine you're a chef slicing ingredients on a cutting board. Python slicing works like telling your assistant exactly which pieces to take from a line of ingredients.",
-    coreConceptExplanation: "Slicing uses [start:stop:step] syntax where 'start' is where you begin cutting, 'stop' is where you end (exclusive), and 'step' is how many pieces you skip each time.",
-    stepByStepSolution: `# Chef's ingredient line: [🥕, 🥒, 🍅, 🧅, 🥬, 🌶️, 🥔, 🥦]
-ingredients = ['carrot', 'cucumber', 'tomato', 'onion', 'lettuce', 'pepper', 'potato', 'broccoli']
+    title: "Slicing in Python (Explained Like a Chef)",
+    problemOverview: "Python's slicing lets you take just a part of a list, just like slicing a loaf of bread, a cake, or veggies. You can slice a list of ingredients using [start:stop:step]: start = where to begin (included), stop = where to end (excluded), step = how many to skip (optional).",
+    coreConceptExplanation: "Slicing a loaf: Want just the middle slices? Use slicing! Slicing an ingredient list: Only need ingredients 2 to 4? Just slice that section. Want every second slice? Use [::2].",
+    stepByStepSolution: `ingredients = ["flour", "eggs", "milk", "sugar", "butter", "vanilla"]
 
-# Take pieces 1 through 4 (not including 4)
-ingredients[1:4]  # → ['cucumber', 'tomato', 'onion']
+# Get ingredients from eggs to sugar (index 1 to 3)
+print(ingredients[1:4])  # ['eggs', 'milk', 'sugar']
 
-# Take every other ingredient
-ingredients[::2]  # → ['carrot', 'tomato', 'lettuce', 'potato']
+# Get first three
+print(ingredients[:3])   # ['flour', 'eggs', 'milk']
 
-# Reverse the whole line
-ingredients[::-1]  # → ['broccoli', 'potato', 'pepper', ...]
+# Get every other ingredient
+print(ingredients[::2])  # ['flour', 'milk', 'butter']
 
-# Last 3 ingredients
-ingredients[-3:]  # → ['pepper', 'potato', 'broccoli']`,
-    gotchasOrPitfalls: "Remember: 'stop' is exclusive (you don't include that piece). Negative indices count from the end. Slicing creates a new list, not a reference.",
-    summaryOrRecommendation: "Master slicing for clean, readable code. It's more efficient than loops for extracting portions of sequences. Practice with different step values.",
-    visual: "🔪 Cutting board timeline: [0] [1] [2] [3] [4] → slice[1:4] takes positions 1,2,3"
+# Diagram (Cutting Cake Slices)
+Indexes:     0      1     2      3      4        5
+Items:   [flour, eggs, milk, sugar, butter, vanilla]
+Slice:         ^---^---^
+             ['eggs', 'milk', 'sugar']`,
+    gotchasOrPitfalls: "Use slicing to quickly grab just the ingredients or steps you need, no matter how long the list is.",
+    summaryOrRecommendation: "Slicing extracts portions of lists using [start:stop:step] syntax. Perfect for getting specific ranges of data efficiently.",
+    visual: "🍞✂️"
   },
   "what is a function": {
-    title: "What is a Function in Python (Cooking Example)",
-    problemOverview: "A function is like a recipe in cooking - it takes ingredients (parameters), follows steps (code), and produces a dish (return value). You can use the same recipe multiple times with different ingredients.",
-    coreConceptExplanation: "Functions are reusable blocks of code defined with 'def'. They can accept inputs (parameters), process them, and return results. This promotes code reusability and organization.",
-    stepByStepSolution: `# Recipe function example
-def make_smoothie(fruit, liquid="water"):
-    """
-    A recipe function that makes a smoothie
-    """
-    steps = f"1. Add {fruit} to blender"
-    steps += f"\\n2. Pour {liquid}"
-    steps += f"\\n3. Blend for 30 seconds"
-    result = f"Delicious {fruit} smoothie ready!"
-    return result
+    title: "What is a Function in Python? (With Cooking Example)",
+    problemOverview: "A function is like a reusable recipe in your cookbook. You give it an ingredient, it does the work, and you get a finished dish. Give it a number (e.g., 5), it \"squares\" it (5 × 5 = 25).",
+    coreConceptExplanation: "Imagine a \"Double Portions\" recipe: You tell it 3 servings, it magically gives you a dish for 9 people. It's a way to use the same logic over and over, no matter what input you give.",
+    stepByStepSolution: `def square(servings):
+    \"\"\"Returns the square of the number of servings.\"\"\"
+    return servings * servings
 
-# Using our recipe:
-breakfast = make_smoothie("banana", "milk")
-print(breakfast)  # → "Delicious banana smoothie ready!"
+print(square(5))   # Output: 25
 
-# Function that returns a calculation
-def square_number(num):
-    """Returns the square of a number"""
-    return num * num
+# Diagram (Recipe Flow)
+[Number of servings] --> [square() function] --> [Servings squared]
 
-result = square_number(5)  # → 25`,
-    gotchasOrPitfalls: "Functions without 'return' statements return None. Use descriptive names. Be careful with mutable default parameters (use None instead of [] or {}).",
-    summaryOrRecommendation: "Functions are building blocks of clean code. Always use clear names and add docstrings for complex functions. Think of them as reusable recipes.",
-    visual: "📋 Recipe Card: Ingredients → [Process] → Final Dish"
+Example:  4 --> square() --> 16
+
+# Side Table (Just for Clarity)
+Input | Output
+  2   |   4
+  3   |   9
+  7   |   49`,
+    gotchasOrPitfalls: "Functions are reusable code blocks. Always include return statements for output and use descriptive parameter names.",
+    summaryOrRecommendation: "Functions are like recipes - they take inputs, process them, and return results. Essential for code reusability and organization.",
+    visual: "📖🍽️"
   }
 };
 
 export const ecommerceQuestions = {
   "scalable architecture for high traffic": {
-    title: "Scalable Architecture for High-Traffic Site (Cricket Stadium Analogy)",
-    businessContext: "Think of a cricket stadium during the World Cup final - millions of fans trying to enter, buy food, and watch the game simultaneously. Your e-commerce site needs similar crowd management during Black Friday sales.",
-    modernTechTrendsOverview: "Modern e-commerce architecture is like a well-organized stadium with multiple entry gates (load balancers), food courts in different sections (microservices), and efficient crowd control (caching and CDNs).",
-    solutionApproach: `🏟️ Stadium Architecture for E-commerce:
+    title: "How would you design a scalable architecture for a high-traffic e-commerce site?",
+    businessContext: "Use a cloud platform (like AWS, Azure, or Google Cloud) for flexibility and scaling. Think of this as setting up a strong cricket pitch—if the base is weak, the whole game struggles.",
+    modernTechTrendsOverview: "Place load balancers at the front to direct user traffic evenly, like umpires distributing overs across bowlers. Divide the app into parts: Product Service, Order Service, User Service, Payment Service. Each \"player\" (service) has a role—like a batsman, bowler, and fielder.",
+    solutionApproach: `Step-by-Step Solution
 
-**Multiple Entry Gates (Load Balancers)**
-• Distribute incoming traffic across multiple servers
-• Route users to least busy server sections
+1. Start with a Solid Foundation
+Use a cloud platform (like AWS, Azure, or Google Cloud) for flexibility and scaling.
+Think of this as setting up a strong cricket pitch—if the base is weak, the whole game struggles.
 
-**Specialized Sections (Microservices)**
-• User Registration Counter → User Management Service  
-• Ticket Booking → Order Processing Service
-• Payment Counter → Payment Processing Service
-• Food Courts → Inventory Management Service
+2. Use Load Balancers
+Place load balancers at the front to direct user traffic evenly, like umpires distributing overs across bowlers.
 
-**Quick Access Routes (CDN)**
-• Popular items cached closer to users
-• Static content served from edge locations`,
-    realWorldToolsOrExamples: `🛠️ **Cricket Stadium Tools → Tech Stack**
-• Stadium Gates → AWS Load Balancer/NGINX
-• Section Management → Docker/Kubernetes  
-• Payment Counters → Stripe/PayPal APIs
-• Crowd Analytics → Redis Cache + PostgreSQL
-• Broadcasting System → CloudFlare CDN
-• Security Team → AWS Shield/Cloudflare Security`,
+3. Break Up Functions (Microservices)
+Divide the app into parts: Product Service, Order Service, User Service, Payment Service. Each "player" (service) has a role—like a batsman, bowler, and fielder.
+
+4. Scale Databases
+Use a mix of SQL (for critical data: orders, users) and NoSQL (for fast-changing data: product catalog, reviews).
+Read replicas and caching (Redis/Memcached) speed things up—like having extra fielders at boundary for fast coverage.
+
+5. Use CDN for Static Content
+Host images, CSS, and scripts on a Content Delivery Network—like setting fielders all around the boundary for faster pickups.
+
+6. Monitor and Auto-Scale
+Set up auto-scaling to add more "players" (servers) when traffic spikes (think: super overs!).
+Use monitoring tools (CloudWatch, Datadog) to track site health—just like team stats and live match analysis.`,
+    realWorldToolsOrExamples: `Quick Cricket Analogy
+Building this architecture is like assembling an IPL team: you want specialists (microservices), backup players (auto-scale), a good ground (cloud infra), and sharp field placement (CDN/load balancers) to handle any crowd size.
+
+Simple Visual Flow (Text)
+User → Load Balancer → [Microservices] → Databases/Cache/CDN`,
     implementationTipsOrPitfalls: "Start with a small stadium (monolith) and gradually add specialized sections (microservices). Monitor crowd flow (database performance). Have backup plans for when sections get overcrowded (circuit breakers).",
-    visual: "🏟️ Stadium Layout: [Gates] → [Sections] → [Services] + 📡 Broadcasting (CDN)"
+    visual: "🏟️🏏"
   },
   "prevent online payment fraud": {
-    title: "Strategies to Prevent Online Payment Fraud (Cricket Security Analogy)",
-    businessContext: "Just like stadium security prevents fake tickets and unauthorized access during important cricket matches, e-commerce sites need multiple security layers to prevent payment fraud and protect both business and customers.",
-    modernTechTrendsOverview: "Modern fraud prevention is like having multiple security checkpoints - from entry gate verification to behavioral analysis of suspicious crowd movements, using technology to spot patterns that human security can't catch.",
-    solutionApproach: `🔒 **Multi-Layer Security (Cricket Stadium Style):**
+    title: "What are some strategies to prevent online payment fraud?",
+    businessContext: "Integrate trusted payment gateways (Razorpay, Stripe, PayPal)—like choosing the best umpires for a fair match. Ask users for OTPs or biometrics during checkout, just as an umpire double-checks a run-out.",
+    modernTechTrendsOverview: "Use machine learning to spot unusual activity (big orders, mismatched locations)—like a third umpire reviewing suspicious plays. Always verify billing address and CVV code, like checking if batsman is within the crease.",
+    solutionApproach: `Step-by-Step Solution
 
-**Gate Entry Checks (Basic Verification)**
-• CVV verification → Ticket authenticity check
-• Address verification → ID address matching
-• Phone verification → Contact verification
+1. Use Secure Payment Gateways
+Integrate trusted payment gateways (Razorpay, Stripe, PayPal)—like choosing the best umpires for a fair match.
 
-**Behavioral Analysis (Crowd Monitoring)**  
-• Unusual purchase patterns → Suspicious crowd behavior
-• Device fingerprinting → Regular visitor recognition
-• Velocity checks → Multiple rapid transactions
+2. Enable Multi-Factor Authentication
+Ask users for OTPs or biometrics during checkout, just as an umpire double-checks a run-out.
 
-**AI Security Team (Smart Monitoring)**
-• Machine learning fraud detection → Pattern recognition
-• Risk scoring → Threat level assessment
-• Real-time blocking → Immediate action on threats`,
-    realWorldToolsOrExamples: `🛡️ **Security Arsenal**
-• Stripe Radar → Automated fraud detection
-• PayPal Fraud Protection → Real-time risk analysis  
-• AWS Fraud Detector → Machine learning models
-• Kount → Device fingerprinting and identity verification
-• Custom ML Models → Behavioral pattern analysis`,
+3. Monitor Transactions Automatically
+Use machine learning to spot unusual activity (big orders, mismatched locations)—like a third umpire reviewing suspicious plays.
+
+4. Address Verification & CVV
+Always verify billing address and CVV code, like checking if batsman is within the crease.
+
+5. Tokenize & Encrypt Data
+Never store raw card data; always use encrypted "tokens"—as secure as a batsman's helmet and pads.
+
+6. Set Velocity Checks
+Limit the number of transactions per user/card in a time window, just like an over limit per bowler.`,
+    realWorldToolsOrExamples: `Quick Cricket Analogy
+Payment fraud prevention is like keeping a sharp wicketkeeper and alert fielders—every transaction is watched, and the stumps are protected from sneaky runs.
+
+Simple Visual
+User → Payment Form → [Gateway: 2FA, Checks, ML Rules] → Payment Complete/Flagged`,
     implementationTipsOrPitfalls: "Balance security with user experience - too many checks frustrate genuine customers like over-zealous stadium security. Update fraud rules regularly as criminals adapt. Maintain PCI DSS compliance like stadium safety standards.",
-    visual: "🛡️ Security Layers: [Entry Check] → [Behavior Monitor] → [AI Analysis] → ✅/❌ Decision"
+    visual: "🛡️🏏"
   },
   "personalization enhances experience": {
-    title: "How Personalization Enhances Customer Experience (Cricket Coach Analogy)",
-    businessContext: "Like how a cricket coach studies each player's strengths, weaknesses, and preferences to create personalized training and game strategies, e-commerce personalization tailors the shopping experience to each customer's unique behavior and preferences.",
-    modernTechTrendsOverview: "Modern personalization engines act like data-driven cricket coaches, analyzing every customer interaction (like tracking player performance) to provide personalized recommendations and experiences in real-time.",
-    solutionApproach: `🏏 **Personal Coach Approach to E-commerce:**
+    title: "How does personalization improve customer experience in e-commerce?",
+    businessContext: "Record what each user browses or buys—like keeping each player's batting stats. Show \"You may also like…\" or \"Recommended for you\" based on their activity. Just like a coach suggesting a batsman work on specific shots after seeing him play.",
+    modernTechTrendsOverview: "Send custom deals on user's birthday, or reminders about their wish list—like sending a personalized practice schedule to each cricketer. Display products and banners relevant to user's interests—like setting fielders based on the batsman's favorite shots.",
+    solutionApproach: `Step-by-Step Solution
 
-**Player Analysis (Customer Data Collection)**
-• Purchase history → Past performance analysis
-• Browsing behavior → Training session observations  
-• Search patterns → Skill area preferences
-• Time spent on products → Interest intensity measurement
+1. Track User Preferences
+Record what each user browses or buys—like keeping each player's batting stats.
 
-**Personalized Training (Customized Experience)**
-• Product recommendations → Skill-specific training plans
-• Dynamic pricing → Performance-based incentives
-• Personalized content → Tailored coaching advice
-• Custom email campaigns → Individual player communication
+2. Recommend Relevant Products
+Show "You may also like…" or "Recommended for you" based on their activity. Just like a coach suggesting a batsman work on specific shots after seeing him play.
 
-**Game Strategy (Real-time Optimization)**
-• A/B testing different approaches → Strategy experimentation
-• Real-time content adaptation → In-game strategy adjustments
-• Behavioral triggers → Situational coaching cues`,
-    realWorldToolsOrExamples: `🔧 **Coaching Toolkit:**
-• Amazon Personalization → Advanced recommendation engine
-• Shopify Personalization Apps → E-commerce specific tools
-• Adobe Target → Content personalization platform
-• Google Optimize → A/B testing and optimization
-• Segment CDP → Customer data unification platform
-• Dynamic Yield → Real-time personalization engine`,
+3. Personalized Emails and Offers
+Send custom deals on user's birthday, or reminders about their wish list—like sending a personalized practice schedule to each cricketer.
+
+4. Dynamic Homepage and Navigation
+Display products and banners relevant to user's interests—like setting fielders based on the batsman's favorite shots.
+
+5. Simplify Checkout
+Pre-fill shipping info, suggest repeat orders—like a coach prepping gear for the next match automatically.`,
+    realWorldToolsOrExamples: `Quick Cricket Analogy
+Personalization is the coach who knows your game inside out—always giving you the right tips, gear, and encouragement for your best performance.
+
+Simple Visual Flow
+User Activity → Data Collection → Personalized Recommendations/Emails/Offers
+
+Extra: How to Practice (Hands-on Activity)
+For architecture: Draw a diagram of your e-commerce site's parts on paper, showing how users reach products, checkout, and how data flows.
+For fraud prevention: Pretend to place fake and real orders on a demo site; notice what security steps are there.
+For personalization: Visit an e-commerce site as a guest and as a logged-in user; compare the recommendations you get!`,
     implementationTipsOrPitfalls: "Start with basic player categories (customer segments) before advanced individual coaching (AI personalization). Respect player privacy (data regulations). Test different coaching methods (A/B testing). Don't over-coach - let players enjoy the game naturally.",
-    visual: "🏏 Coach Process: [Observe] → [Analyze] → [Personalize] → [Optimize] → 🎯 Better Performance"
+    visual: "🏏🎯"
   }
 };
 

@@ -1,0 +1,142 @@
+
+---
+
+## ✨ Finalized Prompt for Expert App (.jsx-only Static UI)
+
+### 🔧 Summary: All Changes, Fixes, and Features Included
+
+---
+
+### ✅ **Page 1: Welcome (/)**
+
+- Greeting: “Welcome to Expert App”
+- Description: “One stop, where you can meet all the solutions for your problems.”
+- UI Fixes:
+  - Entire greeting + buttons now **perfectly centered (both vertical + horizontal)**
+  - Responsive across devices and resolutions
+- Buttons:
+  - Top-right: Login / Sign Up → Modal
+  - Center: Get Started → Opens Login modal (not skipping anymore)
+
+---
+
+### ✅ **Chat Panel Layout + Interaction Enhancements**
+
+**Top Cards Aligned:**
+
+- “🆕 New Chat” + “🔍 Search History” shown **side by side**, not vertically stacked
+- Clicking **Search History**:
+  - Opens a modal/popup
+  - Shows list of saved threads
+  - Allows user to “Open” or “🗑 Delete” each thread
+
+**Chat Prompt Description:**
+
+- New version is more aligned with Expert App’s identity. Example:
+
+  > “Type your question and our expert engine will deliver a crisp, customized answer — made just for how you learn.”
+
+---
+
+### ✅ **Chat Thread and Answer Behavior**
+
+- Refined Query:
+  - Comes directly **from curated response data**
+  - Displayed **below AI answer** (not in the chat panel)
+  - Format: “You meant… [refined phrasing]”
+
+- Preview Panel:
+  - **No repetition of question** before showing the answer
+  - **Seamless answer blocks** — no harsh borders, no bright cards
+  - Clean typography, consistent with Expert App branding
+
+- Out-of-box answers:
+  - Now appear in **soft, smooth layout** instead of bright-colored boxes
+  - Text:  
+    > 🤖 *This question requires a deeper expertise. Let me tap in and get back to you.*
+
+---
+
+### ✅ **Attachments (File & Image)**
+
+- Clicking 📎 opens `<input type="file" multiple />`
+- Supported: `.pdf`, `.docx`, `.txt`, `.png`, `.jpg`
+- After upload:
+  - Shows **inline preview in the user chat bubble**
+  - User can **deselect/remove** before sending
+  - Styling mimics ChatGPT-like alignment and preview
+
+---
+
+### ✅ **Bell Icon → Expert Notifications**
+
+- Renamed from **“Escalation Log” → “Expert Notifications”**
+- Opens a popup showing:
+  - Only out-of-scope questions
+  - Corresponding fallback responses
+- Scrollable, elegant, styled to match app theme
+
+---
+
+### ✅ **Polished Visual Design & Interactions**
+
+- All screens now follow **a more elegant layout** using:
+  - Dark theme: `#0d1117`
+  - Cards: `#1F2937`, highlights `#3B82F6`, `#F97316`, `#E5E7EB`
+  - UI spacing, typography, and alignment optimized
+- Scrollbars in chat + preview panels:
+  - Custom-styled and responsive
+- Hover states, button feedback, and modal transitions added
+- Entire UI feels **interactive, smooth, and high-end** (while still static)
+
+---
+
+### ✅ Domain Questions (3 each — All Others Show Fallback)
+
+#### 🐍 Python Expert
+
+1. **Static vs. Class Methods** (Cooking Analogy) → Diagram + Code + Tip  
+2. **Python Slicing** (Chef Analogy) → Diagram + Code + Examples  
+3. **Functions as Recipes** → Diagram + Table of Input/Output
+
+#### 🛍 E-commerce Expert
+
+1. **Scalable Architecture** (Cricket Analogy) → Text Flow + Diagram  
+2. **Online Payment Fraud Prevention** → Secure flow + Cricket comparisons  
+3. **Personalization in E-commerce** → Hands-on ideas + Cricket-coach analogy
+
+> ❌ All other questions → fallback message with soft visual style
+
+---
+
+### 🗂 File Structure Summary
+
+```
+/src
+├── App.jsx
+├── routes/
+│   ├── Welcome.jsx
+│   ├── LoginModal.jsx
+│   ├── ProfileModal.jsx
+│   ├── Dashboard.jsx
+│   ├── ExpertPython.jsx
+│   ├── ExpertEcommerce.jsx
+├── components/
+│   ├── Navbar.jsx
+│   ├── ChatPanel.jsx
+│   ├── PreviewPanel.jsx
+│   ├── BellInbox.jsx              ← (Now: Expert Notifications)
+│   ├── AttachButton.jsx
+│   ├── NewChatCard.jsx
+│   ├── SearchHistoryCard.jsx
+│   ├── SearchHistoryModal.jsx
+│   └── AnswerBlock.jsx
+├── data/
+│   └── curatedQuestions.json
+└── assets/
+    └── visuals/                   ← diagrams, charts, images, etc.
+```
+
+---
+
+

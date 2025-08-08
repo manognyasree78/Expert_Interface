@@ -1,0 +1,116 @@
+1️⃣ How would you design a scalable architecture for a high-traffic e-commerce site?
+Step-by-Step Solution
+1. Start with a Solid Foundation
+
+Use a cloud platform (like AWS, Azure, or Google Cloud) for flexibility and scaling.
+
+Think of this as setting up a strong cricket pitch—if the base is weak, the whole game struggles.
+
+2. Use Load Balancers
+
+Place load balancers at the front to direct user traffic evenly, like umpires distributing overs across bowlers.
+
+3. Break Up Functions (Microservices)
+
+Divide the app into parts: Product Service, Order Service, User Service, Payment Service. Each “player” (service) has a role—like a batsman, bowler, and fielder.
+
+4. Scale Databases
+
+Use a mix of SQL (for critical data: orders, users) and NoSQL (for fast-changing data: product catalog, reviews).
+
+Read replicas and caching (Redis/Memcached) speed things up—like having extra fielders at boundary for fast coverage.
+
+5. Use CDN for Static Content
+
+Host images, CSS, and scripts on a Content Delivery Network—like setting fielders all around the boundary for faster pickups.
+
+6. Monitor and Auto-Scale
+
+Set up auto-scaling to add more “players” (servers) when traffic spikes (think: super overs!).
+
+Use monitoring tools (CloudWatch, Datadog) to track site health—just like team stats and live match analysis.
+
+Quick Cricket Analogy
+
+Building this architecture is like assembling an IPL team: you want specialists (microservices), backup players (auto-scale), a good ground (cloud infra), and sharp field placement (CDN/load balancers) to handle any crowd size.
+
+Simple Visual Flow (Text)
+
+pgsql
+Copy
+Edit
+User → Load Balancer → [Microservices] → Databases/Cache/CDN
+2️⃣ What are some strategies to prevent online payment fraud?
+Step-by-Step Solution
+1. Use Secure Payment Gateways
+
+Integrate trusted payment gateways (Razorpay, Stripe, PayPal)—like choosing the best umpires for a fair match.
+
+2. Enable Multi-Factor Authentication
+
+Ask users for OTPs or biometrics during checkout, just as an umpire double-checks a run-out.
+
+3. Monitor Transactions Automatically
+
+Use machine learning to spot unusual activity (big orders, mismatched locations)—like a third umpire reviewing suspicious plays.
+
+4. Address Verification & CVV
+
+Always verify billing address and CVV code, like checking if batsman is within the crease.
+
+5. Tokenize & Encrypt Data
+
+Never store raw card data; always use encrypted “tokens”—as secure as a batsman’s helmet and pads.
+
+6. Set Velocity Checks
+
+Limit the number of transactions per user/card in a time window, just like an over limit per bowler.
+
+Quick Cricket Analogy
+
+Payment fraud prevention is like keeping a sharp wicketkeeper and alert fielders—every transaction is watched, and the stumps are protected from sneaky runs.
+
+Simple Visual
+
+css
+Copy
+Edit
+User → Payment Form → [Gateway: 2FA, Checks, ML Rules] → Payment Complete/Flagged
+3️⃣ How does personalization improve customer experience in e-commerce?
+Step-by-Step Solution
+1. Track User Preferences
+
+Record what each user browses or buys—like keeping each player’s batting stats.
+
+2. Recommend Relevant Products
+
+Show “You may also like…” or “Recommended for you” based on their activity. Just like a coach suggesting a batsman work on specific shots after seeing him play.
+
+3. Personalized Emails and Offers
+
+Send custom deals on user’s birthday, or reminders about their wish list—like sending a personalized practice schedule to each cricketer.
+
+4. Dynamic Homepage and Navigation
+
+Display products and banners relevant to user’s interests—like setting fielders based on the batsman’s favorite shots.
+
+5. Simplify Checkout
+
+Pre-fill shipping info, suggest repeat orders—like a coach prepping gear for the next match automatically.
+
+Quick Cricket Analogy
+
+Personalization is the coach who knows your game inside out—always giving you the right tips, gear, and encouragement for your best performance.
+
+Simple Visual Flow
+
+sql
+Copy
+Edit
+User Activity → Data Collection → Personalized Recommendations/Emails/Offers
+Extra: How to Practice (Hands-on Activity)
+For architecture: Draw a diagram of your e-commerce site’s parts on paper, showing how users reach products, checkout, and how data flows.
+
+For fraud prevention: Pretend to place fake and real orders on a demo site; notice what security steps are there.
+
+For personalization: Visit an e-commerce site as a guest and as a logged-in user; compare the recommendations you get!

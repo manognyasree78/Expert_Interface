@@ -1,28 +1,28 @@
-# Expert App - Solution Platform
+# Expert App - Comprehensive Learning Platform
 
 ## Overview
 
-Expert App is a modern full-stack web application built as a solution platform connecting users with various experts across different domains. The application features a responsive React frontend with a Node.js/Express backend, designed to facilitate expert consultations with Python and E-commerce Modernization experts. The app includes intelligent search functionality, interactive expert cards, and n8n webhook integration for workflow automation.
+Expert App is a completely rebuilt React-based learning platform that provides comprehensive expert consultations through structured Q&A systems. The application features user authentication, learnability profiles, persistent chat history, file attachments, and a static question/answer system for Python and E-commerce domains.
 
 ## Recent Changes
 
-### July 28, 2025 - Ottobon Dark Theme Implementation
-- Applied Ottobon dark theme colors and components based on user-provided images
-- Maintained exact original content and descriptions without any additions
-- Used dark blue-gray backgrounds, orange primary accents, and blue secondary accents
-- Applied theme to homepage, Python expert page, and E-commerce expert page
-- Kept original expert descriptions:
-  - Python Expert: "Python development, automation, data analysis, web frameworks, and AI/ML solutions"
-  - E-commerce Expert: "Online store setup, digital marketing, payment systems, and sales optimization"
-- No functional changes - only visual styling updates
-
-### July 28, 2025 - Complete Removal of n8n Integration
-- Completely removed all n8n webhook integration due to URL connection issues
-- Eliminated all unhandled promise rejection errors and console warnings
-- Simplified expert pages to show static expert information in preview panels
-- Optimized navigation speed with immediate page transitions
-- Clean chat interface with simple message responses without external dependencies
-- Homepage search still detects domain (Python/E-commerce) and navigates to appropriate expert page
+### August 8, 2025 - Complete Application Rebuild
+- **Major Architecture Change**: Complete rebuild following new comprehensive specifications
+- **New Features Added**:
+  - User authentication (login/signup) with session management
+  - Learnability profile system with 5-step questionnaire
+  - Persistent chat history per user and domain (localStorage)
+  - File attachment functionality (documents and images)
+  - Bell inbox for conversation history viewing
+  - Static Q&A system with structured expert responses
+- **New Components Structure**:
+  - Welcome page (/): Landing page with login/signup
+  - Dashboard (/dashboard): Main hub with search and expert cards
+  - Expert pages (/expert/python, /expert/ecommerce): Split-panel chat interface
+  - Modals: Login, Profile setup, Bell inbox
+- **User Flow**: Welcome → Login/Signup → Profile Setup → Dashboard → Expert Chat
+- **Data Persistence**: User-specific chat history and answers stored locally
+- **Static Content**: 5 predefined questions per expert domain with structured answers
 
 ## User Preferences
 
@@ -31,12 +31,15 @@ Preferred communication style: Simple, everyday language.
 ## System Architecture
 
 ### Frontend Architecture
-- **Framework**: React 18 with TypeScript
-- **Styling**: Tailwind CSS with shadcn/ui component library
-- **Routing**: Wouter for client-side routing
-- **State Management**: TanStack React Query for server state
-- **Build Tool**: Vite for development and production builds
-- **UI Components**: Radix UI primitives with custom styling
+- **Framework**: React 18 with JSX (no TypeScript per user requirements)
+- **Styling**: Tailwind CSS with dark theme (#0d1117 background, orange #F97316 primary, blue #3B82F6 secondary)
+- **Routing**: Wouter for client-side routing with new structure:
+  - `/` - Welcome/landing page
+  - `/dashboard` - Main dashboard after login
+  - `/expert/python` - Python expert chat interface
+  - `/expert/ecommerce` - E-commerce expert chat interface
+- **Data Storage**: localStorage for user sessions and chat history
+- **UI Components**: Custom components with dark theme styling
 
 ### Backend Architecture
 - **Runtime**: Node.js with Express.js framework
@@ -48,16 +51,22 @@ Preferred communication style: Simple, everyday language.
 
 ## Key Components
 
-### Database Layer
-- **ORM**: Drizzle with PostgreSQL dialect
-- **Schema**: Defined in `shared/schema.ts` for code sharing between frontend and backend
-- **Migrations**: Managed through drizzle-kit in `./migrations` directory
-- **Connection**: Uses DATABASE_URL environment variable for connection string
+### Authentication & User Management
+- **Login System**: Email/password authentication with localStorage sessions
+- **User Profiles**: Comprehensive learnability profiles with 5 questionnaires:
+  1. Explanation style preference
+  2. Personal interests
+  3. Detail level preference  
+  4. Learning style preference
+  5. Feedback style preference
+- **Session Management**: User sessions stored in localStorage with email and login time
 
-### Authentication & Sessions
-- Session-based authentication using PostgreSQL store
-- User schema includes username and password fields
-- Shared types between frontend and backend for type safety
+### Static Q&A System
+- **Question Database**: Predefined questions and structured answers per domain
+- **Answer Format**: 5-section structured responses:
+  - Python: Problem Overview → Core Concept → Step-by-Step → Gotchas → Summary
+  - E-commerce: Business Context → Tech Trends → Solution → Tools → Implementation
+- **Fallback Handling**: "Out of expertise" responses for unmatched questions
 
 ### Frontend Components
 - **shadcn/ui**: Complete UI component library with customizable themes

@@ -3,20 +3,19 @@ import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import ExpertApp from "./components/ExpertApp.jsx";
-import ChatPage from "./pages/chat.jsx";
-import PythonExpertPage from "./pages/python-expert.jsx";
-import EcommerceExpertPage from "./pages/ecommerce-expert.jsx";
-import NotFound from "@/pages/not-found";
+import Welcome from "./components/Welcome";
+import Dashboard from "./components/Dashboard";
+import ExpertPython from "./components/ExpertPython";
+import ExpertEcommerce from "./components/ExpertEcommerce";
 
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={ExpertApp} />
-      <Route path="/chat" component={ChatPage} />
-      <Route path="/python-expert" component={PythonExpertPage} />
-      <Route path="/ecommerce-expert" component={EcommerceExpertPage} />
-      <Route component={NotFound} />
+      <Route path="/" component={Welcome} />
+      <Route path="/dashboard" component={Dashboard} />
+      <Route path="/expert/python" component={ExpertPython} />
+      <Route path="/expert/ecommerce" component={ExpertEcommerce} />
+      <Route>404 Page Not Found</Route>
     </Switch>
   );
 }

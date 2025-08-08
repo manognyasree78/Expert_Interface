@@ -1,0 +1,175 @@
+Prompt (Static .jsx Frontend Only)
+
+### 🔹 Project: Expert App
+
+*Framework*: React JSX
+*Static Only*: No API calls — all questions, routing, and answers hardcoded.
+*UI Theme*: Dark background (#0d1117), accent colors in **blue #3B82F6**, **orange #F97316**, and light grey cards (#1F2937, #E5E7EB).
+
+---
+
+## 🔱 Functional Pages Overview
+
+### 1. **Welcome Page (/)**
+
+* Greeting: Welcome to Expert App
+* Description: “One stop, where you can meet all the solutions for your problems.”
+* Buttons:
+
+  * Top Right: Login, Sign Up
+  * Center: Get Started
+* Clicking any button opens a modal:
+
+  * Sign Up / Login: fake email + password fields
+  * On success: navigate to /profile
+
+---
+
+### 2. **Learnability Profile Modal (/profile)**
+
+#### a. Welcome Popup (Screenshot 1)
+
+* Modal Heading: 🧠 Learnability Profile
+* Message: “Hi! I want to answer your questions in the way you understand best…”
+
+#### b. Profile Questions (Screenshots 2–3)
+
+* *Q1. How do you like things explained?*
+
+  * With simple examples
+  * With step-by-step instructions
+  * Through stories or analogies
+* *Q2. Which topics or hobbies do you love?* (input text)
+* *Q3. How much detail do you prefer?*
+
+  * Short and to the point
+  * Balanced
+  * Detailed, with all steps
+* *Q4. What's your favorite way to learn?*
+
+  * Reading or text
+  * Doing hands-on activities
+  * Listening to explanations
+* *Q5. How do you want feedback? (Optional)*
+
+  * Quick tips only
+  * Detailed feedback on mistakes
+  * Encourage me, don’t criticize
+  * No feedback, just answers
+* ✅ Remember this for all conversations
+* 🔘 Button: Save Profile
+* Modal: “✅ All Set” → Get Started → navigates to /dashboard
+
+---
+
+### 3. **Main Dashboard Page (/dashboard)** (Screenshot 5)
+
+* *Top Navbar*:
+
+  * Left: “🏠 EXPERT APP” logo
+  * Right:
+
+    * Profile Icon → Dropdown: Learnability Profile, Logout
+* *Middle Body*:
+
+  * Welcome text
+  * Search bar with "Hey, how can I help you today..."
+  * Domain cards:
+
+    * 🟦 Python Expert
+    * 🟧 E-commerce Modernization Expert
+* *Routing Logic*:
+
+  * Typing and submitting a question → redirects to appropriate expert page
+  * Clicking card → redirects to expert page
+
+---
+
+### 4. **Expert Pages (/expert/python, /expert/ecommerce)**
+
+Layout:
+
+* *Left Panel (30%)*: Chat Area
+* *Right Panel (70%)*: Answer Preview
+* Scrollbar: Both sections scroll independently
+* Top of Left Panel:
+
+  * Domain Name + 🔔 Bell icon
+  * Back icon (redirect to /dashboard)
+* Chat Input:
+
+  * Attach button (docs/images)
+  * Text input + Send
+* Messages remain in thread (persistent)
+* *If question is not valid*, show Screenshot 7 error message.
+
+---
+
+## ✅ Predefined Static Questions and Answers
+
+---
+
+### 🐍 Python Expert Questions (20)
+
+All answers follow the format:
+
+
+1. Problem Overview  
+🔹 2. Core Concept Explanation  
+🔹 3. Step-by-Step Solution or Best Practice  
+🔹 4. Gotchas or Common Pitfalls  
+🔹 5. Summary or Recommendation  
+
+
+#### Valid Python Questions:
+What is the difference between static method and class method?
+What is slicing in Python, and how do you slice a list?
+What is a function in Python? Write a function that returns the square of a number.
+---
+
+### 🛍 E-commerce Expert Questions (20)
+
+All answers follow the format:
+
+
+1. Business Context  
+🔹 2. Modern Tech/Trends Overview  
+🔹 3. Solution Approach  
+🔹 4. Real-world Tools or Examples  
+🔹 5. Implementation Tips or Pitfalls  
+
+
+#### Valid E-commerce Questions:
+
+1. How would you design a scalable architecture for a high-traffic e-commerce site?
+2. What are some strategies to prevent online payment fraud?
+3. How does personalization improve customer experience in e-commerce?
+---
+
+### ❌ Out of Expertise View (Fallback)
+
+*Condition*: If user asks a question outside the valid 20 per expert
+*Right-side preview output* (Screenshot 7):
+
+
+🤖 Out of My Expertise  
+Sorry, that's out of my expertise. Let me connect to my human expert and get back to you.  
+(Shown in light pink card with icon and soft styling)
+
+
+---
+
+## 🎨 Color Theme
+
+| Element          | Color Code | Use                              |
+| ---------------- | ---------- | -------------------------------- |
+| Background       | #0d1117  | Global background                |
+| Card background  | #1F2937  | Chat/Preview card                |
+| Text heading     | #FFFFFF  | Titles and questions             |
+| Text subheading  | #D1D5DB  | Hints, descriptions              |
+| Primary button   | #F97316  | Orange (Get Started, Save, Send) |
+| Secondary button | #3B82F6  | Blue (Domain cards)              |
+| Accent highlight | #10B981  | Green check, completed icon      |
+
+---
+

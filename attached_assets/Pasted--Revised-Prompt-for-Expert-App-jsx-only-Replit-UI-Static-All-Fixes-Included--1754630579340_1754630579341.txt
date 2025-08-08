@@ -1,0 +1,138 @@
+## 🔧 Revised Prompt for Expert App (.jsx-only Replit UI, Static)
+
+### ✅ All Fixes Included:
+
+---
+
+### ✅ *Fix #1: Get Started Button Flow*
+
+*Previous issue*: Clicking “Get Started” skipped login/signup.
+*Now required flow*:
+
+1. On clicking *Get Started*, show a modal:
+   → *Login / Signup Form* (Email + Password + Confirm button)
+
+2. Only after successful login/signup → redirect to /profile to show the *Learnability Profile Modal*.
+
+---
+
+### ✅ *Fix #2: Attach Button Functionality*
+
+In the *chat panel* of expert pages:
+
+* Clicking the *Attach* button should allow:
+
+  * Document file selection (.pdf, .docx, .txt)
+  * Image upload (.png, .jpg)
+* Show selected file name or preview in the chat bubble before/after message.
+
+💡 You can use <input type="file" multiple /> styled with custom icon for file upload.
+
+---
+
+### ✅ *Fix #3: Multi-question Answering in Expert Page*
+
+*Expected behavior*:
+
+* Every time the user types a new question:
+
+  * It is added to the chat panel
+  * The *right preview panel* generates an answer and appends it *below the previous answer*
+* Each question → 1 answer → appended sequentially (in same scrollable thread)
+
+✅ Answers must *not overwrite* each other.
+✅ Scrollable thread grows vertically.
+✅ Ensure both panels scroll independently.
+
+---
+
+### ✅ *Fix #4: Persistent Chat + Answer Thread*
+
+* When a user leaves the expert page (e.g., via Back to Main)
+* Then re-enters the *same domain expert page*:
+
+✅ Show full *chat thread history*
+✅ Show all *answers* from right preview panel (in the same order as before)
+✅ Use localStorage or sessionStorage to preserve thread and answers
+
+---
+
+### ✅ *Fix #5: Bell Icon Functionality (Inbox View)*
+
+On expert page (top left next to Expert name):
+
+* Clicking the 🔔 Bell icon opens a *popup modal*:
+
+  * Show list of:
+
+    * User Questions
+    * Corresponding Expert Answers (in preview format)
+* Style like a mini inbox → scrollable popup
+
+---
+
+### ✅ *Fix #6: Main Page Question Bar Behavior*
+
+*Previous issue*: User had to retype question after redirection
+*Now behavior*:
+
+* User types question in /dashboard → system detects domain:
+
+  * If Python → redirect to /expert/python
+  * If E-commerce → redirect to /expert/ecommerce
+
+* On redirection:
+  ✅ Show question in chat panel
+  ✅ Show matching answer in preview panel directly
+  ✅ No need to retype question
+
+💡 To do this: pass question as state via router or sessionStorage → then render both on expert page mount.
+
+
+ Fix #7: User-Specific Chat & Answer History
+Goal:
+When a user logs out and a new user logs in, all chats and answers should reset.
+If the same user logs in again, they should see their previous chat history and expert answers exactly where they left off.
+---
+
+### 🧠 Recap: Static Only Expert Questions
+
+#### Python Expert (20 Static Questions):
+
+(as previously shared)
+
+#### E-commerce Expert (20 Static Questions):
+
+(as previously shared)
+
+If question is not in list → fallback:
+“Out of My Expertise” message in preview panel (Screenshot 7 style).
+
+---
+
+### 🗂 Suggested File Structure for Replit UI (.jsx)
+
+
+/src
+├── App.jsx
+├── routes/
+│   ├── Welcome.jsx
+│   ├── LoginModal.jsx
+│   ├── ProfileModal.jsx
+│   ├── Dashboard.jsx
+│   ├── ExpertPython.jsx
+│   ├── ExpertEcommerce.jsx
+├── components/
+│   ├── Navbar.jsx
+│   ├── ChatPanel.jsx
+│   ├── PreviewPanel.jsx
+│   ├── BellInbox.jsx
+│   ├── AttachButton.jsx
+│   ├── AnswerBlock.jsx
+│   └── ExpertCard.jsx
+└── data/
+    └── questionsAnswers.json
+
+
+---
+

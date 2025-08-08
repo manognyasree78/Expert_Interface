@@ -28,7 +28,7 @@ const SearchHistoryCard = ({ chatThreads, onSelectThread }) => {
                 {thread.messages[0]?.text || `Chat ${index + 1}`}
               </span>
               <span className="text-xs text-muted-foreground ml-auto">
-                {thread.messages[0]?.timestamp?.toLocaleDateString()}
+                {thread.messages[0]?.timestamp ? new Date(thread.messages[0].timestamp).toLocaleDateString() : ''}
               </span>
             </div>
           ))

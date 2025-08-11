@@ -7,7 +7,10 @@ const BellInbox = ({ isOpen, onClose, messages = [], answers = [] }) => {
     question: message.text,
     answer: answers[index] || null,
     timestamp: message.timestamp
-  })).filter(item => item.answer && item.answer.isOutOfExpertise);
+  })).filter(item => {
+    // Only show questions that received out-of-expertise responses
+    return item.answer && item.answer.isOutOfExpertise === true;
+  });
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -22,7 +25,7 @@ const BellInbox = ({ isOpen, onClose, messages = [], answers = [] }) => {
         <div className="p-6 overflow-y-auto max-h-96">
           {conversationHistory.length === 0 ? (
             <div className="text-center text-muted-foreground py-8">
-              No out-of-domain questions yet. Questions outside my expertise will appear here for human expert review.
+              No out-of-expertise questions yet. Questions outside my knowledge base will appear here for further review.
             </div>
           ) : (
             <div className="space-y-6">
@@ -36,17 +39,11 @@ const BellInbox = ({ isOpen, onClose, messages = [], answers = [] }) => {
                       Q: {item.question}
                     </div>
                   </div>
-                  {item.answer && (
+                  {item.answer && item.answer.isOutOfExpertise && (
                     <div className="bg-card rounded p-3 text-sm text-card-foreground">
-                      <strong>Answer Preview:</strong>
-                      <div className="mt-2 space-y-2">
-                        {item.answer.isOutOfExpertise ? (
-                          <p className="text-red-400">{item.answer.message}</p>
-                        ) : (
-                          <div>
-                            <p><strong>Overview:</strong> {item.answer.problemOverview || item.answer.businessContext}</p>
-                          </div>
-                        )}
+                      <strong>Response:</strong>
+                      <div className="mt-2">
+                        <p className="text-orange-400 italic">{item.answer.message}</p>
                       </div>
                     </div>
                   )}

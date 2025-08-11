@@ -324,11 +324,11 @@ const ExpertPython = () => {
               </div>
           <div className="max-w-4xl mx-auto space-y-8">
             {answers.map((answer, index) => (
-              <div key={index} className="bg-card/50 rounded-2xl p-8 border-0 shadow-sm">
+              <div key={index} className="bg-background/50 rounded-2xl p-8 border-0 shadow-sm">
                 {/* Removed question repetition as per requirements */}
 
                 {answer.isOutOfExpertise ? (
-                  <div className="bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800/30 dark:to-slate-900/30 p-8 rounded-xl text-center border-0">
+                  <div className="bg-background/30 p-8 rounded-xl text-center border-0">
                     <div className="text-4xl mb-4">🤖</div>
                     <p className="text-slate-600 dark:text-slate-300 text-lg italic">{answer.message}</p>
                   </div>
@@ -343,7 +343,7 @@ const ExpertPython = () => {
                       </div>
                     )}
                     
-                    <div className="bg-accent p-6 rounded-lg">
+                    <div className="bg-background/30 p-6 rounded-lg">
                       <h3 className="text-lg font-semibold text-card-foreground mb-3 flex items-center">
                         <span className="text-secondary mr-2">🔹</span>
                         1. Problem Overview
@@ -351,7 +351,7 @@ const ExpertPython = () => {
                       <p className="text-card-foreground leading-relaxed">{answer.problemOverview}</p>
                     </div>
 
-                    <div className="bg-accent p-6 rounded-lg">
+                    <div className="bg-background/30 p-6 rounded-lg">
                       <h3 className="text-lg font-semibold text-card-foreground mb-3 flex items-center">
                         <span className="text-secondary mr-2">🔹</span>
                         2. Core Concept Explanation
@@ -359,7 +359,7 @@ const ExpertPython = () => {
                       <p className="text-card-foreground leading-relaxed">{answer.coreConceptExplanation}</p>
                     </div>
 
-                    <div className="bg-accent p-6 rounded-lg">
+                    <div className="bg-background/30 p-6 rounded-lg">
                       <h3 className="text-lg font-semibold text-card-foreground mb-3 flex items-center">
                         <span className="text-secondary mr-2">🔹</span>
                         3. Step-by-Step Solution
@@ -371,7 +371,7 @@ const ExpertPython = () => {
                       </div>
                     </div>
 
-                    <div className="bg-accent p-6 rounded-lg">
+                    <div className="bg-background/30 p-6 rounded-lg">
                       <h3 className="text-lg font-semibold text-card-foreground mb-3 flex items-center">
                         <span className="text-secondary mr-2">🔹</span>
                         4. Gotchas or Common Pitfalls
@@ -379,7 +379,7 @@ const ExpertPython = () => {
                       <p className="text-card-foreground leading-relaxed">{answer.gotchasOrPitfalls}</p>
                     </div>
 
-                    <div className="bg-accent p-6 rounded-lg">
+                    <div className="bg-background/30 p-6 rounded-lg">
                       <h3 className="text-lg font-semibold text-card-foreground mb-3 flex items-center">
                         <span className="text-secondary mr-2">🔹</span>
                         5. Summary or Recommendation

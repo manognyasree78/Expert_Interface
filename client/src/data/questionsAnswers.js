@@ -263,7 +263,7 @@ export const findAnswer = (userQuestion, domain) => {
   return {
     answer: {
       isOutOfExpertise: true,
-      message: `This question requires deeper expertise that's outside my current ${domain} knowledge base. I specialize in ${domain === 'python' ? 'core Python programming concepts like functions, data structures, static/class methods, and list operations' : 'foundational e-commerce topics like scalable architecture, payment security, and customer personalization strategies'}.`
+      message: "This question requires a deeper expertise let me tap in and get back to you"
     },
     refinedQuery: null
   };

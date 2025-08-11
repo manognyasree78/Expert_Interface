@@ -326,11 +326,11 @@ const ExpertEcommerce = () => {
               </div>
           <div className="max-w-4xl mx-auto space-y-8">
             {answers.map((answer, index) => (
-              <div key={index} className="bg-card/50 rounded-2xl p-8 border-0 shadow-sm">
+              <div key={index} className="bg-background/50 rounded-2xl p-8 border-0 shadow-sm">
                 {/* Removed question repetition as per requirements */}
 
                 {answer.isOutOfExpertise ? (
-                  <div className="bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800/30 dark:to-slate-900/30 p-8 rounded-xl text-center border-0">
+                  <div className="bg-background/30 p-8 rounded-xl text-center border-0">
                     <div className="text-4xl mb-4">🤖</div>
                     <p className="text-slate-600 dark:text-slate-300 text-lg italic">{answer.message}</p>
                   </div>
@@ -345,7 +345,7 @@ const ExpertEcommerce = () => {
                       </div>
                     )}
                     
-                    <div className="bg-accent p-6 rounded-lg">
+                    <div className="bg-background/30 p-6 rounded-lg">
                       <h3 className="text-lg font-semibold text-card-foreground mb-3 flex items-center">
                         <span className="text-primary mr-2">🔹</span>
                         1. Business Context
@@ -371,7 +371,7 @@ const ExpertEcommerce = () => {
                       </div>
                     )}
 
-                    <div className="bg-accent p-6 rounded-lg">
+                    <div className="bg-background/30 p-6 rounded-lg">
                       <h3 className="text-lg font-semibold text-card-foreground mb-3 flex items-center">
                         <span className="text-primary mr-2">🔹</span>
                         2. Technology Overview
@@ -379,7 +379,7 @@ const ExpertEcommerce = () => {
                       <p className="text-card-foreground leading-relaxed">{answer.technologyOverview}</p>
                     </div>
 
-                    <div className="bg-accent p-6 rounded-lg">
+                    <div className="bg-background/30 p-6 rounded-lg">
                       <h3 className="text-lg font-semibold text-card-foreground mb-3 flex items-center">
                         <span className="text-primary mr-2">🔹</span>
                         3. Solution Approach
@@ -387,7 +387,7 @@ const ExpertEcommerce = () => {
                       <div className="text-card-foreground leading-relaxed whitespace-pre-line">{answer.solutionApproach}</div>
                     </div>
 
-                    <div className="bg-accent p-6 rounded-lg">
+                    <div className="bg-background/30 p-6 rounded-lg">
                       <h3 className="text-lg font-semibold text-card-foreground mb-3 flex items-center">
                         <span className="text-primary mr-2">🔹</span>
                         4. Real-world Tools or Examples
@@ -395,7 +395,7 @@ const ExpertEcommerce = () => {
                       <div className="text-card-foreground leading-relaxed whitespace-pre-line">{answer.realWorldToolsOrExamples}</div>
                     </div>
 
-                    <div className="bg-accent p-6 rounded-lg">
+                    <div className="bg-background/30 p-6 rounded-lg">
                       <h3 className="text-lg font-semibold text-card-foreground mb-3 flex items-center">
                         <span className="text-primary mr-2">🔹</span>
                         5. Implementation Tips or Pitfalls

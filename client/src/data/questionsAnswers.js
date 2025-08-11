@@ -181,42 +181,90 @@ Tools: Adobe Target, Optimizely, Dynamic Yield`,
 // Helper function to find the best matching answer
 export const findAnswer = (userQuestion, domain) => {
   const questions = domain === 'python' ? pythonQuestions : ecommerceQuestions;
-  const normalizedQuestion = userQuestion.toLowerCase();
+  const normalizedQuestion = userQuestion.toLowerCase().trim();
   
-  // Direct matching logic
-  for (const [key, answer] of Object.entries(questions)) {
-    if (normalizedQuestion.includes(key.toLowerCase()) || 
-        key.toLowerCase().split(' ').some(word => normalizedQuestion.includes(word))) {
-      return answer;
-    }
-  }
-  
-  // Specific matching for user questions
+  // Specific matching for each domain - more precise matching
   if (domain === 'python') {
-    if (normalizedQuestion.includes('static') && normalizedQuestion.includes('method')) {
-      return questions["static method vs class method"];
+    // Static method vs class method matching
+    if ((normalizedQuestion.includes('static') && normalizedQuestion.includes('method')) ||
+        (normalizedQuestion.includes('class') && normalizedQuestion.includes('method')) ||
+        normalizedQuestion.includes('@staticmethod') || 
+        normalizedQuestion.includes('@classmethod') ||
+        normalizedQuestion.includes('difference between static method and class method')) {
+      return {
+        answer: questions["static method vs class method"],
+        refinedQuery: "What is the difference between static method and class method in Python?"
+      };
     }
-    if (normalizedQuestion.includes('slice') || normalizedQuestion.includes('slicing')) {
-      return questions["python slicing"];
+    
+    // Slicing matching
+    if (normalizedQuestion.includes('slice') || normalizedQuestion.includes('slicing') ||
+        normalizedQuestion.match(/\[.*:.*\]/) || normalizedQuestion.includes('list slicing') ||
+        normalizedQuestion.includes('how do you slice')) {
+      return {
+        answer: questions["python slicing"],
+        refinedQuery: "What is slicing in Python, and how do you slice a list?"
+      };
     }
-    if (normalizedQuestion.includes('function')) {
-      return questions["what is a function"];
+    
+    // Function matching - be more specific
+    if ((normalizedQuestion.includes('function') && 
+         (normalizedQuestion.includes('what is') || normalizedQuestion.includes('create') || 
+          normalizedQuestion.includes('write') || normalizedQuestion.includes('define'))) ||
+        normalizedQuestion.includes('def ') || 
+        normalizedQuestion.includes('square of a number') ||
+        normalizedQuestion.includes('return')) {
+      return {
+        answer: questions["what is a function"],
+        refinedQuery: "What is a function in Python? Write a function that returns the square of a number."
+      };
     }
-  } else if (domain === 'ecommerce') {
-    if (normalizedQuestion.includes('scalable') || normalizedQuestion.includes('architecture')) {
-      return questions["scalable architecture"];
+  } 
+  
+  else if (domain === 'ecommerce') {
+    // Scalable architecture matching
+    if ((normalizedQuestion.includes('scalable') && normalizedQuestion.includes('architecture')) ||
+        (normalizedQuestion.includes('high-traffic') && normalizedQuestion.includes('ecommerce')) ||
+        normalizedQuestion.includes('design') && normalizedQuestion.includes('architecture') ||
+        normalizedQuestion.includes('load balancing') || 
+        normalizedQuestion.includes('microservices')) {
+      return {
+        answer: questions["scalable architecture"],
+        refinedQuery: "How would you design a scalable architecture for a high-traffic e-commerce site?"
+      };
     }
-    if (normalizedQuestion.includes('fraud') || normalizedQuestion.includes('payment')) {
-      return questions["payment fraud prevention"];
+    
+    // Payment fraud matching  
+    if ((normalizedQuestion.includes('payment') && normalizedQuestion.includes('fraud')) ||
+        normalizedQuestion.includes('prevent fraud') ||
+        normalizedQuestion.includes('payment security') ||
+        normalizedQuestion.includes('fraud prevention') ||
+        normalizedQuestion.includes('secure payment')) {
+      return {
+        answer: questions["payment fraud prevention"],
+        refinedQuery: "What are some strategies to prevent online payment fraud?"
+      };
     }
-    if (normalizedQuestion.includes('personalization') || normalizedQuestion.includes('customer experience')) {
-      return questions["personalization customer experience"];
+    
+    // Personalization matching
+    if (normalizedQuestion.includes('personalization') ||
+        (normalizedQuestion.includes('customer') && normalizedQuestion.includes('experience')) ||
+        normalizedQuestion.includes('personalized') ||
+        normalizedQuestion.includes('recommendation') ||
+        normalizedQuestion.includes('improve customer experience')) {
+      return {
+        answer: questions["personalization customer experience"],
+        refinedQuery: "How does personalization improve customer experience in e-commerce?"
+      };
     }
   }
   
-  // Fallback
+  // If no match found, return out of expertise
   return {
-    isOutOfExpertise: true,
-    message: `This question seems outside my ${domain} expertise. I specialize in ${domain === 'python' ? 'Python programming concepts like functions, data structures, and object-oriented programming' : 'e-commerce topics like scalable architecture, payment systems, and customer experience optimization'}.`
+    answer: {
+      isOutOfExpertise: true,
+      message: `This question requires deeper expertise that's outside my current ${domain} knowledge base. I specialize in ${domain === 'python' ? 'core Python programming concepts like functions, data structures, static/class methods, and list operations' : 'foundational e-commerce topics like scalable architecture, payment security, and customer personalization strategies'}.`
+    },
+    refinedQuery: null
   };
 };

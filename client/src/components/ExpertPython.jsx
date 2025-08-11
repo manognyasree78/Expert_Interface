@@ -148,8 +148,13 @@ const ExpertPython = () => {
         setMessages(messagesWithBot);
         
         // Get answer
-        const answer = findAnswer(question, 'python');
-        const newAnswers = [...answers, answer];
+        const result = findAnswer(question, 'python');
+        const newAnswers = [...answers, result.answer];
+        
+        // Store refined query for "You meant..." feature
+        if (result.refinedQuery) {
+          setRefinedQueries(prev => [...prev, result.refinedQuery]);
+        }
         setAnswers(newAnswers);
 
         // Save to localStorage
@@ -157,8 +162,13 @@ const ExpertPython = () => {
       }, 500);
     } else {
       // Get answer immediately if no refinement
-      const answer = findAnswer(question, 'python');
-      const newAnswers = [...answers, answer];
+      const result = findAnswer(question, 'python');
+      const newAnswers = [...answers, result.answer];
+      
+      // Store refined query for "You meant..." feature
+      if (result.refinedQuery) {
+        setRefinedQueries(prev => [...prev, result.refinedQuery]);
+      }
       setAnswers(newAnswers);
       saveChatHistory(newMessages, newAnswers);
     }

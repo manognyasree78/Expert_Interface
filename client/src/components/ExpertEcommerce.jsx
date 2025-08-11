@@ -150,8 +150,13 @@ const ExpertEcommerce = () => {
         setMessages(messagesWithBot);
         
         // Get answer
-        const answer = findAnswer(question, 'ecommerce');
-        const newAnswers = [...answers, answer];
+        const result = findAnswer(question, 'ecommerce');
+        const newAnswers = [...answers, result.answer];
+        
+        // Store refined query for "You meant..." feature
+        if (result.refinedQuery) {
+          setRefinedQueries(prev => [...prev, result.refinedQuery]);
+        }
         setAnswers(newAnswers);
 
         // Save to localStorage
@@ -159,8 +164,13 @@ const ExpertEcommerce = () => {
       }, 500);
     } else {
       // Get answer immediately if no refinement
-      const answer = findAnswer(question, 'ecommerce');
-      const newAnswers = [...answers, answer];
+      const result = findAnswer(question, 'ecommerce');
+      const newAnswers = [...answers, result.answer];
+      
+      // Store refined query for "You meant..." feature
+      if (result.refinedQuery) {
+        setRefinedQueries(prev => [...prev, result.refinedQuery]);
+      }
       setAnswers(newAnswers);
       saveChatHistory(newMessages, newAnswers);
     }

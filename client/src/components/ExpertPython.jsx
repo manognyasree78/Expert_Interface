@@ -175,7 +175,7 @@ const ExpertPython = () => {
   };
 
   const handleSendMessage = (messageText = currentMessage) => {
-    if (!messageText || !messageText.trim()) return;
+    if (!messageText || typeof messageText !== 'string' || !messageText.trim()) return;
     
     handleQuestionSubmit(messageText);
     setCurrentMessage('');

@@ -7,7 +7,7 @@ const BellInbox = ({ isOpen, onClose, messages = [], answers = [] }) => {
     question: message.text,
     answer: answers[index] || null,
     timestamp: message.timestamp
-  })).filter(item => !item.question.includes('ask me') && item.answer && item.answer.isOutOfExpertise);
+  })).filter(item => item.answer && item.answer.isOutOfExpertise);
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">

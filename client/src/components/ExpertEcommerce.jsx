@@ -167,7 +167,7 @@ const ExpertEcommerce = () => {
   };
 
   const handleSendMessage = (messageText = currentMessage) => {
-    if (!messageText.trim()) return;
+    if (!messageText || !messageText.trim()) return;
     
     handleQuestionSubmit(messageText);
     setCurrentMessage('');

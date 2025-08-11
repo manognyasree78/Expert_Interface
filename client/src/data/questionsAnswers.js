@@ -1,4 +1,7 @@
 // Static questions and answers for Expert App
+import ecommerce1Img from '../assets/ecommerce1.png';
+import ecommerce2Img from '../assets/ecommerce2.jpg';
+import ecommerce3Img from '../assets/ecommerce3.jpg';
 
 export const pythonQuestions = {
   "static method vs class method": {
@@ -62,7 +65,7 @@ Slice:         ^---^---^
     problemOverview: "A function is like a reusable recipe in your cookbook. You give it an ingredient, it does the work, and you get a finished dish. Give it a number (e.g., 5), it \"squares\" it (5 × 5 = 25).",
     coreConceptExplanation: "Imagine a \"Double Portions\" recipe: You tell it 3 servings, it magically gives you a dish for 9 people. It's a way to use the same logic over and over, no matter what input you give.",
     stepByStepSolution: `def square(servings):
-    \"\"\"Returns the square of the number of servings.\"\"\"
+    """Returns the square of the number of servings."""
     return servings * servings
 
 print(square(5))   # Output: 25
@@ -73,28 +76,25 @@ print(square(5))   # Output: 25
 Example:  4 --> square() --> 16
 
 # Side Table (Just for Clarity)
-Input | Output
-  2   |   4
-  3   |   9
-  7   |   49`,
-    gotchasOrPitfalls: "Functions are reusable code blocks. Always include return statements for output and use descriptive parameter names.",
-    summaryOrRecommendation: "Functions are like recipes - they take inputs, process them, and return results. Essential for code reusability and organization.",
-    visual: "📖🍽️"
+Input   Output
+2       4
+3       9
+7       49`,
+    gotchasOrPitfalls: "Functions help you avoid repeating code and make programs more organized. Always include a docstring to explain what the function does.",
+    summaryOrRecommendation: "Functions are reusable blocks of code that take inputs, process them, and return outputs. They're essential for organizing and structuring your programs.",
+    visual: "🔧⚙️"
   }
 };
 
 export const ecommerceQuestions = {
-  "scalable architecture for high traffic": {
+  "scalable architecture": {
     title: "How would you design a scalable architecture for a high-traffic e-commerce site?",
-    businessContext: "Use a cloud platform (like AWS, Azure, or Google Cloud) for flexibility and scaling. Think of this as setting up a strong cricket pitch—if the base is weak, the whole game struggles.",
-    modernTechTrendsOverview: "Place load balancers at the front to direct user traffic evenly, like umpires distributing overs across bowlers. Divide the app into parts: Product Service, Order Service, User Service, Payment Service. Each \"player\" (service) has a role—like a batsman, bowler, and fielder.",
-    solutionApproach: `Step-by-Step Solution
-
-1. Start with a Solid Foundation
+    businessContext: "A scalable e-commerce architecture means your site can handle a LOT of users at once – think 'IPL Finals ticket rush!' You want fast, reliable, and secure shopping, no matter the crowd size.",
+    technologyOverview: "Use a cloud platform (like AWS, Azure, or Google Cloud) for flexibility and scaling. Think of this as setting up a strong cricket pitch—if the base is weak, the whole game struggles.",
+    solutionApproach: `1. Start with a Solid Foundation
 Use a cloud platform (like AWS, Azure, or Google Cloud) for flexibility and scaling.
-Think of this as setting up a strong cricket pitch—if the base is weak, the whole game struggles.
 
-2. Use Load Balancers
+2. Use Load Balancers  
 Place load balancers at the front to direct user traffic evenly, like umpires distributing overs across bowlers.
 
 3. Break Up Functions (Microservices)
@@ -102,29 +102,25 @@ Divide the app into parts: Product Service, Order Service, User Service, Payment
 
 4. Scale Databases
 Use a mix of SQL (for critical data: orders, users) and NoSQL (for fast-changing data: product catalog, reviews).
-Read replicas and caching (Redis/Memcached) speed things up—like having extra fielders at boundary for fast coverage.
 
 5. Use CDN for Static Content
 Host images, CSS, and scripts on a Content Delivery Network—like setting fielders all around the boundary for faster pickups.
 
 6. Monitor and Auto-Scale
-Set up auto-scaling to add more "players" (servers) when traffic spikes (think: super overs!).
-Use monitoring tools (CloudWatch, Datadog) to track site health—just like team stats and live match analysis.`,
-    realWorldToolsOrExamples: `Quick Cricket Analogy
-Building this architecture is like assembling an IPL team: you want specialists (microservices), backup players (auto-scale), a good ground (cloud infra), and sharp field placement (CDN/load balancers) to handle any crowd size.
+Set up auto-scaling to add more "players" (servers) when traffic spikes (think: super overs!).`,
+    realWorldToolsOrExamples: `Building this architecture is like assembling an IPL team: you want specialists (microservices), backup players (auto-scale), a good ground (cloud infra), and sharp field placement (CDN/load balancers) to handle any crowd size.
 
-Simple Visual Flow (Text)
+Simple Visual Flow:
 User → Load Balancer → [Microservices] → Databases/Cache/CDN`,
-    implementationTipsOrPitfalls: "Start with a small stadium (monolith) and gradually add specialized sections (microservices). Monitor crowd flow (database performance). Have backup plans for when sections get overcrowded (circuit breakers).",
-    visual: "🏟️🏏"
+    implementationTipsOrPitfalls: "Read replicas and caching (Redis/Memcached) speed things up—like having extra fielders at boundary for fast coverage. Use monitoring tools (CloudWatch, Datadog) to track site health—just like team stats and live match analysis.",
+    visual: "🏏🏟️",
+    image: ecommerce1Img
   },
-  "prevent online payment fraud": {
+  "payment fraud prevention": {
     title: "What are some strategies to prevent online payment fraud?",
-    businessContext: "Integrate trusted payment gateways (Razorpay, Stripe, PayPal)—like choosing the best umpires for a fair match. Ask users for OTPs or biometrics during checkout, just as an umpire double-checks a run-out.",
-    modernTechTrendsOverview: "Use machine learning to spot unusual activity (big orders, mismatched locations)—like a third umpire reviewing suspicious plays. Always verify billing address and CVV code, like checking if batsman is within the crease.",
-    solutionApproach: `Step-by-Step Solution
-
-1. Use Secure Payment Gateways
+    businessContext: "Payment fraud prevention is like keeping a sharp wicketkeeper and alert fielders—every transaction is watched, and the stumps are protected from sneaky runs.",
+    technologyOverview: "Use secure payment gateways, multi-factor authentication, machine learning monitoring, address verification, data encryption, and velocity checks to create multiple layers of protection.",
+    solutionApproach: `1. Use Secure Payment Gateways
 Integrate trusted payment gateways (Razorpay, Stripe, PayPal)—like choosing the best umpires for a fair match.
 
 2. Enable Multi-Factor Authentication
@@ -141,24 +137,22 @@ Never store raw card data; always use encrypted "tokens"—as secure as a batsma
 
 6. Set Velocity Checks
 Limit the number of transactions per user/card in a time window, just like an over limit per bowler.`,
-    realWorldToolsOrExamples: `Quick Cricket Analogy
-Payment fraud prevention is like keeping a sharp wicketkeeper and alert fielders—every transaction is watched, and the stumps are protected from sneaky runs.
+    realWorldToolsOrExamples: `Simple Visual:
+User → Payment Form → [Gateway: 2FA, Checks, ML Rules] → Payment Complete/Flagged
 
-Simple Visual
-User → Payment Form → [Gateway: 2FA, Checks, ML Rules] → Payment Complete/Flagged`,
-    implementationTipsOrPitfalls: "Balance security with user experience - too many checks frustrate genuine customers like over-zealous stadium security. Update fraud rules regularly as criminals adapt. Maintain PCI DSS compliance like stadium safety standards.",
-    visual: "🛡️🏏"
+Tools: Stripe Radar, PayPal Fraud Protection, AWS Fraud Detector`,
+    implementationTipsOrPitfalls: "Always use HTTPS for all payment pages. Never store sensitive payment data locally. Regularly update fraud detection rules based on new patterns. Monitor false positives to avoid blocking legitimate customers.",
+    visual: "🛡️🔒",
+    image: ecommerce2Img
   },
-  "personalization enhances experience": {
+  "personalization customer experience": {
     title: "How does personalization improve customer experience in e-commerce?",
-    businessContext: "Record what each user browses or buys—like keeping each player's batting stats. Show \"You may also like…\" or \"Recommended for you\" based on their activity. Just like a coach suggesting a batsman work on specific shots after seeing him play.",
-    modernTechTrendsOverview: "Send custom deals on user's birthday, or reminders about their wish list—like sending a personalized practice schedule to each cricketer. Display products and banners relevant to user's interests—like setting fielders based on the batsman's favorite shots.",
-    solutionApproach: `Step-by-Step Solution
-
-1. Track User Preferences
+    businessContext: "Personalization is the coach who knows your game inside out—always giving you the right tips, gear, and encouragement for your best performance.",
+    technologyOverview: "Track user behavior, analyze preferences, use machine learning for recommendations, create dynamic content, and automate personalized communications to enhance user experience.",
+    solutionApproach: `1. Track User Preferences
 Record what each user browses or buys—like keeping each player's batting stats.
 
-2. Recommend Relevant Products
+2. Recommend Relevant Products  
 Show "You may also like…" or "Recommended for you" based on their activity. Just like a coach suggesting a batsman work on specific shots after seeing him play.
 
 3. Personalized Emails and Offers
@@ -169,37 +163,60 @@ Display products and banners relevant to user's interests—like setting fielder
 
 5. Simplify Checkout
 Pre-fill shipping info, suggest repeat orders—like a coach prepping gear for the next match automatically.`,
-    realWorldToolsOrExamples: `Quick Cricket Analogy
-Personalization is the coach who knows your game inside out—always giving you the right tips, gear, and encouragement for your best performance.
-
-Simple Visual Flow
+    realWorldToolsOrExamples: `Simple Visual Flow:
 User Activity → Data Collection → Personalized Recommendations/Emails/Offers
 
-Extra: How to Practice (Hands-on Activity)
-For architecture: Draw a diagram of your e-commerce site's parts on paper, showing how users reach products, checkout, and how data flows.
-For fraud prevention: Pretend to place fake and real orders on a demo site; notice what security steps are there.
-For personalization: Visit an e-commerce site as a guest and as a logged-in user; compare the recommendations you get!`,
-    implementationTipsOrPitfalls: "Start with basic player categories (customer segments) before advanced individual coaching (AI personalization). Respect player privacy (data regulations). Test different coaching methods (A/B testing). Don't over-coach - let players enjoy the game naturally.",
-    visual: "🏏🎯"
+Examples:
+- Amazon's "Customers who bought this also bought"
+- Netflix's "Recommended for you"
+- Spotify's personalized playlists
+
+Tools: Adobe Target, Optimizely, Dynamic Yield`,
+    implementationTipsOrPitfalls: "Start simple with basic recommendations, then advance to AI-driven personalization. Always respect user privacy and provide opt-out options. Test different personalization strategies to see what works best for your audience.",
+    visual: "🎯🤝",
+    image: ecommerce3Img
   }
 };
 
-export const fallbackResponse = {
-  message: "This question requires a deeper expertise. Let me tap in and get back to you.",
-  isOutOfExpertise: true
-};
-
-// Helper function to find matching question
-export function findAnswer(question, domain) {
-  const normalizedQuestion = question.toLowerCase().trim();
-  const questionBank = domain === 'python' ? pythonQuestions : ecommerceQuestions;
+// Helper function to find the best matching answer
+export const findAnswer = (userQuestion, domain) => {
+  const questions = domain === 'python' ? pythonQuestions : ecommerceQuestions;
+  const normalizedQuestion = userQuestion.toLowerCase();
   
-  // Find exact or partial matches
-  for (const [key, answer] of Object.entries(questionBank)) {
-    if (normalizedQuestion.includes(key) || key.includes(normalizedQuestion)) {
-      return { ...answer, isOutOfExpertise: false };
+  // Direct matching logic
+  for (const [key, answer] of Object.entries(questions)) {
+    if (normalizedQuestion.includes(key.toLowerCase()) || 
+        key.toLowerCase().split(' ').some(word => normalizedQuestion.includes(word))) {
+      return answer;
     }
   }
   
-  return fallbackResponse;
-}
+  // Specific matching for user questions
+  if (domain === 'python') {
+    if (normalizedQuestion.includes('static') && normalizedQuestion.includes('method')) {
+      return questions["static method vs class method"];
+    }
+    if (normalizedQuestion.includes('slice') || normalizedQuestion.includes('slicing')) {
+      return questions["python slicing"];
+    }
+    if (normalizedQuestion.includes('function')) {
+      return questions["what is a function"];
+    }
+  } else if (domain === 'ecommerce') {
+    if (normalizedQuestion.includes('scalable') || normalizedQuestion.includes('architecture')) {
+      return questions["scalable architecture"];
+    }
+    if (normalizedQuestion.includes('fraud') || normalizedQuestion.includes('payment')) {
+      return questions["payment fraud prevention"];
+    }
+    if (normalizedQuestion.includes('personalization') || normalizedQuestion.includes('customer experience')) {
+      return questions["personalization customer experience"];
+    }
+  }
+  
+  // Fallback
+  return {
+    isOutOfExpertise: true,
+    message: `This question seems outside my ${domain} expertise. I specialize in ${domain === 'python' ? 'Python programming concepts like functions, data structures, and object-oriented programming' : 'e-commerce topics like scalable architecture, payment systems, and customer experience optimization'}.`
+  };
+};

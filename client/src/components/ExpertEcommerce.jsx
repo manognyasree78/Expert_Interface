@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { ArrowLeft, Bell, Send } from 'lucide-react';
 import { findAnswer } from '../data/questionsAnswers';
+import ImageModal from './ImageModal';
 
 // Helper function to generate refined queries
 const generateRefinedQuery = (userInput, answer) => {
@@ -35,6 +36,7 @@ const ExpertEcommerce = () => {
   const [chatThreads, setChatThreads] = useState([]);
   const [currentThreadId, setCurrentThreadId] = useState(null);
   const [refinedQueries, setRefinedQueries] = useState([]);
+  const [imageModal, setImageModal] = useState({ isOpen: false, src: '', alt: '' });
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('currentUser'));
@@ -68,7 +70,11 @@ const ExpertEcommerce = () => {
     const pendingQuestion = sessionStorage.getItem('pendingQuestion');
     if (pendingQuestion) {
       sessionStorage.removeItem('pendingQuestion');
-      handleQuestionSubmit(pendingQuestion);
+      // Delay to ensure state is initialized
+      setTimeout(() => {
+        setCurrentMessage(pendingQuestion);
+        handleSendMessage(pendingQuestion);
+      }, 100);
     }
   }, []);
 
@@ -160,10 +166,10 @@ const ExpertEcommerce = () => {
     }
   };
 
-  const handleSendMessage = () => {
-    if (!currentMessage.trim()) return;
+  const handleSendMessage = (messageText = currentMessage) => {
+    if (!messageText.trim()) return;
     
-    handleQuestionSubmit(currentMessage);
+    handleQuestionSubmit(messageText);
     setCurrentMessage('');
   };
 
@@ -275,13 +281,39 @@ const ExpertEcommerce = () => {
 
         {/* Right Preview Panel */}
         <div className="flex-1 bg-background overflow-y-auto p-6">
-          <div className="mb-6 bg-card rounded-lg p-4 border border-border">
-            <h2 className="text-lg font-semibold text-card-foreground mb-2">🛍️ E-commerce Expert Assistance</h2>
-            <p className="text-sm text-muted-foreground">
-              I provide strategic e-commerce guidance with business context, modern tech trends, practical solutions, and real-world tools. 
-              Each answer includes business context, technology overview, solution approach, implementation tools, and practical tips.
-            </p>
-          </div>
+          {answers.length === 0 ? (
+            <div className="h-full flex items-center justify-center">
+              <div className="text-center max-w-2xl">
+                <div className="text-6xl mb-6">🏪</div>
+                <h2 className="text-3xl font-bold text-card-foreground mb-4">🏪 E-commerce Expert Assistance</h2>
+                <p className="text-lg text-muted-foreground leading-relaxed mb-6">
+                  I provide strategic e-commerce guidance with business context, modern tech trends, practical solutions, and real-world tools. 
+                  Each answer includes business context, technology overview, solution approach, implementation tools, and practical tips.
+                </p>
+                <div className="space-y-3 text-left bg-accent/30 p-6 rounded-xl">
+                  <h3 className="text-lg font-semibold text-card-foreground mb-3">Popular Questions:</h3>
+                  <div className="text-sm text-muted-foreground space-y-2">
+                    <p>• How would you design a scalable architecture for a high-traffic e-commerce site?</p>
+                    <p>• What are some strategies to prevent online payment fraud?</p>
+                    <p>• How does personalization improve customer experience in e-commerce?</p>
+                  </div>
+                  <div className="mt-4 p-3 bg-primary/20 rounded-lg">
+                    <p className="text-xs text-muted-foreground italic">
+                      💡 Ask me about scalable architecture, payment systems, customer experience, or any e-commerce challenge!
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <>
+              <div className="mb-6 bg-card rounded-lg p-4 border border-border">
+                <h2 className="text-lg font-semibold text-card-foreground mb-2">🏪 E-commerce Expert Assistance</h2>
+                <p className="text-sm text-muted-foreground">
+                  I provide strategic e-commerce guidance with business context, modern tech trends, practical solutions, and real-world tools. 
+                  Each answer includes business context, technology overview, solution approach, implementation tools, and practical tips.
+                </p>
+              </div>
           <div className="max-w-4xl mx-auto space-y-8">
             {answers.map((answer, index) => (
               <div key={index} className="bg-card/50 rounded-2xl p-8 border-0 shadow-sm">
@@ -311,12 +343,30 @@ const ExpertEcommerce = () => {
                       <p className="text-card-foreground leading-relaxed">{answer.businessContext}</p>
                     </div>
 
+                    {/* Add E-commerce image if available */}
+                    {answer.image && (
+                      <div className="text-center mb-4">
+                        <img 
+                          src={answer.image} 
+                          alt={answer.title}
+                          className="max-w-full h-48 object-contain mx-auto rounded-lg cursor-pointer hover:opacity-90 transition-opacity border border-border"
+                          onClick={() => setImageModal({ 
+                            isOpen: true, 
+                            src: answer.image, 
+                            alt: answer.title 
+                          })}
+                          title="Click to enlarge and download"
+                        />
+                        <p className="text-xs text-muted-foreground mt-2 italic">Click image to enlarge and download</p>
+                      </div>
+                    )}
+
                     <div className="bg-accent p-6 rounded-lg">
                       <h3 className="text-lg font-semibold text-card-foreground mb-3 flex items-center">
                         <span className="text-primary mr-2">🔹</span>
-                        2. Modern Tech/Trends Overview
+                        2. Technology Overview
                       </h3>
-                      <p className="text-card-foreground leading-relaxed">{answer.modernTechTrendsOverview}</p>
+                      <p className="text-card-foreground leading-relaxed">{answer.technologyOverview}</p>
                     </div>
 
                     <div className="bg-accent p-6 rounded-lg">
@@ -353,7 +403,17 @@ const ExpertEcommerce = () => {
                 )}
               </div>
             ))}
-          </div>
+            </div>
+            </>
+          )}
+
+          {/* Image Modal */}
+          <ImageModal 
+            isOpen={imageModal.isOpen}
+            onClose={() => setImageModal({ isOpen: false, src: '', alt: '' })}
+            imageSrc={imageModal.src}
+            imageAlt={imageModal.alt}
+          />
         </div>
       </div>
 

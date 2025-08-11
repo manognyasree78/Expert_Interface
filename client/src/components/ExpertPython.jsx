@@ -68,7 +68,11 @@ const ExpertPython = () => {
     const pendingQuestion = sessionStorage.getItem('pendingQuestion');
     if (pendingQuestion) {
       sessionStorage.removeItem('pendingQuestion');
-      handleQuestionSubmit(pendingQuestion);
+      // Delay to ensure state is initialized
+      setTimeout(() => {
+        setCurrentMessage(pendingQuestion);
+        handleSendMessage(pendingQuestion);
+      }, 100);
     }
   }, []);
 
@@ -160,10 +164,10 @@ const ExpertPython = () => {
     }
   };
 
-  const handleSendMessage = () => {
-    if (!currentMessage.trim()) return;
+  const handleSendMessage = (messageText = currentMessage) => {
+    if (!messageText.trim()) return;
     
-    handleQuestionSubmit(currentMessage);
+    handleQuestionSubmit(messageText);
     setCurrentMessage('');
   };
 
@@ -275,13 +279,39 @@ const ExpertPython = () => {
 
         {/* Right Preview Panel */}
         <div className="flex-1 bg-background overflow-y-auto p-6">
-          <div className="mb-6 bg-card rounded-lg p-4 border border-border">
-            <h2 className="text-lg font-semibold text-card-foreground mb-2">🐍 Python Expert Assistance</h2>
-            <p className="text-sm text-muted-foreground">
-              I provide comprehensive Python guidance with practical examples, code snippets, and real-world analogies. 
-              Each answer includes problem overview, core concepts, step-by-step solutions, common pitfalls, and actionable recommendations.
-            </p>
-          </div>
+          {answers.length === 0 ? (
+            <div className="h-full flex items-center justify-center">
+              <div className="text-center max-w-2xl">
+                <div className="text-6xl mb-6">🐍</div>
+                <h2 className="text-3xl font-bold text-card-foreground mb-4">🐍 Python Expert Assistance</h2>
+                <p className="text-lg text-muted-foreground leading-relaxed mb-6">
+                  I provide comprehensive Python guidance with practical examples, code snippets, and real-world analogies. 
+                  Each answer includes problem overview, core concepts, step-by-step solutions, common pitfalls, and actionable recommendations.
+                </p>
+                <div className="space-y-3 text-left bg-accent/30 p-6 rounded-xl">
+                  <h3 className="text-lg font-semibold text-card-foreground mb-3">Popular Questions:</h3>
+                  <div className="text-sm text-muted-foreground space-y-2">
+                    <p>• What is the difference between static method and class method?</p>
+                    <p>• What is slicing in Python, and how do you slice a list?</p>
+                    <p>• What is a function in Python? Write a function that returns the square of a number.</p>
+                  </div>
+                  <div className="mt-4 p-3 bg-secondary/20 rounded-lg">
+                    <p className="text-xs text-muted-foreground italic">
+                      💡 Type any question in the chat or ask about functions, data structures, object-oriented programming!
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <>
+              <div className="mb-6 bg-card rounded-lg p-4 border border-border">
+                <h2 className="text-lg font-semibold text-card-foreground mb-2">🐍 Python Expert Assistance</h2>
+                <p className="text-sm text-muted-foreground">
+                  I provide comprehensive Python guidance with practical examples, code snippets, and real-world analogies. 
+                  Each answer includes problem overview, core concepts, step-by-step solutions, common pitfalls, and actionable recommendations.
+                </p>
+              </div>
           <div className="max-w-4xl mx-auto space-y-8">
             {answers.map((answer, index) => (
               <div key={index} className="bg-card/50 rounded-2xl p-8 border-0 shadow-sm">
@@ -357,7 +387,9 @@ const ExpertPython = () => {
                 )}
               </div>
             ))}
-          </div>
+            </div>
+            </>
+          )}
         </div>
       </div>
 

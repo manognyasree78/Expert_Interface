@@ -34,7 +34,7 @@ const ExpertPython = () => {
   const [currentUser, setCurrentUser] = useState(null);
   const [chatThreads, setChatThreads] = useState([]);
   const [currentThreadId, setCurrentThreadId] = useState(null);
-  const [refinedQueries, setRefinedQueries] = useState([]);
+
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('currentUser'));
@@ -110,17 +110,7 @@ const ExpertPython = () => {
     setAnswers(thread.answers);
   };
 
-  const getRefinedQuestion = (question) => {
-    // Simple static refinements - you can expand this
-    const refinements = {
-      "static method": "You meant... 'What's the difference between @staticmethod and @classmethod decorators?'",
-      "slicing": "You meant... 'How does Python list slicing work with start:stop:step syntax?'",
-      "function": "You meant... 'How do I create and use functions in Python with parameters and return values?'"
-    };
-    
-    const key = Object.keys(refinements).find(k => question.toLowerCase().includes(k));
-    return key ? refinements[key] : null;
-  };
+
 
   const handleQuestionSubmit = (question) => {
     const userMessage = {
@@ -134,44 +124,11 @@ const ExpertPython = () => {
     setMessages(newMessages);
     setAttachedFiles([]);
 
-    // Add refined question suggestion
-    const refinedQuestion = getRefinedQuestion(question);
-    if (refinedQuestion) {
-      setTimeout(() => {
-        const botMessage = {
-          text: refinedQuestion,
-          isUser: false,
-          timestamp: new Date(),
-          isRefinement: true
-        };
-        const messagesWithBot = [...newMessages, botMessage];
-        setMessages(messagesWithBot);
-        
-        // Get answer
-        const result = findAnswer(question, 'python');
-        const newAnswers = [...answers, result.answer];
-        
-        // Store refined query for "You meant..." feature
-        if (result.refinedQuery) {
-          setRefinedQueries(prev => [...prev, result.refinedQuery]);
-        }
-        setAnswers(newAnswers);
-
-        // Save to localStorage
-        saveChatHistory(messagesWithBot, newAnswers);
-      }, 500);
-    } else {
-      // Get answer immediately if no refinement
-      const result = findAnswer(question, 'python');
-      const newAnswers = [...answers, result.answer];
-      
-      // Store refined query for "You meant..." feature
-      if (result.refinedQuery) {
-        setRefinedQueries(prev => [...prev, result.refinedQuery]);
-      }
-      setAnswers(newAnswers);
-      saveChatHistory(newMessages, newAnswers);
-    }
+    // Get answer immediately
+    const result = findAnswer(question, 'python');
+    const newAnswers = [...answers, result.answer];
+    setAnswers(newAnswers);
+    saveChatHistory(newMessages, newAnswers);
   };
 
   const handleSendMessage = (messageText = currentMessage) => {
@@ -387,12 +344,7 @@ const ExpertPython = () => {
                       <p className="text-card-foreground leading-relaxed">{answer.summaryOrRecommendation}</p>
                     </div>
                     
-                    {/* Show refined query below answer */}
-                    {refinedQueries[index] && refinedQueries[index] !== messages[index]?.text && (
-                      <div className="mt-6 text-sm text-muted-foreground italic text-center border-t border-border/30 pt-4">
-                        <strong>You meant:</strong> {refinedQueries[index]}
-                      </div>
-                    )}
+
                   </div>
                 )}
               </div>

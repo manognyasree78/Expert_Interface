@@ -35,7 +35,7 @@ const ExpertEcommerce = () => {
   const [currentUser, setCurrentUser] = useState(null);
   const [chatThreads, setChatThreads] = useState([]);
   const [currentThreadId, setCurrentThreadId] = useState(null);
-  const [refinedQueries, setRefinedQueries] = useState([]);
+
   const [imageModal, setImageModal] = useState({ isOpen: false, src: '', alt: '' });
 
   useEffect(() => {
@@ -112,17 +112,7 @@ const ExpertEcommerce = () => {
     setAnswers(thread.answers);
   };
 
-  const getRefinedQuestion = (question) => {
-    // Simple static refinements for e-commerce
-    const refinements = {
-      "architecture": "You meant... 'How do I design scalable architecture for high-traffic e-commerce sites?'",
-      "fraud": "You meant... 'What are the best strategies to prevent online payment fraud?'",
-      "personalization": "You meant... 'How does personalization enhance customer experience in e-commerce?'"
-    };
-    
-    const key = Object.keys(refinements).find(k => question.toLowerCase().includes(k));
-    return key ? refinements[key] : null;
-  };
+
 
   const handleQuestionSubmit = (question) => {
     const userMessage = {
@@ -136,44 +126,11 @@ const ExpertEcommerce = () => {
     setMessages(newMessages);
     setAttachedFiles([]);
 
-    // Add refined question suggestion
-    const refinedQuestion = getRefinedQuestion(question);
-    if (refinedQuestion) {
-      setTimeout(() => {
-        const botMessage = {
-          text: refinedQuestion,
-          isUser: false,
-          timestamp: new Date(),
-          isRefinement: true
-        };
-        const messagesWithBot = [...newMessages, botMessage];
-        setMessages(messagesWithBot);
-        
-        // Get answer
-        const result = findAnswer(question, 'ecommerce');
-        const newAnswers = [...answers, result.answer];
-        
-        // Store refined query for "You meant..." feature
-        if (result.refinedQuery) {
-          setRefinedQueries(prev => [...prev, result.refinedQuery]);
-        }
-        setAnswers(newAnswers);
-
-        // Save to localStorage
-        saveChatHistory(messagesWithBot, newAnswers);
-      }, 500);
-    } else {
-      // Get answer immediately if no refinement
-      const result = findAnswer(question, 'ecommerce');
-      const newAnswers = [...answers, result.answer];
-      
-      // Store refined query for "You meant..." feature
-      if (result.refinedQuery) {
-        setRefinedQueries(prev => [...prev, result.refinedQuery]);
-      }
-      setAnswers(newAnswers);
-      saveChatHistory(newMessages, newAnswers);
-    }
+    // Get answer immediately
+    const result = findAnswer(question, 'ecommerce');
+    const newAnswers = [...answers, result.answer];
+    setAnswers(newAnswers);
+    saveChatHistory(newMessages, newAnswers);
   };
 
   const handleSendMessage = (messageText = currentMessage) => {
@@ -403,12 +360,7 @@ const ExpertEcommerce = () => {
                       <p className="text-card-foreground leading-relaxed">{answer.implementationTipsOrPitfalls}</p>
                     </div>
                     
-                    {/* Show refined query below answer */}
-                    {refinedQueries[index] && refinedQueries[index] !== messages[index]?.text && (
-                      <div className="mt-6 text-sm text-muted-foreground italic text-center border-t border-border/30 pt-4">
-                        <strong>You meant:</strong> {refinedQueries[index]}
-                      </div>
-                    )}
+
                   </div>
                 )}
               </div>

@@ -83,6 +83,61 @@ Input   Output
     gotchasOrPitfalls: "Functions help you avoid repeating code and make programs more organized. Always include a docstring to explain what the function does.",
     summaryOrRecommendation: "Functions are reusable blocks of code that take inputs, process them, and return outputs. They're essential for organizing and structuring your programs.",
     visual: "🔧⚙️"
+  },
+  "unboundlocalerror debug": {
+    title: "UnboundLocalError: Python Variable Scope Bug",
+    problemOverview: "Why it happens: Inside log_event, Python sees count += 1 and assumes count is a local variable. But there's no local assignment before that line, so it raises UnboundLocalError. You intended to use the module-level count.",
+    coreConceptExplanation: `Fix Options (pick one for your demo):
+
+**Option A — Use global (quick fix; fine for tiny scripts)**
+\`\`\`python
+count = 0
+
+def log_event(event_name: str):
+    global count
+    count += 1
+    print(f"[OK] {event_name} recorded. total={count}")
+\`\`\`
+
+**Option B — Encapsulate in a class (clean, scalable)**
+\`\`\`python
+class Analytics:
+    def __init__(self):
+        self.count = 0
+
+    def log_event(self, event_name: str):
+        self.count += 1
+        print(f"[OK] {event_name} recorded. total={self.count}")
+
+def demo():
+    a = Analytics()
+    a.log_event("page_view")
+    a.log_event("add_to_cart")
+
+if __name__ == "__main__":
+    demo()
+\`\`\``,
+    stepByStepSolution: `**Option C — Use a closure with nonlocal (nice teaching moment)**
+\`\`\`python
+def make_logger():
+    count = 0
+    def log_event(event_name: str):
+        nonlocal count
+        count += 1
+        print(f"[OK] {event_name} recorded. total={count}")
+    return log_event
+
+def demo():
+    log_event = make_logger()
+    log_event("page_view")
+    log_event("add_to_cart")
+
+if __name__ == "__main__":
+    demo()
+\`\`\``,
+    gotchasOrPitfalls: "Teaching Moment (what your agent should explain): This is a scope bug, not a typo: += makes Python treat count as local unless you declare global/nonlocal, or keep the state in an object.",
+    summaryOrRecommendation: "In production, prefer encapsulation (Option B): it avoids global state, is testable, and plays nicely with concurrency or multiple independent counters. For quick scripts or learning demos, Option A is fine; for functional-style demos, Option C shows nonlocal elegantly.",
+    visual: "🐛🔧"
   }
 };
 
@@ -204,6 +259,19 @@ export const findAnswer = (userQuestion, domain) => {
       return {
         answer: questions["python slicing"],
         refinedQuery: "What is slicing in Python, and how do you slice a list?"
+      };
+    }
+    
+    // UnboundLocalError matching
+    if (normalizedQuestion.includes('unboundlocalerror') || 
+        normalizedQuestion.includes('count') || 
+        normalizedQuestion.includes('global') ||
+        normalizedQuestion.includes('local variable') ||
+        normalizedQuestion.includes('scope bug') ||
+        normalizedQuestion.includes('debug')) {
+      return {
+        answer: questions["unboundlocalerror debug"],
+        refinedQuery: "Python UnboundLocalError scope bug analysis and fixes"
       };
     }
     

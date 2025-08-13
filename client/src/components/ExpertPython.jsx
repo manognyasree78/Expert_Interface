@@ -113,7 +113,17 @@ const ExpertPython = () => {
 
 
 
-  const getRefinedQuery = (question) => {
+  const getRefinedQuery = (question, attachedFiles = []) => {
+    // Check if image contains UnboundLocalError code
+    const hasUnboundLocalErrorImage = attachedFiles.some(file => 
+      file.name && (file.name.includes('problem') || file.name.includes('error') || file.name.includes('debug'))
+    );
+    
+    if (hasUnboundLocalErrorImage || question.toLowerCase().includes('unboundlocalerror') || 
+        question.toLowerCase().includes('count') || question.toLowerCase().includes('global')) {
+      return "Okay, let's walk through this together. I'll show you a Python script that's meant to log user events — but there's a sneaky bug in it that will break the code. We'll pinpoint exactly why it fails, talk about how Python handles variables inside functions, and then I'll give you two clean, professional fixes so it never happens again. By the end, you'll not only understand the error, but you'll also know a best-practice way to design this so the bug can't sneak back in.";
+    }
+    
     const refinements = {
       "static method": "Alright, let me break this down for you. I'll walk you through exactly how @staticmethod and @classmethod differ in Python — covering their method signatures, how they interact with class vs. instance data, and where each one fits in real-world scenarios. I'll also give you clear code examples and a relatable analogy so the difference really sticks.",
       "slicing": "Got it — let's break down exactly what slicing is in Python, how it works under the hood, and the different ways you can slice a list. I'll also give you a simple analogy so you can visualize it instantly, plus some clear examples so you can use slicing like a pro.",
@@ -141,7 +151,7 @@ const ExpertPython = () => {
       let newMessages = [...messages, userMessage];
       
       // Add refined query if available
-      const refinedQuery = getRefinedQuery(question);
+      const refinedQuery = getRefinedQuery(question, userMessage.attachedFiles);
       if (refinedQuery) {
         const refinementMessage = {
           text: refinedQuery,

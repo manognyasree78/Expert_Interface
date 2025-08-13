@@ -112,6 +112,17 @@ const ExpertPython = () => {
 
 
 
+  const getRefinedQuery = (question) => {
+    const refinements = {
+      "static method": "Alright, let me break this down for you. I'll walk you through exactly how @staticmethod and @classmethod differ in Python — covering their method signatures, how they interact with class vs. instance data, and where each one fits in real-world scenarios. I'll also give you clear code examples and a relatable analogy so the difference really sticks.",
+      "slicing": "Got it — let's break down exactly what slicing is in Python, how it works under the hood, and the different ways you can slice a list. I'll also give you a simple analogy so you can visualize it instantly, plus some clear examples so you can use slicing like a pro.",
+      "function": "Alright, I'll walk you through what a function is in Python, why it's such a powerful tool, and how you can create one yourself. Then I'll show you step-by-step how to write a function that takes a number and returns its square — complete with an easy analogy so the idea sticks."
+    };
+    
+    const key = Object.keys(refinements).find(k => question.toLowerCase().includes(k));
+    return key ? refinements[key] : null;
+  };
+
   const handleQuestionSubmit = (question) => {
     const userMessage = {
       text: question,
@@ -120,7 +131,20 @@ const ExpertPython = () => {
       attachedFiles: [...attachedFiles]
     };
 
-    const newMessages = [...messages, userMessage];
+    let newMessages = [...messages, userMessage];
+    
+    // Add refined query if available
+    const refinedQuery = getRefinedQuery(question);
+    if (refinedQuery) {
+      const refinementMessage = {
+        text: refinedQuery,
+        isUser: false,
+        timestamp: new Date(),
+        isRefinement: true
+      };
+      newMessages = [...newMessages, refinementMessage];
+    }
+
     setMessages(newMessages);
     setAttachedFiles([]);
 

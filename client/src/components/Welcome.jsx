@@ -69,7 +69,7 @@ const Welcome = () => {
             {/* Description section */}
             <div className="mt-16 max-w-6xl mx-auto">
               <h2 className="text-3xl font-bold text-center mb-12 text-foreground">
-                Why Choose Expert Hub?
+                Why Choose Expert App?
               </h2>
               <div className="grid md:grid-cols-3 gap-8">
                 <div className="text-center">

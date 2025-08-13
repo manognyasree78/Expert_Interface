@@ -3,13 +3,27 @@ import { X } from 'lucide-react';
 const BellInbox = ({ isOpen, onClose, messages = [], answers = [] }) => {
   if (!isOpen) return null;
 
-  const conversationHistory = messages.map((message, index) => ({
-    question: message.text,
-    answer: answers[index] || null,
-    timestamp: message.timestamp
-  })).filter(item => {
-    // Only show questions that received out-of-expertise responses
-    return item.answer && item.answer.isOutOfExpertise === true;
+  const conversationHistory = [];
+  let answerIndex = 0;
+  
+  messages.forEach((message) => {
+    // Only process user messages (original questions)
+    if (message.isUser) {
+      const answer = answers[answerIndex] || null;
+      
+      // Only include if it's an out-of-expertise response
+      if (answer && answer.isOutOfExpertise === true) {
+        conversationHistory.push({
+          question: message.text, // This is the original user question
+          answer: answer,
+          timestamp: message.timestamp
+        });
+      }
+      
+      // Increment answer index for each user question
+      answerIndex++;
+    }
+    // Skip refinement messages (they don't get answers)
   });
 
   return (

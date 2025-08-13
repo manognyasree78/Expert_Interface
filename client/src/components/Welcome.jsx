@@ -1,7 +1,7 @@
-import { useState } from 'react';
-import { useLocation } from 'wouter';
-import LoginModal from './LoginModal';
-import ProfileModal from './ProfileModal';
+import { useState } from "react";
+import { useLocation } from "wouter";
+import LoginModal from "./LoginModal";
+import ProfileModal from "./ProfileModal";
 
 const Welcome = () => {
   const [, setLocation] = useLocation();
@@ -15,7 +15,7 @@ const Welcome = () => {
   };
 
   const handleProfileSave = () => {
-    setLocation('/dashboard');
+    setLocation("/dashboard");
   };
 
   return (
@@ -39,12 +39,12 @@ const Welcome = () => {
           >
             Sign Up
           </button>
-          <button
-            onClick={() => alert('Expert registration coming soon!')}
+          <a
+            href="https://fca5f805-1119-45d1-9b1d-44dd46b72e2e-00-3geoz1mc6szkb.kirk.replit.dev/"
             className="px-6 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
           >
             Join as Expert
-          </button>
+          </a>
         </div>
       </header>
 
@@ -58,43 +58,54 @@ const Welcome = () => {
             <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-2xl text-center">
               One stop, where you can meet all the solutions for your problems
             </p>
-            
+
             <button
               onClick={() => setShowLogin(true)}
               className="bg-primary text-primary-foreground px-12 py-4 rounded-2xl text-xl font-semibold hover:bg-primary/90 transition-colors shadow-lg"
             >
               Get Started
             </button>
-            
+
             {/* Description section */}
             <div className="mt-16 max-w-6xl mx-auto">
-              <h2 className="text-3xl font-bold text-center mb-12 text-foreground">Why Choose Expert Hub?</h2>
+              <h2 className="text-3xl font-bold text-center mb-12 text-foreground">
+                Why Choose Expert Hub?
+              </h2>
               <div className="grid md:grid-cols-3 gap-8">
                 <div className="text-center">
                   <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
                     <span className="text-2xl">❄️</span>
                   </div>
-                  <h3 className="text-xl font-semibold mb-3 text-foreground">Intelligent Routing</h3>
+                  <h3 className="text-xl font-semibold mb-3 text-foreground">
+                    Intelligent Routing
+                  </h3>
                   <p className="text-muted-foreground leading-relaxed">
-                    Our AI automatically routes your questions to the most relevant expert based on keywords and context.
+                    Our AI automatically routes your questions to the most
+                    relevant expert based on keywords and context.
                   </p>
                 </div>
                 <div className="text-center">
                   <div className="w-16 h-16 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
                     <span className="text-2xl">💻</span>
                   </div>
-                  <h3 className="text-xl font-semibold mb-3 text-foreground">Expert Knowledge</h3>
+                  <h3 className="text-xl font-semibold mb-3 text-foreground">
+                    Expert Knowledge
+                  </h3>
                   <p className="text-muted-foreground leading-relaxed">
-                    Get detailed, practical advice with code examples, best practices, and step-by-step guidance.
+                    Get detailed, practical advice with code examples, best
+                    practices, and step-by-step guidance.
                   </p>
                 </div>
                 <div className="text-center">
                   <div className="w-16 h-16 bg-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
                     <span className="text-2xl">📈</span>
                   </div>
-                  <h3 className="text-xl font-semibold mb-3 text-foreground">Real-time Responses</h3>
+                  <h3 className="text-xl font-semibold mb-3 text-foreground">
+                    Real-time Responses
+                  </h3>
                   <p className="text-muted-foreground leading-relaxed">
-                    Chat interface with instant responses and the ability to ask follow-up questions for deeper insights.
+                    Chat interface with instant responses and the ability to ask
+                    follow-up questions for deeper insights.
                   </p>
                 </div>
               </div>
@@ -104,14 +115,14 @@ const Welcome = () => {
       </main>
 
       {/* Modals */}
-      <LoginModal 
-        isOpen={showLogin} 
+      <LoginModal
+        isOpen={showLogin}
         onClose={() => setShowLogin(false)}
         onSuccess={handleLoginSuccess}
       />
-      
-      <ProfileModal 
-        isOpen={showProfile} 
+
+      <ProfileModal
+        isOpen={showProfile}
         onClose={() => setShowProfile(false)}
         onSave={handleProfileSave}
       />

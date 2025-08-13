@@ -34,6 +34,7 @@ const ExpertPython = () => {
   const [currentUser, setCurrentUser] = useState(null);
   const [chatThreads, setChatThreads] = useState([]);
   const [currentThreadId, setCurrentThreadId] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
 
   useEffect(() => {
@@ -131,28 +132,35 @@ const ExpertPython = () => {
       attachedFiles: [...attachedFiles]
     };
 
-    let newMessages = [...messages, userMessage];
-    
-    // Add refined query if available
-    const refinedQuery = getRefinedQuery(question);
-    if (refinedQuery) {
-      const refinementMessage = {
-        text: refinedQuery,
-        isUser: false,
-        timestamp: new Date(),
-        isRefinement: true
-      };
-      newMessages = [...newMessages, refinementMessage];
-    }
-
-    setMessages(newMessages);
+    setMessages([...messages, userMessage]);
     setAttachedFiles([]);
+    setIsLoading(true);
 
-    // Get answer immediately
-    const result = findAnswer(question, 'python');
-    const newAnswers = [...answers, result.answer];
-    setAnswers(newAnswers);
-    saveChatHistory(newMessages, newAnswers);
+    // Show loading for 2 seconds, then show refined query and answer
+    setTimeout(() => {
+      let newMessages = [...messages, userMessage];
+      
+      // Add refined query if available
+      const refinedQuery = getRefinedQuery(question);
+      if (refinedQuery) {
+        const refinementMessage = {
+          text: refinedQuery,
+          isUser: false,
+          timestamp: new Date(),
+          isRefinement: true
+        };
+        newMessages = [...newMessages, refinementMessage];
+      }
+
+      setMessages(newMessages);
+
+      // Get answer
+      const result = findAnswer(question, 'python');
+      const newAnswers = [...answers, result.answer];
+      setAnswers(newAnswers);
+      setIsLoading(false);
+      saveChatHistory(newMessages, newAnswers);
+    }, 2000);
   };
 
   const handleSendMessage = (messageText = currentMessage) => {
@@ -243,6 +251,18 @@ const ExpertPython = () => {
                   </div>
                 </div>
               ))}
+              
+              {/* Loading indicator */}
+              {isLoading && (
+                <div className="flex justify-start">
+                  <div className="max-w-[85%] p-3 rounded-2xl bg-accent text-accent-foreground mr-4">
+                    <div className="flex items-center space-x-2">
+                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-secondary border-t-transparent"></div>
+                      <p className="text-sm">Analyzing your question...</p>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
@@ -260,7 +280,8 @@ const ExpertPython = () => {
               />
               <button
                 onClick={handleSendMessage}
-                className="p-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors mr-2"
+                disabled={isLoading}
+                className="p-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors mr-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Send className="w-5 h-5" />
               </button>

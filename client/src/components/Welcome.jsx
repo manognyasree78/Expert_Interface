@@ -39,6 +39,12 @@ const Welcome = () => {
           >
             Sign Up
           </button>
+          <button
+            onClick={() => alert('Expert registration coming soon!')}
+            className="px-6 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+          >
+            Join as Expert
+          </button>
         </div>
       </header>
 

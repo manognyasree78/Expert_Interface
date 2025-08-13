@@ -200,8 +200,24 @@ const ExpertEcommerce = () => {
           {/* Messages */}
           <div className="flex-1 p-4 overflow-y-auto">
             <div className="space-y-4">
-              {messages.map((message, index) => (
-                <div key={index} className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}>
+              {messages.map((message, index) => {
+                // Check if this is a new question (user message that follows another user message)
+                const isNewQuestion = message.isUser && index > 0 && messages[index - 1].isUser;
+                
+                return (
+                  <div key={index}>
+                    {/* Add thick divider line between questions */}
+                    {isNewQuestion && (
+                      <div className="my-6 flex items-center">
+                        <div className="flex-1 h-0.5 bg-gradient-to-r from-transparent via-border to-transparent"></div>
+                        <div className="px-3">
+                          <div className="w-2 h-2 bg-primary rounded-full"></div>
+                        </div>
+                        <div className="flex-1 h-0.5 bg-gradient-to-r from-transparent via-border to-transparent"></div>
+                      </div>
+                    )}
+                    
+                    <div className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}>
                   <div className={`max-w-[85%] p-3 rounded-2xl ${
                     message.isUser 
                       ? 'bg-primary text-primary-foreground ml-4' 
@@ -219,8 +235,10 @@ const ExpertEcommerce = () => {
                       {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </div>
                   </div>
-                </div>
-              ))}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
 
@@ -283,7 +301,19 @@ const ExpertEcommerce = () => {
               </div>
           <div className="max-w-4xl mx-auto space-y-8">
             {answers.map((answer, index) => (
-              <div key={index} className="bg-background/50 rounded-2xl p-8 border-0 shadow-sm">
+              <div key={index}>
+                {/* Add thick divider line between answers (questions) */}
+                {index > 0 && (
+                  <div className="my-8 flex items-center">
+                    <div className="flex-1 h-1 bg-gradient-to-r from-transparent via-primary/30 to-transparent rounded-full"></div>
+                    <div className="px-4">
+                      <div className="w-3 h-3 bg-primary rounded-full shadow-lg"></div>
+                    </div>
+                    <div className="flex-1 h-1 bg-gradient-to-r from-transparent via-primary/30 to-transparent rounded-full"></div>
+                  </div>
+                )}
+                
+                <div className="bg-background/50 rounded-2xl p-8 border-0 shadow-sm">
                 {/* Removed question repetition as per requirements */}
 
                 {answer.isOutOfExpertise ? (
@@ -363,6 +393,7 @@ const ExpertEcommerce = () => {
 
                   </div>
                 )}
+                </div>
               </div>
             ))}
             </div>

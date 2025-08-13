@@ -246,14 +246,14 @@ const ExpertPython = () => {
                 
                 return (
                   <div key={index}>
-                    {/* Add thick divider line between questions */}
+                    {/* Add horizontal divider line between questions */}
                     {isNewQuestion && (
-                      <div className="my-6 flex items-center">
-                        <div className="flex-1 h-0.5 bg-gradient-to-r from-transparent via-border to-transparent"></div>
-                        <div className="px-3">
+                      <div className="my-8 flex items-center">
+                        <div className="flex-1 h-px bg-gray-600"></div>
+                        <div className="mx-4">
                           <div className="w-2 h-2 bg-primary rounded-full"></div>
                         </div>
-                        <div className="flex-1 h-0.5 bg-gradient-to-r from-transparent via-border to-transparent"></div>
+                        <div className="flex-1 h-px bg-gray-600"></div>
                       </div>
                     )}
                     
@@ -355,14 +355,14 @@ const ExpertPython = () => {
           <div className="max-w-4xl mx-auto space-y-8">
             {answers.map((answer, index) => (
               <div key={index}>
-                {/* Add thick divider line between answers (questions) */}
+                {/* Add horizontal divider line between answers (questions) */}
                 {index > 0 && (
                   <div className="my-8 flex items-center">
-                    <div className="flex-1 h-1 bg-gradient-to-r from-transparent via-primary/30 to-transparent rounded-full"></div>
-                    <div className="px-4">
-                      <div className="w-3 h-3 bg-primary rounded-full shadow-lg"></div>
+                    <div className="flex-1 h-px bg-gray-600"></div>
+                    <div className="mx-4">
+                      <div className="w-2 h-2 bg-primary rounded-full"></div>
                     </div>
-                    <div className="flex-1 h-1 bg-gradient-to-r from-transparent via-primary/30 to-transparent rounded-full"></div>
+                    <div className="flex-1 h-px bg-gray-600"></div>
                   </div>
                 )}
                 

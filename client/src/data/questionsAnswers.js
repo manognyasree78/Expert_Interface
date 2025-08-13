@@ -87,9 +87,8 @@ Input   Output
   "unboundlocalerror debug": {
     title: "UnboundLocalError: Python Variable Scope Bug",
     problemOverview: "Why it happens: Inside log_event, Python sees count += 1 and assumes count is a local variable. But there's no local assignment before that line, so it raises UnboundLocalError. You intended to use the module-level count.",
-    coreConceptExplanation: `Fix Options (pick one for your demo):
-
-**Option A — Use global (quick fix; fine for tiny scripts)**
+    coreConceptExplanation: "Fix Options (pick one for your demo):",
+    stepByStepSolution: `**Option A — Use global (quick fix; fine for tiny scripts)**
 \`\`\`python
 count = 0
 
@@ -116,8 +115,9 @@ def demo():
 
 if __name__ == "__main__":
     demo()
-\`\`\``,
-    stepByStepSolution: `**Option C — Use a closure with nonlocal (nice teaching moment)**
+\`\`\`
+
+**Option C — Use a closure with nonlocal (nice teaching moment)**
 \`\`\`python
 def make_logger():
     count = 0

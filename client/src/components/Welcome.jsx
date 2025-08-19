@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
+import { Menu, X } from "lucide-react";
 import LoginModal from "./LoginModal";
 import ProfileModal from "./ProfileModal";
 
@@ -8,6 +9,7 @@ const Welcome = () => {
   const [showLogin, setShowLogin] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   const handleLoginSuccess = (userData) => {
     setCurrentUser(userData);
@@ -21,12 +23,13 @@ const Welcome = () => {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
-      <header className="flex justify-between items-center p-6">
+      <header className="flex justify-between items-center p-6 relative">
         <div className="text-2xl font-bold">
           <span className="text-primary">EXPERT</span>
           <span className="text-secondary ml-2">APP</span>
         </div>
-        <div className="space-x-4">
+        {/* Desktop / Tablet Nav */}
+        <div className="space-x-4 hidden sm:flex">
           <button
             onClick={() => setShowLogin(true)}
             className="px-6 py-2 text-muted-foreground hover:text-foreground transition-colors"
@@ -45,6 +48,34 @@ const Welcome = () => {
           >
             Join as Expert
           </a>
+        </div>
+        {/* Mobile Nav */}
+        <div className="sm:hidden">
+          <button
+            onClick={() => setShowMobileMenu(!showMobileMenu)}
+            className="p-2 rounded-lg hover:bg-accent"
+          >
+            {showMobileMenu ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+          {showMobileMenu && (
+            <div className="absolute right-6 top-full mt-2 bg-card border border-border rounded-lg shadow-md flex flex-col w-40 z-50">
+              <button
+                onClick={() => {
+                  setShowMobileMenu(false);
+                  setShowLogin(true);
+                }}
+                className="px-4 py-2 text-left hover:bg-accent rounded-t-lg"
+              >
+                Login
+              </button>
+              <a
+                href="https://fca5f805-1119-45d1-9b1d-44dd46b72e2e-00-3geoz1mc6szkb.kirk.replit.dev/"
+                className="px-4 py-2 hover:bg-accent rounded-b-lg"
+              >
+                Join as Expert
+              </a>
+            </div>
+          )}
         </div>
       </header>
 

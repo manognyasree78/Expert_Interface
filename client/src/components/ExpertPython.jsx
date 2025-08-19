@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
-import { ArrowLeft, Bell, Send } from 'lucide-react';
+import { ArrowLeft, Bell, Send, X } from 'lucide-react';
 import { findAnswer } from '../data/questionsAnswers';
 
 // Helper function to generate refined queries
@@ -35,6 +35,7 @@ const ExpertPython = () => {
   const [chatThreads, setChatThreads] = useState([]);
   const [currentThreadId, setCurrentThreadId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [activeAnswerIndex, setActiveAnswerIndex] = useState(null);
 
 
   useEffect(() => {
@@ -112,6 +113,49 @@ const ExpertPython = () => {
   };
 
 
+  const getPreviewText = (answer) => {
+    if (!answer) return '';
+    if (answer.isOutOfExpertise) return answer.message;
+    const text =
+      answer.summaryOrRecommendation ||
+      answer.stepByStepSolution ||
+      '';
+    return text.length > 80 ? text.slice(0, 80) + '…' : text;
+  };
+
+  const renderAnswerModal = (answer) => {
+    if (!answer) return null;
+    if (answer.isOutOfExpertise) {
+      return <p className="text-center">{answer.message}</p>;
+    }
+    return (
+      <div className="space-y-6 text-left">
+        {answer.title && <h2 className="text-xl font-bold mb-2">{answer.title}</h2>}
+        <div>
+          <h3 className="font-semibold mb-1">1. Problem Overview</h3>
+          <p>{answer.problemOverview}</p>
+        </div>
+        <div>
+          <h3 className="font-semibold mb-1">2. Core Concept Explanation</h3>
+          <p>{answer.coreConceptExplanation}</p>
+        </div>
+        <div>
+          <h3 className="font-semibold mb-1">3. Step-by-Step Solution</h3>
+          <pre className="bg-muted p-4 rounded text-sm overflow-x-auto whitespace-pre-wrap"><code>{answer.stepByStepSolution}</code></pre>
+        </div>
+        <div>
+          <h3 className="font-semibold mb-1">4. Gotchas or Common Pitfalls</h3>
+          <p>{answer.gotchasOrPitfalls}</p>
+        </div>
+        <div>
+          <h3 className="font-semibold mb-1">5. Summary or Recommendation</h3>
+          <p>{answer.summaryOrRecommendation}</p>
+        </div>
+      </div>
+    );
+  };
+
+
 
   const getRefinedQuery = (question, attachedFiles = []) => {
     // Check if image contains UnboundLocalError code
@@ -149,7 +193,13 @@ const ExpertPython = () => {
     // Show loading for 2 seconds, then show refined query and answer
     setTimeout(() => {
       let newMessages = [...messages, userMessage];
-      
+
+      // Get answer
+      const result = findAnswer(question, 'python');
+      const newAnswers = [...answers, result.answer];
+      const answerIndex = newAnswers.length - 1;
+      const previewText = getPreviewText(result.answer);
+
       // Add refined query if available
       const refinedQuery = getRefinedQuery(question, userMessage.attachedFiles);
       if (refinedQuery) {
@@ -157,16 +207,23 @@ const ExpertPython = () => {
           text: refinedQuery,
           isUser: false,
           timestamp: new Date(),
-          isRefinement: true
+          isRefinement: true,
+          answerIndex,
+          previewText
         };
         newMessages = [...newMessages, refinementMessage];
+      } else {
+        const responseMessage = {
+          text: "I've analyzed your question and prepared a detailed response.",
+          isUser: false,
+          timestamp: new Date(),
+          answerIndex,
+          previewText
+        };
+        newMessages = [...newMessages, responseMessage];
       }
 
       setMessages(newMessages);
-
-      // Get answer
-      const result = findAnswer(question, 'python');
-      const newAnswers = [...answers, result.answer];
       setAnswers(newAnswers);
       setIsLoading(false);
       saveChatHistory(newMessages, newAnswers);
@@ -216,13 +273,13 @@ const ExpertPython = () => {
 
       <div className="flex-1 flex overflow-hidden">
         {/* Left Chat Panel */}
-        <div className="w-[30%] bg-card border-r border-border flex flex-col">
+        <div className={`w-full md:w-[30%] bg-card border-r border-border flex flex-col ${activeAnswerIndex !== null ? 'filter blur-sm' : ''}` }>
           {/* Chat Controls */}
           <div className="p-4 border-b border-border">
-            <div className="flex space-x-2 mb-4">
+            <div className="flex flex-wrap gap-2 mb-4">
               <NewChatCard onClick={startNewChat} />
-              <SearchHistoryCard 
-                chatThreads={chatThreads} 
+              <SearchHistoryCard
+                chatThreads={chatThreads}
                 onSelectThread={selectThread}
                 onDeleteThread={(threadId) => {
                   const updatedThreads = chatThreads.filter(t => t.id !== threadId);
@@ -259,8 +316,8 @@ const ExpertPython = () => {
                     
                     <div className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}>
                       <div className={`max-w-[85%] p-3 rounded-2xl ${
-                        message.isUser 
-                          ? 'bg-primary text-primary-foreground ml-4' 
+                        message.isUser
+                          ? 'bg-primary text-primary-foreground ml-4'
                           : message.isRefinement
                           ? 'bg-secondary/20 text-secondary border border-secondary/30 mr-4'
                           : 'bg-accent text-accent-foreground mr-4'
@@ -276,6 +333,14 @@ const ExpertPython = () => {
                         </div>
                       </div>
                     </div>
+                    {!message.isUser && message.answerIndex !== undefined && (
+                      <button
+                        onClick={() => setActiveAnswerIndex(message.answerIndex)}
+                        className="md:hidden mt-2 ml-4 w-[85%] text-left text-sm bg-muted p-3 rounded-lg"
+                      >
+                        {message.previewText}
+                      </button>
+                    )}
                   </div>
                 );
               })}
@@ -318,7 +383,7 @@ const ExpertPython = () => {
         </div>
 
         {/* Right Preview Panel */}
-        <div className="flex-1 bg-background overflow-y-auto p-6">
+        <div className="hidden md:flex md:flex-1 bg-background overflow-y-auto p-6">
           {answers.length === 0 ? (
             <div className="h-full flex items-center justify-center">
               <div className="text-center max-w-2xl">
@@ -441,11 +506,25 @@ const ExpertPython = () => {
         </div>
       </div>
 
+      {activeAnswerIndex !== null && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+          <div className="bg-card w-[90%] max-h-[90vh] overflow-y-auto rounded-lg p-6 relative">
+            <button
+              onClick={() => setActiveAnswerIndex(null)}
+              className="absolute top-4 right-4 text-muted-foreground"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            {renderAnswerModal(answers[activeAnswerIndex])}
+          </div>
+        </div>
+      )}
+
       {/* Bell Inbox Modal */}
-      <BellInbox 
-        isOpen={showInbox} 
-        onClose={() => setShowInbox(false)} 
-        messages={messages} 
+      <BellInbox
+        isOpen={showInbox}
+        onClose={() => setShowInbox(false)}
+        messages={messages}
         answers={answers} 
       />
     </div>
